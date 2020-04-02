@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'create-certificate',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CreateCertificateComponent implements OnInit {
 
+  createCertificateForm: FormGroup;
+
   constructor() { }
 
   ngOnInit() {
+    this.createCertificateForm = new FormGroup({
+      'signingCertificates': new FormControl(null)
+    });
   }
 
 }

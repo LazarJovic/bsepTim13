@@ -1,1 +1,41 @@
-<p>create-certificate works!</p>
+<div id="container-div">
+    <h2>Create certificate</h2>
+  
+    <form [formGroup]="createCertificateForm" (ngSubmit)="createCertificate()">
+        <mat-form-field>
+            <mat-label>Choose certificate...</mat-label>
+            <mat-select formControlName="signingCertificates">
+              <!-- <mat-option *ngFor="let examinationType of examinationTypes" [value]="examinationType"> {{ examinationType.name }} </mat-option> -->
+              <mat-option>Opcija 1</mat-option>
+            </mat-select>
+          </mat-form-field>
+      <!-- <mat-form-field>
+        <mat-icon matSuffix>search</mat-icon>
+        <input matInput type="date" placeholder="Search by examination date..." class="search-input" id="searchDate" name="searchDate"
+        formControlName="searchDate">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-icon matSuffix>search</mat-icon>
+        <input matInput type="time" placeholder="Search by examination start time..." class="search-input" id="searchStartTime" name="searchStartTime"
+        formControlName="searchStartTime">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-icon matSuffix>search</mat-icon>
+        <input matInput type="time" placeholder="Search by examination end time..." class="search-input" id="searchEndTime" name="searchEndTime"
+        formControlName="searchEndTime">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-icon matSuffix>search</mat-icon>
+        <input matInput type="search" placeholder="Search by name..." class="search-input" id="searchName" name="searchName"
+        formControlName="searchName">
+      </mat-form-field>
+      <mat-form-field id="search-examination-type-field">
+        <mat-label>Choose an examination type...</mat-label>
+        <mat-select formControlName="searchExaminationType">
+          <mat-option *ngFor="let examinationType of examinationTypes" [value]="examinationType"> {{ examinationType.name }} </mat-option>
+        </mat-select>
+      </mat-form-field> -->
+      <button mat-flat-button type="submit">Create certificate</button>
+    </form>
+
+</div>

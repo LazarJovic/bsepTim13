@@ -1,18 +1,36 @@
 #container-div {
-    width: 25vw;
+    /* background-color: #071625; */
+    background-image: url(https://d2slcw3kip6qmk.cloudfront.net/marketing/techblog/cryptography-a-simple-overview-header@2x.png);
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+}
+
+#middle-div {
+    margin-top: 4vw;
+}
+
+#content-div {
+    background-color: white ;
+    width: 37vw;
     margin:auto;
-    height: 100%;
+    height: 30vw;
     text-align: center;
-} 
+    padding: 3vw;
+    border-radius: 8%;
+}
 
 button {
     background-color: darkorange;
     color: white;
 }
 
-#choose-cert-button {
+.in-form-button {
     margin-left: 1vw;
     margin-top: 0.6vw;
+    width: 6vw;
 }
 
 mat-form-field {
@@ -20,14 +38,48 @@ mat-form-field {
     float: left;
 }
 
+#serial-number-field {
+    width: 8vw;
+}
+
 #issuer-field {
-    width: 18vw;
+    width: 20vw;
+    margin-left: 2vw;
 }
 
-.date-field {
-    width: 11vw;
+.double-field {
+    width: 17vw;
 }
 
-#to-date-field {
+.right-field {
     margin-left: 3vw;
+}
+
+#subject-field {
+    width: 30vw;
+}
+
+button {
+    margin-bottom: -3vw;
+}
+
+#submit-button {
+    margin-right: 3vw;
+    width: 12vw;
+    height: 3vw;
+}
+
+button:hover {
+    background-color:white;
+    color: darkorange;
+    border: 1px solid darkorange;
+}
+
+#button-div {
+    display: block;
+}
+
+#back-button {
+    margin: 0;
+    float: left;
 }

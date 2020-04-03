@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Certificate } from 'src/app/model/certificate';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'certificate-overview',
@@ -17,7 +18,7 @@ export class CertificateOverviewComponent implements OnInit {
 
   lista = new Array(6);
 
-  constructor() { 
+  constructor(private router: Router) { 
     
   }
 
@@ -29,6 +30,10 @@ export class CertificateOverviewComponent implements OnInit {
     this.cert5 = new Certificate();
     this.cert6 = new Certificate();
     this.lista = [this.cert1, this.cert2, this.cert3, this.cert4, this.cert5, this.cert6];
+  }
+
+  back() {
+    this.router.navigate(['']);
   }
 
 }

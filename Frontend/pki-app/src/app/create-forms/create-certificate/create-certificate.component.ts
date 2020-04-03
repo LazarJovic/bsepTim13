@@ -14,7 +14,10 @@ export class CreateCertificateComponent implements OnInit {
 
   ngOnInit() {
     this.createCertificateForm = new FormGroup({
-      'signingCertificates': new FormControl(null)
+      'issuer': new FormControl(null),
+      'serialNumber': new FormControl(null),
+      'startDate': new FormControl(null),
+      'endDate': new FormControl(null)
     });
   }
 

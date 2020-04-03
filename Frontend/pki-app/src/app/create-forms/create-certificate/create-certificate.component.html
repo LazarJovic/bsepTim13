@@ -1,53 +1,64 @@
 <div id="container-div">
-  <h2>Create certificate</h2>
+  <div id="middle-div">
+    <div id="content-div">
+      <h2>Create certificate</h2>
 
-  <form [formGroup]="createCertificateForm" (ngSubmit)="createCertificate()">
-    <div>
-      <mat-form-field id="issuer-field">
-        <mat-label>Issuer</mat-label>
-        <input matInput type="text" formControlName="issuer">
-      </mat-form-field>
-      <button mat-flat-button id="choose-cert-button" (click)="chooseCert()">Choose</button>
-    </div>
-    <mat-form-field id="serial-number-field">
-      <mat-label>Serial number</mat-label>
-      <input matInput type="text" formControlName="serialNumber">
-    </mat-form-field>
-    <div>
-      <mat-form-field class="date-field">
-        <input matInput type="date" placeholder="Valid from" name="startDate" formControlName="startDate">
-      </mat-form-field>
-      <mat-form-field class="date-field" id="to-date-field">
-        <input matInput type="date" placeholder="To" name="endDate" formControlName="endDate">
-      </mat-form-field>
-    </div>
-    <!-- <mat-form-field>
-        <mat-icon matSuffix>search</mat-icon>
-        <input matInput type="date" placeholder="Search by examination date..." class="search-input" id="searchDate" name="searchDate"
-        formControlName="searchDate">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-icon matSuffix>search</mat-icon>
-        <input matInput type="time" placeholder="Search by examination start time..." class="search-input" id="searchStartTime" name="searchStartTime"
-        formControlName="searchStartTime">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-icon matSuffix>search</mat-icon>
-        <input matInput type="time" placeholder="Search by examination end time..." class="search-input" id="searchEndTime" name="searchEndTime"
-        formControlName="searchEndTime">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-icon matSuffix>search</mat-icon>
-        <input matInput type="search" placeholder="Search by name..." class="search-input" id="searchName" name="searchName"
-        formControlName="searchName">
-      </mat-form-field>
-      <mat-form-field id="search-examination-type-field">
-        <mat-label>Choose an examination type...</mat-label>
-        <mat-select formControlName="searchExaminationType">
-          <mat-option *ngFor="let examinationType of examinationTypes" [value]="examinationType"> {{ examinationType.name }} </mat-option>
-        </mat-select>
-      </mat-form-field> -->
-    <button mat-flat-button type="submit">Create certificate</button>
-  </form>
+      <form [formGroup]="createCertificateForm" (ngSubmit)="createCertificate()">
+        <div>
+          <mat-form-field id="serial-number-field">
+            <mat-label>Serial number</mat-label>
+            <input matInput type="text" formControlName="serialNumber" readonly>
+          </mat-form-field>
+          <mat-form-field id="issuer-field">
+            <mat-label>Issuer</mat-label>
+            <input matInput type="text" formControlName="issuer" readonly>
+          </mat-form-field>
+          <button mat-flat-button class="in-form-button" (click)="chooseCert()">Choose</button>
+        </div>
+        <div>
+          <mat-form-field class="double-field">
+            <input matInput type="date" placeholder="Valid from" name="startDate" formControlName="startDate">
+          </mat-form-field>
+          <mat-form-field class="double-field right-field">
+            <input matInput type="date" placeholder="To" name="endDate" formControlName="endDate">
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field id="subject-field">
+            <mat-label>Subject</mat-label>
+            <mat-select formControlName="subject">
+              <mat-option>
+                Opcija 2
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-flat-button class="in-form-button" (click)="createSubject()">Create</button>
+        </div>
+        <mat-form-field class="double-field">
+          <mat-label>Signature algorithm</mat-label>
+          <mat-select formControlName="signatureAlgorithm">
+            <mat-option>
+              Opcija 2
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="double-field right-field">
+          <mat-label>Public Key Algorithm</mat-label>
+          <mat-select formControlName="pubKeyAlgorithm">
+            <mat-option>
+              Opcija 2
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div id="button-div">
+          <button mat-icon-button aria-label="Example icon-button with a heart icon" id="back-button" (click)="back()">
+            <mat-icon>keyboard_backspace
+            </mat-icon>
+          </button>
+          <button mat-flat-button type="submit" id="submit-button">Create certificate</button>
+        </div>
+      </form>
 
+    </div>
+  </div>
 </div>

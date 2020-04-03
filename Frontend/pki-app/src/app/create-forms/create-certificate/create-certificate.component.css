@@ -1,7 +1,7 @@
 #container-div {
     /* background-color: #071625; */
     background-color: #212c35;
-    position:fixed;
+    position: absolute;
     top:0;
     left:0;
     width:100%;

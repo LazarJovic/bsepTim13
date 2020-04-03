@@ -1,5 +1,5 @@
 #container-div {
-    background-image: url(https://d2slcw3kip6qmk.cloudfront.net/marketing/techblog/cryptography-a-simple-overview-header@2x.png);
+    background-image: url('https://d2slcw3kip6qmk.cloudfront.net/marketing/techblog/cryptography-a-simple-overview-header@2x.png');
     position:fixed;
     top:0;
     left:0;

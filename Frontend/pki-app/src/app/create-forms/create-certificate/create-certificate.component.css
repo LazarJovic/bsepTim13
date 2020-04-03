@@ -1,0 +1,33 @@
+#container-div {
+    width: 25vw;
+    margin:auto;
+    height: 100%;
+    text-align: center;
+} 
+
+button {
+    background-color: darkorange;
+    color: white;
+}
+
+#choose-cert-button {
+    margin-left: 1vw;
+    margin-top: 0.6vw;
+}
+
+mat-form-field {
+    width: 25vw;
+    float: left;
+}
+
+#issuer-field {
+    width: 18vw;
+}
+
+.date-field {
+    width: 11vw;
+}
+
+#to-date-field {
+    margin-left: 3vw;
+}

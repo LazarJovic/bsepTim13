@@ -1,0 +1,53 @@
+<div id="container-div">
+  <h2>Create certificate</h2>
+
+  <form [formGroup]="createCertificateForm" (ngSubmit)="createCertificate()">
+    <div>
+      <mat-form-field id="issuer-field">
+        <mat-label>Issuer</mat-label>
+        <input matInput type="text" formControlName="issuer">
+      </mat-form-field>
+      <button mat-flat-button id="choose-cert-button" (click)="chooseCert()">Choose</button>
+    </div>
+    <mat-form-field id="serial-number-field">
+      <mat-label>Serial number</mat-label>
+      <input matInput type="text" formControlName="serialNumber">
+    </mat-form-field>
+    <div>
+      <mat-form-field class="date-field">
+        <input matInput type="date" placeholder="Valid from" name="startDate" formControlName="startDate">
+      </mat-form-field>
+      <mat-form-field class="date-field" id="to-date-field">
+        <input matInput type="date" placeholder="To" name="endDate" formControlName="endDate">
+      </mat-form-field>
+    </div>
+    <!-- <mat-form-field>
+        <mat-icon matSuffix>search</mat-icon>
+        <input matInput type="date" placeholder="Search by examination date..." class="search-input" id="searchDate" name="searchDate"
+        formControlName="searchDate">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-icon matSuffix>search</mat-icon>
+        <input matInput type="time" placeholder="Search by examination start time..." class="search-input" id="searchStartTime" name="searchStartTime"
+        formControlName="searchStartTime">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-icon matSuffix>search</mat-icon>
+        <input matInput type="time" placeholder="Search by examination end time..." class="search-input" id="searchEndTime" name="searchEndTime"
+        formControlName="searchEndTime">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-icon matSuffix>search</mat-icon>
+        <input matInput type="search" placeholder="Search by name..." class="search-input" id="searchName" name="searchName"
+        formControlName="searchName">
+      </mat-form-field>
+      <mat-form-field id="search-examination-type-field">
+        <mat-label>Choose an examination type...</mat-label>
+        <mat-select formControlName="searchExaminationType">
+          <mat-option *ngFor="let examinationType of examinationTypes" [value]="examinationType"> {{ examinationType.name }} </mat-option>
+        </mat-select>
+      </mat-form-field> -->
+    <button mat-flat-button type="submit">Create certificate</button>
+  </form>
+
+</div>

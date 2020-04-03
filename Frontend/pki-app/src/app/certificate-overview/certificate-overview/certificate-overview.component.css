@@ -8,19 +8,8 @@ certificate-card {
     margin: 10px 10px 20px 20px;
 }
 
-#content-div {
-    width: 900px;
-    height: 600;
-    margin: 0 auto;
-}
-
 #container-div {
     background-color: #212c35;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
 }
 
 button {

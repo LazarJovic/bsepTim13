@@ -1,1 +1,11 @@
-<p>certificate-overview works!</p>
+<div id="container-div"> 
+    <button mat-icon-button id="back-button" (click)="back()">
+        <mat-icon>keyboard_backspace
+        </mat-icon>
+      </button>
+    <h1>Certificates overview</h1>
+    <div id="component-div">
+        <certificate-card *ngFor="let item of lista" [item]='item'></certificate-card>
+    </div>
+</div>
+

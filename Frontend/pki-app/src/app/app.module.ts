@@ -11,6 +11,7 @@ import { CreateSubjectComponent } from './create-forms/create-subject/create-sub
 import { CertificateOverviewComponent } from './certificate-overview/certificate-overview/certificate-overview.component';
 import { MaterialModule } from './material-module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { CertificateCardComponent } from './cards/certificate-card/certificate-card.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     DashboardComponent,
     CreateCertificateComponent,
     CreateSubjectComponent,
-    CertificateOverviewComponent
+    CertificateOverviewComponent,
+    CertificateCardComponent
   ],
   imports: [
     BrowserModule,

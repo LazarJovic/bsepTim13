@@ -8,7 +8,6 @@ public class PkiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PkiApplication.class, args);
-		System.out.println("Hello");
 	}
 
 }

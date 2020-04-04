@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { User } from 'src/app/model/user';
 import { DialogCreateSubjectComponent } from '../dialog-create-subject/dialog-create-subject.component';
+import { UserService } from 'src/app/services/userService/user.service';
 
 @Component({
   selector: 'create-certificate',
@@ -16,7 +17,8 @@ export class CreateCertificateComponent implements OnInit {
 
   constructor(
     private router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private userService: UserService
   ) { }
 
   ngOnInit() {
@@ -48,10 +50,22 @@ export class CreateCertificateComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      var subject = new User(result.givenName, result.lastName, result.commonName, result.country, result.organization,
+      var subject = new User(0, result.givenName, result.lastName, result.commonName, result.country, result.organization,
         result.organizationalUnit, result.locality, result.email);
       
-        console.log(subject);
+        this.userService.createSubject(subject).subscribe(
+          { 
+            next: () => {
+              console.log("Kreiran subjekat");
+            },
+            error: data => {
+              if (data.error && typeof data.error === "string")
+              console.log(data.error);
+              else
+              console.log("Nije kreiran subjekat");
+            }
+          }
+        );
     });
   }
 

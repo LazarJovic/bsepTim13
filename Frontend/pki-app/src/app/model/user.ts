@@ -1,5 +1,6 @@
 export class User {
 
+    public id: number;
     public givenName: string;
     public lastName: string;
     public commonName: string;
@@ -9,8 +10,9 @@ export class User {
     public locality: string;
     public email: string;
 
-    constructor(givenName: string, lastName: string, commonName: string, country: string, organization: string, organizationalUnit: string,
+    constructor(id: number, givenName: string, lastName: string, commonName: string, country: string, organization: string, organizationalUnit: string,
         locality: string, email: string) {
+        this.id = id;
         this.givenName = givenName;
         this.lastName = lastName;
         this.commonName = commonName;

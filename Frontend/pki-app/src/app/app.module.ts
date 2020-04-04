@@ -13,6 +13,7 @@ import { MaterialModule } from './material-module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CertificateCardComponent } from './cards/certificate-card/certificate-card.component';
 import { DialogCreateSubjectComponent } from './create-forms/dialog-create-subject/dialog-create-subject.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { DialogCreateSubjectComponent } from './create-forms/dialog-create-subje
     MaterialModule,
     MatInputModule,
     MatFormFieldModule,
-    MatDialogModule
+    MatDialogModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],

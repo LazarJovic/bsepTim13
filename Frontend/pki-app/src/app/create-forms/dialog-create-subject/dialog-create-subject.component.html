@@ -1,0 +1,56 @@
+<div id="container-div">
+    <h1 mat-dialog-title>Create subject</h1>
+    <div mat-dialog-content>
+        <div id="content-div">
+            <form [formGroup]="createSubjectForm">
+                <div class="field-div">
+                    <mat-form-field id="given-name-field">
+                        <mat-label>Given name</mat-label>
+                        <input matInput [(ngModel)]="data.givenName" type="text" formControlName="givenName">
+                    </mat-form-field>
+                    <mat-form-field id="last-name-field" class="left-field">
+                        <mat-label>Last name</mat-label>
+                        <input matInput [(ngModel)]="data.lastName" type="text" formControlName="lastName">
+                    </mat-form-field>
+                </div>
+                <div class="field-div">
+                    <mat-form-field id="country-field">
+                        <mat-label>Country</mat-label>
+                        <input matInput [(ngModel)]="data.country" type="text" formControlName="country">
+                    </mat-form-field>
+                    <mat-form-field id="locality-field" class="left-field">
+                        <mat-label>Locality</mat-label>
+                        <input matInput [(ngModel)]="data.locality" type="text" formControlName="locality">
+                    </mat-form-field>
+                </div>
+                <div class="field-div">
+                    <mat-form-field id="org-field">
+                        <mat-label>Organization</mat-label>
+                        <input matInput [(ngModel)]="data.organization" type="text" formControlName="organization">
+                    </mat-form-field>
+                    <mat-form-field id="org-unit-field" class="left-field">
+                        <mat-label>Organizational unit</mat-label>
+                        <input matInput [(ngModel)]="data.organizationalUnit" type="text" formControlName="orgUnit">
+                    </mat-form-field>
+                </div>
+                <div class="field-div">
+                    <mat-form-field id="common-name-field">
+                        <mat-label>Common name</mat-label>
+                        <input matInput [(ngModel)]="data.commonName" type="text" formControlName="commonName">
+                    </mat-form-field>
+                    <mat-form-field id="email-field" class="left-field">
+                        <mat-label>Email</mat-label>
+                        <input matInput [(ngModel)]="data.email" type="text" formControlName="email">
+                    </mat-form-field>
+                </div>
+                <div id="button-div">
+                    <button mat-button (click)="onNoClick()">Cancel</button>
+                    <button mat-button [mat-dialog-close]="data" cdkFocusInitial id="create-subject-btn"
+                        type="submit" id="create-btn">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div mat-dialog-actions>
+    </div>
+</div>

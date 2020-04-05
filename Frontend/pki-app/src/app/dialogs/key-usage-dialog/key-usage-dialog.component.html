@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>Choose Key Usage</h2>
+<form [formGroup]="form">
+
+    <mat-dialog-content>
+        <div fxLayout="column">
+            <mat-checkbox
+                matTooltip="General digital signing, including that within higher-level entity authentication, and data authentication mechanisms"
+                matTooltipPosition="right" [(ngModel)]="digitalSignature" formControlName="digitalSignature">
+                DigitalSignature
+            </mat-checkbox>
+            <mat-checkbox matTooltip="Digital signing within a non-repudiation service" matTooltipPosition="right"
+                [(ngModel)]="nonRepudiation" formControlName="nonRepudiation">NonRepudiation
+            </mat-checkbox>
+            <mat-checkbox matTooltip="Key transport (e.g. RSA key exchange)" matTooltipPosition="right"
+                [(ngModel)]="keyEncipherment" formControlName="keyEncipherment">KeyEncipherment
+            </mat-checkbox>
+            <mat-checkbox matTooltip="Data encryption (other than that for transporting keys)"
+                matTooltipPosition="right" [(ngModel)]="dataEncipherment" formControlName="dataEncipherment">
+                DataEncipherment
+            </mat-checkbox>
+            <mat-checkbox matTooltip="Key exchange or agreement (e.g. DH or ECDH certificate)"
+                matTooltipPosition="right" [(ngModel)]="keyAgreement" (change)="keyAgreementChanged()"
+                formControlName="keyAgreement">KeyAgreement
+            </mat-checkbox>
+            <mat-checkbox matTooltip="Certificate signing (CA)" matTooltipPosition="right" [(ngModel)]="keyCertSign"
+                formControlName="keyCertSign">KeyCertSign
+            </mat-checkbox>
+            <mat-checkbox matTooltip="CRL signing (CA/status service)" matTooltipPosition="right" [(ngModel)]="CRLSign"
+                formControlName="CRLSign">CRLSign
+            </mat-checkbox>
+
+            <mat-checkbox
+                matTooltip="Only makes sense if the KeyAgreement flag is set. Indicate which operations with the key are allowed within the key agreement routine"
+                matTooltipPosition="right" [(ngModel)]="encipherOnly" formControlName="encipherOnly">EncipherOnly
+            </mat-checkbox>
+            <mat-checkbox
+                matTooltip="Only makes sense if the KeyAgreement flag is set. Indicate which operations with the key are allowed within the key agreement routine"
+                matTooltipPosition="right" [(ngModel)]="decipherOnly" formControlName="decipherOnly">DecipherOnly
+            </mat-checkbox>
+        </div>
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <button class="mat-raised-button" (click)="close()">Cancel</button>
+        <button class="mat-raised-button mat-primary" type="submit"
+            (click)="onSubmit()">Save</button>
+    </mat-dialog-actions>
+</form>

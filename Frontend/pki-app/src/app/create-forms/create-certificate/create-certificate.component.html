@@ -1,4 +1,8 @@
 <div id="container-div">
+  <button mat-icon-button aria-label="Example icon-button with a heart icon" id="back-button" (click)="back()">
+    <mat-icon>keyboard_backspace
+    </mat-icon>
+  </button>
   <div id="middle-div">
     <div id="content-div">
       <h2>Create certificate</h2>
@@ -34,27 +38,69 @@
           </mat-form-field>
           <button mat-flat-button class="in-form-button" (click)="openSubjectDialog()">Create</button>
         </div>
-        <mat-form-field class="double-field">
-          <mat-label>Signature algorithm</mat-label>
-          <mat-select formControlName="signatureAlgorithm">
-            <mat-option>
-              Opcija 2
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="double-field right-field">
-          <mat-label>Public Key Algorithm</mat-label>
-          <mat-select formControlName="pubKeyAlgorithm">
-            <mat-option>
-              Opcija 2
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div>
+          <mat-form-field class="double-field">
+            <mat-label>Signature algorithm</mat-label>
+            <mat-select formControlName="signatureAlgorithm">
+              <mat-option>
+                Opcija 2
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="double-field right-field">
+            <mat-label>Public Key Algorithm</mat-label>
+            <mat-select formControlName="pubKeyAlgorithm">
+              <mat-option>
+                Opcija 2
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!--Ekstenzije start-->
+        <div id="extensions-div">
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Extensions
+                </mat-panel-title>
+                <mat-panel-description>
+                  Add extensions to your certificate
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+          
+              <mat-card class="extension-card">
+                <mat-card-header>
+                  <mat-card-title><mat-checkbox [(ngModel)]="keyUsageChecked" [ngModelOptions]="{standalone: true}">Key Usage</mat-checkbox></mat-card-title>
+                </mat-card-header>
+                <mat-card-content *ngIf="keyUsageChecked">
+                  <p>
+                    DigitalSignature, NonRepudiation, KeyEncipherment, DataEncipherment, KeyAgreement, KeyCertSign, CRLSign, EncipherOnly, DecipherOnly
+                  </p>
+                </mat-card-content>
+                <mat-card-actions *ngIf="keyUsageChecked">
+                  <button mat-button (click)="keyUsageOpen()">EDIT</button>
+                </mat-card-actions>
+              </mat-card>
+              <mat-card class="extension-card">
+                <mat-card-header>
+                  <mat-card-title><mat-checkbox [(ngModel)]="extendedKeyUsageChecked" [ngModelOptions]="{standalone: true}">Extended Key Usage</mat-checkbox></mat-card-title>
+                </mat-card-header>
+                <mat-card-content *ngIf="extendedKeyUsageChecked">
+                  <p>
+                    serverAuth, clientAuth, codeSigning, emailProtection, timeStamping, ocspSigning, ipsecEndSystem, ipsecTunnel, ipsecUser
+                  </p>
+                </mat-card-content>
+                <mat-card-actions *ngIf="extendedKeyUsageChecked">
+                  <button mat-button>EDIT</button>
+                </mat-card-actions>
+              </mat-card>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+        <!--Ekstenzije kraj-->
         <div id="button-div">
-          <button mat-icon-button aria-label="Example icon-button with a heart icon" id="back-button" (click)="back()">
-            <mat-icon>keyboard_backspace
-            </mat-icon>
-          </button>
+          
           <button mat-flat-button type="submit" id="submit-button">Create certificate</button>
         </div>
       </form>

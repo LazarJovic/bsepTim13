@@ -7,8 +7,6 @@ public class SubjectMapper implements MapperInterface<User, UserDTO> {
 
     @Override
     public User toEntity(UserDTO dto) {
-//        return new User(dto.givenName, dto.lastName, dto.commonName, dto.country, dto.organization,
-//                dto.organizationalUnit, dto.locality, dto.email, false);
         User user = new User();
         user.setGivenName(dto.givenName);
         user.setLastName(dto.lastName);

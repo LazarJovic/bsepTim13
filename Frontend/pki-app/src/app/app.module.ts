@@ -15,6 +15,7 @@ import { CertificateCardComponent } from './cards/certificate-card/certificate-c
 import { DialogCreateSubjectComponent } from './create-forms/dialog-create-subject/dialog-create-subject.component';
 import { HttpClientModule } from '@angular/common/http';
 import { KeyUsageDialogComponent } from './dialogs/key-usage-dialog/key-usage-dialog.component';
+import { ExtendedKeyUsageDialogComponent } from './dialogs/extended-key-usage-dialog/extended-key-usage-dialog.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { KeyUsageDialogComponent } from './dialogs/key-usage-dialog/key-usage-di
     CertificateOverviewComponent,
     CertificateCardComponent,
     DialogCreateSubjectComponent,
-    KeyUsageDialogComponent
+    KeyUsageDialogComponent,
+    ExtendedKeyUsageDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +46,8 @@ import { KeyUsageDialogComponent } from './dialogs/key-usage-dialog/key-usage-di
   bootstrap: [AppComponent],
   entryComponents: [
     DialogCreateSubjectComponent,
-    KeyUsageDialogComponent
+    KeyUsageDialogComponent,
+    ExtendedKeyUsageDialogComponent
   ]
 })
 export class AppModule { }

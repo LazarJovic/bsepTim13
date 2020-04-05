@@ -1,0 +1,32 @@
+h1 {
+    text-align: center;
+}
+
+#content-div {
+    margin-left: 4vw;
+}
+
+.left-field {
+    margin-left: 2vw;
+}
+
+button {
+    background-color: darkorange;
+    color: white;
+    margin-bottom: 1vw;
+}
+
+button:hover {
+    background-color:white;
+    color: darkorange;
+    border: 1px solid darkorange;
+}
+
+#button-div {
+    display: block;
+    margin-left: 7.5vw;
+}
+
+#create-btn {
+    margin-left: 2vw;
+}

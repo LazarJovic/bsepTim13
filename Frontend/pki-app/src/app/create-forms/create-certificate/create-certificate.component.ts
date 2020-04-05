@@ -6,6 +6,7 @@ import { User } from 'src/app/model/user';
 import { DialogCreateSubjectComponent } from '../dialog-create-subject/dialog-create-subject.component';
 import { UserService } from 'src/app/services/userService/user.service';
 import { KeyUsageDialogComponent } from 'src/app/dialogs/key-usage-dialog/key-usage-dialog.component';
+import { ExtendedKeyUsageDialogComponent } from 'src/app/dialogs/extended-key-usage-dialog/extended-key-usage-dialog.component';
 
 
 @Component({
@@ -90,6 +91,19 @@ export class CreateCertificateComponent implements OnInit {
       
     };
     this.keyUsageDialog.open(KeyUsageDialogComponent, dialogConfig);
+  }
+
+  extendedKeyUsageOpen() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = false;
+    dialogConfig.width = "30vw";
+
+    dialogConfig.data = {
+      
+    };
+    this.keyUsageDialog.open(ExtendedKeyUsageDialogComponent, dialogConfig);
   }
 
 }

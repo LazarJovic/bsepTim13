@@ -3,6 +3,7 @@ package com.bsep.pki.util.keystore;
 import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 public class KeyStoreWriter {
 
@@ -57,9 +58,9 @@ public class KeyStoreWriter {
         }
     }
 
-    public void write(String alias, PrivateKey privateKey, char[] password, Certificate certificate) {
+    public void write(String alias, PrivateKey privateKey, char[] password, X509Certificate certificate) {
         try {
-            keyStore.setKeyEntry(alias, privateKey, password, (java.security.cert.Certificate[]) new Certificate[] {certificate});
+            keyStore.setKeyEntry(alias, privateKey, password, (java.security.cert.X509Certificate[]) new X509Certificate[] {certificate});
         } catch (KeyStoreException e) {
             e.printStackTrace();
         }

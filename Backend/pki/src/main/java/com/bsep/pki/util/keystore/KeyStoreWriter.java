@@ -1,9 +1,6 @@
 package com.bsep.pki.util.keystore;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
 
@@ -25,7 +22,8 @@ public class KeyStoreWriter {
 
     public void loadKeyStore(String fileName, char[] password) {
         try {
-            if(fileName != null) {
+            File f = new File(fileName);
+            if(fileName != null && f.exists()) {
                 keyStore.load(new FileInputStream(fileName), password);
             } else {
                 keyStore.load(null, password);

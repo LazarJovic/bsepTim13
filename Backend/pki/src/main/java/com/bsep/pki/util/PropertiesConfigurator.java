@@ -16,7 +16,7 @@ public class PropertiesConfigurator {
     public static final String CA = "ca";
     public static final String END_ENTITY = "end-entity";
     public static final int PASS_LENGTH = 15;
-    public static final String KEY_STORE_PROP = "E:\\BsepPKI\\bsepTim13\\Backend\\pki\\src\\main\\resources\\key-store-pass.properties";
+    public static final String KEY_STORE_PROP = "key-store-pass.properties";
 
     public PropertiesConfigurator() {}
 
@@ -27,7 +27,7 @@ public class PropertiesConfigurator {
             props.setProperty(CA, PasswordGenerator.generateRandomPassword(PASS_LENGTH));
             props.setProperty(END_ENTITY, PasswordGenerator.generateRandomPassword(PASS_LENGTH));
             File f = new File(KEY_STORE_PROP);
-            FileOutputStream out = new FileOutputStream( f );
+            FileOutputStream out = new FileOutputStream(f);
             DefaultPropertiesPersister p = new DefaultPropertiesPersister();
             p.store(props, out,"");
         } catch (Exception e ) {
@@ -42,7 +42,7 @@ public class PropertiesConfigurator {
         try {
             Properties prop = new Properties();
 
-            inputStream = getClass().getClassLoader().getResourceAsStream("key-store-pass.properties");
+            inputStream = getClass().getClassLoader().getResourceAsStream(KEY_STORE_PROP);
 
             if (inputStream != null) {
                 prop.load(inputStream);

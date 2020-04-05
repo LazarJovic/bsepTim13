@@ -68,18 +68,25 @@ public class CertificateService {
 
             this.createKeyStoreFiles();
 
+
         }
 
     }
 
     private void createKeyStoreFiles() throws IOException {
-        this.propertiesConfigurator.generateKeyStoreProperties();
+        //this.propertiesConfigurator.generateKeyStoreProperties();
+
         String selfSignedPass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.SELF_SIGNED);
         String caPass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.CA);
         String endEntityPass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.END_ENTITY);
-        this.keyStoreWriter.loadKeyStore(PropertiesConfigurator.SELF_SIGNED, selfSignedPass.toCharArray());
-        this.keyStoreWriter.loadKeyStore(PropertiesConfigurator.CA, caPass.toCharArray());
-        this.keyStoreWriter.loadKeyStore(PropertiesConfigurator.END_ENTITY, endEntityPass.toCharArray());
+
+        this.keyStoreWriter.loadKeyStore(PropertiesConfigurator.SELF_SIGNED + ".jks", selfSignedPass.toCharArray());
+        this.keyStoreWriter.loadKeyStore(PropertiesConfigurator.CA + ".jks", caPass.toCharArray());
+        this.keyStoreWriter.loadKeyStore(PropertiesConfigurator.END_ENTITY + ".jks", endEntityPass.toCharArray());
+
+        //this.keyStoreWriter.saveKeyStore(PropertiesConfigurator.SELF_SIGNED + ".jks", selfSignedPass.toCharArray());
+        //this.keyStoreWriter.saveKeyStore(PropertiesConfigurator.CA + ".jks", caPass.toCharArray());
+        //this.keyStoreWriter.saveKeyStore(PropertiesConfigurator.END_ENTITY + ".jks", endEntityPass.toCharArray());
     }
 
 }

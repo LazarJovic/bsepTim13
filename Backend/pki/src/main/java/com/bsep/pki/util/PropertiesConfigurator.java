@@ -20,20 +20,20 @@ public class PropertiesConfigurator {
 
     public PropertiesConfigurator() {}
 
-    public void generateKeyStoreProperties() {
-        try {
-            Properties props = new Properties();
-            props.setProperty(SELF_SIGNED, PasswordGenerator.generateRandomPassword(PASS_LENGTH));
-            props.setProperty(CA, PasswordGenerator.generateRandomPassword(PASS_LENGTH));
-            props.setProperty(END_ENTITY, PasswordGenerator.generateRandomPassword(PASS_LENGTH));
-            File f = new File(KEY_STORE_PROP);
-            FileOutputStream out = new FileOutputStream(f);
-            DefaultPropertiesPersister p = new DefaultPropertiesPersister();
-            p.store(props, out,"");
-        } catch (Exception e ) {
-            e.printStackTrace();
-        }
-    }
+//    public void generateKeyStoreProperties() {
+//        try {
+//            Properties props = new Properties();
+//            props.setProperty(SELF_SIGNED, PasswordGenerator.generateRandomPassword(PASS_LENGTH));
+//            props.setProperty(CA, PasswordGenerator.generateRandomPassword(PASS_LENGTH));
+//            props.setProperty(END_ENTITY, PasswordGenerator.generateRandomPassword(PASS_LENGTH));
+//            File f = new File(KEY_STORE_PROP);
+//            FileOutputStream out = new FileOutputStream(f);
+//            DefaultPropertiesPersister p = new DefaultPropertiesPersister();
+//            p.store(props, out,"");
+//        } catch (Exception e ) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public String readValueFromKeyStoreProp(String key) throws IOException {
 

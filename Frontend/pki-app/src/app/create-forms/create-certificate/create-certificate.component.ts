@@ -22,7 +22,7 @@ export class CreateCertificateComponent implements OnInit {
   constructor(
     private router: Router,
     public dialog: MatDialog,
-    private userService: UserService
+    private userService: UserService,
     private keyUsageDialog: MatDialog,
     private extendedKeyUsageDialog: MatDialog
   ) { }
@@ -35,8 +35,7 @@ export class CreateCertificateComponent implements OnInit {
       'endDate': new FormControl({value: null}, [Validators.required]),
       'subject': new FormControl({value: null}, [Validators.required]),
       'signatureAlgorithm': new FormControl({value: null}, [Validators.required]),
-      'pubKeyAlgorithm': new FormControl({value: null}, [Validators.required]),
-      //'test': new FormControl({value: null}, null)
+      'pubKeyAlgorithm': new FormControl({value: null}, [Validators.required])
     });
 
   }
@@ -74,6 +73,7 @@ export class CreateCertificateComponent implements OnInit {
           }
         );
     });
+  }
 
   back() {
     this.router.navigate(['']);
@@ -87,7 +87,7 @@ export class CreateCertificateComponent implements OnInit {
     dialogConfig.width = "30vw";
 
     dialogConfig.data = {
-      //patient: this.patient
+      
     };
     this.keyUsageDialog.open(KeyUsageDialogComponent, dialogConfig);
   }

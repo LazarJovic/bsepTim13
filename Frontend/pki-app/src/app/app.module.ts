@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule, MatDialogModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule, MatDialogModule, MatCheckboxModule } from '@angular/material';
 import { CreateCertificateComponent } from './create-forms/create-certificate/create-certificate.component';
 import { CreateSubjectComponent } from './create-forms/create-subject/create-subject.component';
 import { CertificateOverviewComponent } from './certificate-overview/certificate-overview/certificate-overview.component';
@@ -14,6 +14,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CertificateCardComponent } from './cards/certificate-card/certificate-card.component';
 import { DialogCreateSubjectComponent } from './create-forms/dialog-create-subject/dialog-create-subject.component';
 import { HttpClientModule } from '@angular/common/http';
+import { KeyUsageDialogComponent } from './dialogs/key-usage-dialog/key-usage-dialog.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { HttpClientModule } from '@angular/common/http';
     CreateSubjectComponent,
     CertificateOverviewComponent,
     CertificateCardComponent,
-    DialogCreateSubjectComponent
+    DialogCreateSubjectComponent,
+    KeyUsageDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -35,12 +37,14 @@ import { HttpClientModule } from '@angular/common/http';
     MatInputModule,
     MatFormFieldModule,
     MatDialogModule,
-    HttpClientModule
+    HttpClientModule,
+    MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent],
   entryComponents: [
-    DialogCreateSubjectComponent
+    DialogCreateSubjectComponent,
+    KeyUsageDialogComponent
   ]
 })
 export class AppModule { }

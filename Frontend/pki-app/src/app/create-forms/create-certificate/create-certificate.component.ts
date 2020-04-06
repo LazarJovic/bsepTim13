@@ -7,6 +7,8 @@ import { DialogCreateSubjectComponent } from '../dialog-create-subject/dialog-cr
 import { UserService } from 'src/app/services/userService/user.service';
 import { KeyUsageDialogComponent } from 'src/app/dialogs/key-usage-dialog/key-usage-dialog.component';
 import { ExtendedKeyUsageDialogComponent } from 'src/app/dialogs/extended-key-usage-dialog/extended-key-usage-dialog.component';
+import { KeyUsage } from 'src/app/model/key-usage';
+import { ExtKeyUsage } from 'src/app/model/ext-key-usage';
 
 
 @Component({
@@ -19,6 +21,10 @@ export class CreateCertificateComponent implements OnInit {
   createCertificateForm: FormGroup;
   keyUsageChecked: boolean;
   extendedKeyUsageChecked: boolean;
+  keyUsage: KeyUsage;
+  extKeyUsage: ExtKeyUsage;
+  keyUsageDesc: string;
+  extKeyUsageDesc: string;
 
   constructor(
     private router: Router,
@@ -29,6 +35,10 @@ export class CreateCertificateComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.keyUsage = new KeyUsage(true, true, true, true, true, true, true, true, true);
+    this.extKeyUsage = new ExtKeyUsage(true, true, true, true, true, true, true, true, true);
+    this.keyUsageDesc = "DigitalSignature, NonRepudiation, KeyEncipherment, DataEncipherment, KeyAgreement, KeyCertSign, CRLSign, EncipherOnly, DecipherOnly";
+    this.extKeyUsageDesc = "ServerAuth, ClientAuth, CodeSigning, EmailProtection, TimeStamping, OCSPSigning, IpsecEndSystem, IpsecTunnel, IpsecUser";
     this.createCertificateForm = new FormGroup({
       'issuer': new FormControl(null, [Validators.required]),
       'serialNumber': new FormControl(null, [Validators.required]),
@@ -85,12 +95,18 @@ export class CreateCertificateComponent implements OnInit {
 
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = false;
-    dialogConfig.width = "30vw";
+    dialogConfig.minWidth = "250px";
 
     dialogConfig.data = {
-      
+      keyUsage: this.keyUsage
     };
-    this.keyUsageDialog.open(KeyUsageDialogComponent, dialogConfig);
+    let dialogRef = this.keyUsageDialog.open(KeyUsageDialogComponent, dialogConfig).afterClosed()
+    .subscribe(response => {
+      if (response) {
+        this.keyUsage = response.keyUsage;
+        this.updateKeyUsageDesc();
+      }
+    });
   }
 
   extendedKeyUsageOpen() {
@@ -98,12 +114,82 @@ export class CreateCertificateComponent implements OnInit {
 
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = false;
-    dialogConfig.width = "30vw";
+    dialogConfig.minWidth = "250px";
 
     dialogConfig.data = {
-      
+      extKeyUsage: this.extKeyUsage
     };
-    this.keyUsageDialog.open(ExtendedKeyUsageDialogComponent, dialogConfig);
+    let dialogRef = this.extendedKeyUsageDialog.open(ExtendedKeyUsageDialogComponent, dialogConfig).afterClosed()
+    .subscribe(response => {
+      if (response) {
+        this.extKeyUsage = response.extKeyUsage;
+        this.updateExtKeyUsageDesc();
+      }
+    });
+  }
+
+  updateKeyUsageDesc() {
+    this.keyUsageDesc = "";
+    if (this.keyUsage.digitalSignature) {
+      this.keyUsageDesc += "DigitalSignature, "
+    }
+    if (this.keyUsage.nonRepudiation) {
+      this.keyUsageDesc += "NonRepudiation, "
+    }
+    if (this.keyUsage.keyEncipherment) {
+      this.keyUsageDesc += "KeyEncipherment, "
+    }
+    if (this.keyUsage.dataEncipherment) {
+      this.keyUsageDesc += "DataEncipherment, "
+    }
+    if (this.keyUsage.keyAgreement) {
+      this.keyUsageDesc += "KeyAgreement, "
+    }
+    if (this.keyUsage.keyCertSign) {
+      this.keyUsageDesc += "KeyCertSign, "
+    }
+    if (this.keyUsage.CRLSign) {
+      this.keyUsageDesc += "CRLSign, "
+    }
+    if (this.keyUsage.encipherOnly) {
+      this.keyUsageDesc += "EncipherOnly, "
+    }
+    if (this.keyUsage.decipherOnly) {
+      this.keyUsageDesc += "DecipherOnly, "
+    }
+    this.keyUsageDesc = this.keyUsageDesc.substr(0, this.keyUsageDesc.length - 2);
+  }
+
+  updateExtKeyUsageDesc() {
+    this.extKeyUsageDesc = "";
+    if (this.extKeyUsage.serverAuth) {
+      this.extKeyUsageDesc += "ServerAuth, "
+    }
+    if (this.extKeyUsage.clientAuth) {
+      this.extKeyUsageDesc += "ClientAuth, "
+    }
+    if (this.extKeyUsage.codeSigning) {
+      this.extKeyUsageDesc += "CodeSigning, "
+    }
+    if (this.extKeyUsage.emailProtection) {
+      this.extKeyUsageDesc += "EmailProtection, "
+    }
+    if (this.extKeyUsage.timeStamping) {
+      this.extKeyUsageDesc += "TimeStamping, "
+    }
+    if (this.extKeyUsage.ocspSigning) {
+      this.extKeyUsageDesc += "OCSPSigning, "
+    }
+    if (this.extKeyUsage.ipsecEndSystem) {
+      this.extKeyUsageDesc += "IpsecEndSystem, "
+    }
+    if (this.extKeyUsage.ipsecTunnel) {
+      this.extKeyUsageDesc += "IpsecTunnel, "
+    }
+    if (this.extKeyUsage.ipsecUser) {
+      this.extKeyUsageDesc += "IpsecUser, "
+    }
+    this.extKeyUsageDesc = this.extKeyUsageDesc.substr(0, this.extKeyUsageDesc.length - 2);
   }
 
 }

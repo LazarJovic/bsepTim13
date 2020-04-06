@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { ExtKeyUsage } from 'src/app/model/ext-key-usage';
 
 @Component({
   selector: 'app-extended-key-usage-dialog',
@@ -9,33 +10,18 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 })
 export class ExtendedKeyUsageDialogComponent implements OnInit {
 
-  serverAuth: boolean;
-  clientAuth: boolean;
-  codeSigning: boolean;
-  emailProtection: boolean;
-  timeStamping: boolean;
-  ocspSigning: boolean;
-  ipsecEndSystem: boolean;
-  ipsecTunnel: boolean;
-  ipsecUser: boolean;
+  eku: ExtKeyUsage;
   form: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ExtendedKeyUsageDialogComponent>,
     @Inject(MAT_DIALOG_DATA) data
-  ) { }
+  ) { 
+    this.eku = Object.assign({}, data.extKeyUsage);
+  }
 
   ngOnInit() {
-    this.serverAuth = true;
-    this.clientAuth = true;
-    this.codeSigning = true;
-    this.emailProtection = true;
-    this.timeStamping = true;
-    this.ocspSigning = true;
-    this.ipsecEndSystem = true;
-    this.ipsecTunnel = true;
-    this.ipsecUser = true;
     this.form = new FormGroup({
       'serverAuth': new FormControl({value: true}, null),
       'clientAuth': new FormControl({value: true}, null),
@@ -51,6 +37,10 @@ export class ExtendedKeyUsageDialogComponent implements OnInit {
 
   close() {
     this.dialogRef.close();
+  }
+
+  onSubmit() {
+    this.dialogRef.close({ extKeyUsage: this.eku });
   }
 
 }

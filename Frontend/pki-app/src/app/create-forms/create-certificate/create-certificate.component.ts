@@ -9,7 +9,7 @@ import { KeyUsageDialogComponent } from 'src/app/dialogs/key-usage-dialog/key-us
 import { ExtendedKeyUsageDialogComponent } from 'src/app/dialogs/extended-key-usage-dialog/extended-key-usage-dialog.component';
 import { KeyUsage } from 'src/app/model/key-usage';
 import { ExtKeyUsage } from 'src/app/model/ext-key-usage';
-
+import { ChooseCertificateDialogComponent } from 'src/app/dialogs/choose-certificate-dialog/choose-certificate-dialog.component';
 
 @Component({
   selector: 'create-certificate',
@@ -29,6 +29,7 @@ export class CreateCertificateComponent implements OnInit {
   constructor(
     private router: Router,
     public dialog: MatDialog,
+    public signingCertDialog: MatDialog,
     private userService: UserService,
     private keyUsageDialog: MatDialog,
     private extendedKeyUsageDialog: MatDialog
@@ -52,7 +53,11 @@ export class CreateCertificateComponent implements OnInit {
   }
 
   chooseCert() {
-
+    const dialogRef = this.signingCertDialog.open(ChooseCertificateDialogComponent, {
+      width: '80vw',  
+      height: '90vh',
+      data: {}
+    });
   }
 
   createCertificate() {

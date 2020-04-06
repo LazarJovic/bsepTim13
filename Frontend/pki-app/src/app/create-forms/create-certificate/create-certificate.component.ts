@@ -27,6 +27,7 @@ export class CreateCertificateComponent implements OnInit {
   keyUsageDesc: string;
   extKeyUsageDesc: string;
   signingCertificate: SigningCertificate;
+  subjects: Array<User>;
 
   constructor(
     private router: Router,
@@ -52,6 +53,8 @@ export class CreateCertificateComponent implements OnInit {
       'pubKeyAlgorithm': new FormControl({ value: null }, [Validators.required])
     });
 
+    this.getSubjects();
+
   }
 
   chooseCert() {
@@ -71,6 +74,22 @@ export class CreateCertificateComponent implements OnInit {
           "issuer": this.signingCertificate.issuerCommonName
         });
       }
+    });
+  }
+
+  getSubjects() {
+    this.userService.getUsers().subscribe({
+
+      next: (result) => {
+        this.subjects = result;
+      },
+      error: data => {
+        if (data.error && typeof data.error === "string")
+          console.log(data.error);
+        else
+          console.log("Nisu dobavljeni subjekti");
+      }
+
     });
   }
 

@@ -28,6 +28,10 @@ public class UserService {
         return this.subjectMapper.toDto(this.userRepository.save(subject));
     }
 
+    public ArrayList<UserDTO> getAllUsers() {
+        return this.toDtoList((ArrayList<User>) this.userRepository.findAll());
+    }
+
     public UserDTO createEntity(User user) {
         return this.subjectMapper.toDto(this.userRepository.save(user));
     }
@@ -38,6 +42,15 @@ public class UserService {
 
     public User findByEmail(String email) {
         return this.userRepository.findByEmail(email);
+    }
+
+    private ArrayList<UserDTO> toDtoList(ArrayList<User> users) {
+        ArrayList<UserDTO> retVal = new ArrayList<>();
+        for(User u : users) {
+            retVal.add(this.subjectMapper.toDto(u));
+        }
+
+        return retVal;
     }
 
     private boolean validSubjectData(UserDTO dto) {

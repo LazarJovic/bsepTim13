@@ -17,4 +17,8 @@ export class UserService {
     return this.http.post<User>(`${environment.baseUrl}/${environment.users}`, data);
   }
 
+  getUsers() : Observable<User[]> {
+    return this.http.get<User[]>(`${environment.baseUrl}/${environment.users}`);
+  }
+
 }

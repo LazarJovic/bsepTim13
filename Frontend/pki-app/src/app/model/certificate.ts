@@ -4,7 +4,7 @@ export class Certificate {
     public issuer: string;
     public subject: string;
     public validFrom: string;
-    public ValidTo: string;
+    public validTo: string;
 
     // constructor(serialNum: string, issuer: string, subject: string, validFrom: string, ValidTo: string) {
     //     this.serialNum = serialNum;
@@ -19,7 +19,7 @@ export class Certificate {
         this.issuer = "Tako neki Issuer";
         this.subject = "Tako neki Subject";
         this.validFrom = "3/19/2019";
-        this.ValidTo = "3/19/2019";
+        this.validTo = "3/19/2019";
     }
     
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Certificate } from 'src/app/model/certificate';
 
 @Component({
@@ -8,12 +8,8 @@ import { Certificate } from 'src/app/model/certificate';
 })
 export class CertificateCardComponent implements OnInit {
 
-  // @ViewChild('pRef', {static: false}) pRef: ElementRef;
-
   @Input()
   item: Certificate;
-
-  //@ViewChild('item', {static: false}) item: Certificate;
 
   constructor() { }
 

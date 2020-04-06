@@ -16,6 +16,8 @@ import { DialogCreateSubjectComponent } from './create-forms/dialog-create-subje
 import { HttpClientModule } from '@angular/common/http';
 import { KeyUsageDialogComponent } from './dialogs/key-usage-dialog/key-usage-dialog.component';
 import { ExtendedKeyUsageDialogComponent } from './dialogs/extended-key-usage-dialog/extended-key-usage-dialog.component';
+import { ChooseCertificateDialogComponent } from './dialogs/choose-certificate-dialog/choose-certificate-dialog.component';
+import { SigningCertificateCardComponent } from './cards/signing-certificate-card/signing-certificate-card.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { ExtendedKeyUsageDialogComponent } from './dialogs/extended-key-usage-di
     CertificateCardComponent,
     DialogCreateSubjectComponent,
     KeyUsageDialogComponent,
-    ExtendedKeyUsageDialogComponent
+    ExtendedKeyUsageDialogComponent,
+    ChooseCertificateDialogComponent,
+    SigningCertificateCardComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +51,8 @@ import { ExtendedKeyUsageDialogComponent } from './dialogs/extended-key-usage-di
   entryComponents: [
     DialogCreateSubjectComponent,
     KeyUsageDialogComponent,
-    ExtendedKeyUsageDialogComponent
+    ExtendedKeyUsageDialogComponent,
+    ChooseCertificateDialogComponent
   ]
 })
 export class AppModule { }

@@ -1,5 +1,7 @@
 package com.bsep.pki.model;
 
+import org.bouncycastle.asn1.x509.KeyPurposeId;
+
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,9 +11,9 @@ public class OtherCertData {
     private LocalDate startValidationDate;
     private LocalDate endValidationDate;
     private String signatureAlgorithm;
-    private ArrayList<String> extendedKeyUsageExtensions;
     private BigInteger serialNumber;
     private ArrayList<Integer> keyUsageValues;
+    private KeyPurposeId[] extendedKeyUsageValues;
 
     public OtherCertData() {
         this.keyUsageValues = new ArrayList<>();
@@ -19,23 +21,24 @@ public class OtherCertData {
 
     public OtherCertData(LocalDate startValidationDate, LocalDate endValidationDate, String signatureAlgorithm,
                          ArrayList<String> extendedKeyUsageExtensions,
-                         BigInteger serialNumber, ArrayList<Integer> keyUsageValues) {
+                         BigInteger serialNumber, ArrayList<Integer> keyUsageValues, KeyPurposeId[] extendedKeyUsageValues) {
         this.startValidationDate = startValidationDate;
         this.endValidationDate = endValidationDate;
         this.signatureAlgorithm = signatureAlgorithm;
-        this.extendedKeyUsageExtensions = extendedKeyUsageExtensions;
         this.serialNumber = serialNumber;
         this.keyUsageValues = keyUsageValues;
+        this.extendedKeyUsageValues = extendedKeyUsageValues;
     }
 
     public OtherCertData(String startValidationDate, String endValidationDate, String signatureAlgorithm,
-                         ArrayList<Integer> keyUsageValues, ArrayList<String> extendedKeyUsageExtensions, BigInteger serialNumber) {
+                         ArrayList<Integer> keyUsageValues, ArrayList<String> extendedKeyUsageExtensions, BigInteger serialNumber,
+                         KeyPurposeId[] extendedKeyUsageValues) {
         this.startValidationDate = LocalDate.parse(startValidationDate);
         this.endValidationDate = LocalDate.parse(endValidationDate);
         this.signatureAlgorithm = signatureAlgorithm;
         this.keyUsageValues = keyUsageValues;
-        this.extendedKeyUsageExtensions = extendedKeyUsageExtensions;
         this.serialNumber = serialNumber;
+        this.extendedKeyUsageValues = extendedKeyUsageValues;
     }
 
     public LocalDate getStartValidationDate() {
@@ -70,12 +73,12 @@ public class OtherCertData {
         this.keyUsageValues = keyUsageValues;
     }
 
-    public ArrayList<String> getExtendedKeyUsageExtensions() {
-        return extendedKeyUsageExtensions;
+    public KeyPurposeId[] getExtendedKeyUsageValues() {
+        return extendedKeyUsageValues;
     }
 
-    public void setExtendedKeyUsageExtensions(ArrayList<String> extendedKeyUsageExtensions) {
-        this.extendedKeyUsageExtensions = extendedKeyUsageExtensions;
+    public void setExtendedKeyUsageValues(KeyPurposeId[] extendedKeyUsageValues) {
+        this.extendedKeyUsageValues = extendedKeyUsageValues;
     }
 
     public BigInteger getSerialNumber() {

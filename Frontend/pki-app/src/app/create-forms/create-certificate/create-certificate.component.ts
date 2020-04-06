@@ -28,6 +28,7 @@ export class CreateCertificateComponent implements OnInit {
   extKeyUsageDesc: string;
   signingCertificate: SigningCertificate;
   subjects: Array<User>;
+  selectedUser: User;
 
   constructor(
     private router: Router,
@@ -94,7 +95,7 @@ export class CreateCertificateComponent implements OnInit {
   }
 
   createCertificate() {
-
+    console.log(this.createCertificateForm);
   }
 
   openSubjectDialog() {
@@ -111,7 +112,7 @@ export class CreateCertificateComponent implements OnInit {
       this.userService.createSubject(subject).subscribe(
         {
           next: () => {
-            console.log("Kreiran subjekat");
+            this.getSubjects();
           },
           error: data => {
             if (data.error && typeof data.error === "string")

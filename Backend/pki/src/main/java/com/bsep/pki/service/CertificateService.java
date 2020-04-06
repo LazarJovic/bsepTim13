@@ -12,6 +12,7 @@ import com.bsep.pki.util.keystore.KeyStoreWriter;
 import com.bsep.pki.util.keystore.PasswordGenerator;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.cert.X509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
@@ -27,8 +28,7 @@ import java.security.KeyStoreException;
 import java.security.Security;
 import java.security.cert.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.*;
 
 @Service
 public class CertificateService {
@@ -95,14 +95,48 @@ public class CertificateService {
 
             ArrayList<String> keyUsage = this.getKeyUsagesOfCertificate(keyUsages);
 
+            List<String> extendedKeyUsageCodes = null;
+            try {
+                if(((X509Certificate) certificate).getExtendedKeyUsage() != null) {
+                    extendedKeyUsageCodes = ((X509Certificate) certificate).getExtendedKeyUsage();
+                }
+            } catch (CertificateParsingException e) {
+                e.printStackTrace();
+            }
+
+            ArrayList<String> extendedKeyUsage = this.getExtendedKeyUsagesOfCertificate(extendedKeyUsageCodes);
+
             SigningCertificateDTO dto = new SigningCertificateDTO(issuerCommonName, issuerEmail, issuerId, validFrom, validTo,
-                    serialNumber, keyUsage);
+                    serialNumber, keyUsage, extendedKeyUsage);
 
             retVal.add(dto);
         }
 
         return retVal;
 
+    }
+
+    private ArrayList<String> getExtendedKeyUsagesOfCertificate(List<String> codes) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("1.3.6.1.5.5.7.3.1", "serverAuth");
+        map.put("1.3.6.1.5.5.7.3.2", "clientAuth");
+        map.put("1.3.6.1.5.5.7.3.3", "codeSigning");
+        map.put("1.3.6.1.5.5.7.3.4", "emailProtection");
+        map.put("1.3.6.1.5.5.7.3.8", "timeStamping");
+        map.put("1.3.6.1.5.5.7.3.9", "ocspSigning");
+        map.put("1.3.6.1.5.5.7.3.5", "ipsecEndSystem");
+        map.put("1.3.6.1.5.5.7.3.6", "ipsecTunnel");
+        map.put("1.3.6.1.5.5.7.3.7", "ipsecUser");
+
+        ArrayList<String> extendedKeyUsageValues = new ArrayList<>();
+
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            if(codes.contains(entry.getKey())) {
+                extendedKeyUsageValues.add(entry.getValue());
+            }
+        }
+
+        return  extendedKeyUsageValues;
     }
 
     private ArrayList<String> getKeyUsagesOfCertificate(boolean[] keyUsages) {
@@ -117,6 +151,8 @@ public class CertificateService {
 
         return usages;
     }
+
+
 
     private KeyStore loadSelfSignedKeyStore() {
         String selfSignedPass = null;
@@ -178,8 +214,12 @@ public class CertificateService {
                 keyUsageValues.add(KeyUsage.encipherOnly);
                 keyUsageValues.add(KeyUsage.decipherOnly);
 
+            KeyPurposeId[] extendedKeyUsages = {KeyPurposeId.id_kp_serverAuth, KeyPurposeId.id_kp_clientAuth, KeyPurposeId.id_kp_codeSigning,
+                    KeyPurposeId.id_kp_emailProtection, KeyPurposeId.id_kp_timeStamping, KeyPurposeId.id_kp_OCSPSigning,
+                    KeyPurposeId.id_kp_ipsecEndSystem, KeyPurposeId.id_kp_ipsecTunnel, KeyPurposeId.id_kp_ipsecUser};
+
            OtherCertData otherRootData = new OtherCertData(LocalDate.parse("2015-10-23"), LocalDate.parse("2038-10-23"),
-                   "SHA256WithRSAEncryption", new ArrayList<String>(), BigInteger.valueOf(1), keyUsageValues);
+                   "SHA256WithRSAEncryption", new ArrayList<String>(), BigInteger.valueOf(1), keyUsageValues, extendedKeyUsages);
 
 
             X509Certificate certificate = this.certificateGenerator.generateCertificate(subjectRootData, issuerRootData, otherRootData);

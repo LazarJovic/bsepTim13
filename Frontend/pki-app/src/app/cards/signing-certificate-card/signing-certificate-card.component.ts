@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Certificate } from 'src/app/model/certificate';
+import { SigningCertificate } from 'src/app/model/signing-certificate';
 
 @Component({
   selector: 'signing-certificate-card',
@@ -9,15 +10,32 @@ import { Certificate } from 'src/app/model/certificate';
 export class SigningCertificateCardComponent implements OnInit {
 
   @Input()
-  item: Certificate;
+  item: SigningCertificate;
+
+  @Output() certificateChosen = new EventEmitter();
+
+  keyUsages: string;
 
   constructor() { }
 
   ngOnInit() {
+    this.updateKeyUsage();
+
   }
 
   chooseCertificate() {
-
+    this.certificateChosen.emit(this.item);
   }
+
+  updateKeyUsage() {
+    this.keyUsages = "";
+    var i = 0;
+    for(; i < this.item.keyUsage.length; i++) {
+      this.keyUsages += this.item.keyUsage[i] + ", ";
+    }
+    this.keyUsages = this.keyUsages.substr(0, this.keyUsages.length - 2);
+  }
+
+
 
 }

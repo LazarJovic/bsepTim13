@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Certificate } from 'src/app/model/certificate';
 import { MatDialogRef } from '@angular/material';
+import { CertificateService } from 'src/app/services/certificate-service/certificate.service';
+import { SigningCertificate } from 'src/app/model/signing-certificate';
 
 @Component({
   selector: 'app-choose-certificate-dialog',
@@ -11,20 +13,36 @@ export class ChooseCertificateDialogComponent implements OnInit {
 
   cert1: Certificate;
 
-  lista = new Array(4);
+  signingCertificates: Array<SigningCertificate>;
 
   constructor(
-    public dialogRef: MatDialogRef<ChooseCertificateDialogComponent>
+    public dialogRef: MatDialogRef<ChooseCertificateDialogComponent>,
+    public certificateService: CertificateService
   ) { }
 
   ngOnInit() {
-    this.cert1 = new Certificate();
+    this.getSigningCertificates();
+  }
 
-    this.lista = [this.cert1, this.cert1, this.cert1, this.cert1];
+  onSubmit(certificate) {
+    this.dialogRef.close({ certificate });
   }
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  getSigningCertificates() {
+    this.certificateService.getSigningCertificates().subscribe(
+      {
+        next: (result) => {
+          this.signingCertificates = result;
+        },
+        error: data => {
+          console.log("greska");
+        }
+      }
+    );
   }
 
 }

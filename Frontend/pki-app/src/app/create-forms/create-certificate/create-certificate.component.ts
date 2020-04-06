@@ -10,6 +10,7 @@ import { ExtendedKeyUsageDialogComponent } from 'src/app/dialogs/extended-key-us
 import { KeyUsage } from 'src/app/model/key-usage';
 import { ExtKeyUsage } from 'src/app/model/ext-key-usage';
 import { ChooseCertificateDialogComponent } from 'src/app/dialogs/choose-certificate-dialog/choose-certificate-dialog.component';
+import { SigningCertificate } from 'src/app/model/signing-certificate';
 
 @Component({
   selector: 'create-certificate',
@@ -25,6 +26,7 @@ export class CreateCertificateComponent implements OnInit {
   extKeyUsage: ExtKeyUsage;
   keyUsageDesc: string;
   extKeyUsageDesc: string;
+  signingCertificate: SigningCertificate;
 
   constructor(
     private router: Router,
@@ -43,20 +45,32 @@ export class CreateCertificateComponent implements OnInit {
     this.createCertificateForm = new FormGroup({
       'issuer': new FormControl(null, [Validators.required]),
       'serialNumber': new FormControl(null, [Validators.required]),
-      'startDate': new FormControl({value: null}, [Validators.required]),
-      'endDate': new FormControl({value: null}, [Validators.required]),
-      'subject': new FormControl({value: null}, [Validators.required]),
-      'signatureAlgorithm': new FormControl({value: null}, [Validators.required]),
-      'pubKeyAlgorithm': new FormControl({value: null}, [Validators.required])
+      'startDate': new FormControl({ value: null }, [Validators.required]),
+      'endDate': new FormControl({ value: null }, [Validators.required]),
+      'subject': new FormControl({ value: null }, [Validators.required]),
+      'signatureAlgorithm': new FormControl({ value: null }, [Validators.required]),
+      'pubKeyAlgorithm': new FormControl({ value: null }, [Validators.required])
     });
 
   }
 
   chooseCert() {
     const dialogRef = this.signingCertDialog.open(ChooseCertificateDialogComponent, {
-      width: '80vw',  
+      width: '80vw',
       height: '90vh',
       data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+      if (result) {
+        this.signingCertificate = result.certificate;
+
+
+        this.createCertificateForm.patchValue({
+          "issuer": this.signingCertificate.issuerCommonName
+        });
+      }
     });
   }
 
@@ -66,7 +80,7 @@ export class CreateCertificateComponent implements OnInit {
 
   openSubjectDialog() {
     const dialogRef = this.dialog.open(DialogCreateSubjectComponent, {
-      width: '40vw',  
+      width: '40vw',
       height: '70vh',
       data: {}
     });
@@ -74,20 +88,20 @@ export class CreateCertificateComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       var subject = new User(0, result.givenName, result.lastName, result.commonName, result.country, result.organization,
         result.organizationalUnit, result.locality, result.email);
-      
-        this.userService.createSubject(subject).subscribe(
-          { 
-            next: () => {
-              console.log("Kreiran subjekat");
-            },
-            error: data => {
-              if (data.error && typeof data.error === "string")
+
+      this.userService.createSubject(subject).subscribe(
+        {
+          next: () => {
+            console.log("Kreiran subjekat");
+          },
+          error: data => {
+            if (data.error && typeof data.error === "string")
               console.log(data.error);
-              else
+            else
               console.log("Nije kreiran subjekat");
-            }
           }
-        );
+        }
+      );
     });
   }
 
@@ -106,12 +120,12 @@ export class CreateCertificateComponent implements OnInit {
       keyUsage: this.keyUsage
     };
     let dialogRef = this.keyUsageDialog.open(KeyUsageDialogComponent, dialogConfig).afterClosed()
-    .subscribe(response => {
-      if (response) {
-        this.keyUsage = response.keyUsage;
-        this.updateKeyUsageDesc();
-      }
-    });
+      .subscribe(response => {
+        if (response) {
+          this.keyUsage = response.keyUsage;
+          this.updateKeyUsageDesc();
+        }
+      });
   }
 
   extendedKeyUsageOpen() {
@@ -125,12 +139,12 @@ export class CreateCertificateComponent implements OnInit {
       extKeyUsage: this.extKeyUsage
     };
     let dialogRef = this.extendedKeyUsageDialog.open(ExtendedKeyUsageDialogComponent, dialogConfig).afterClosed()
-    .subscribe(response => {
-      if (response) {
-        this.extKeyUsage = response.extKeyUsage;
-        this.updateExtKeyUsageDesc();
-      }
-    });
+      .subscribe(response => {
+        if (response) {
+          this.extKeyUsage = response.extKeyUsage;
+          this.updateExtKeyUsageDesc();
+        }
+      });
   }
 
   updateKeyUsageDesc() {

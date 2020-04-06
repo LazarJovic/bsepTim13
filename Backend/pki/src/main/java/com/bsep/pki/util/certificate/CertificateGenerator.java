@@ -7,7 +7,11 @@ import com.bsep.pki.model.User;
 import com.bsep.pki.util.MyKeyGenerator;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.X509ExtensionUtils;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
@@ -18,6 +22,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.security.cert.X509Extension;
 
 public class CertificateGenerator {
 
@@ -40,6 +45,13 @@ public class CertificateGenerator {
                     java.sql.Date.valueOf(other.getEndValidationDate()),
                     subjectData.getX500name(),
                     subjectData.getKeyPair().getPublic());
+
+            int values = 0;
+            for (int i = 0; i < other.getKeyUsageExtensions().size(); i++) {
+                values = values | other.getKeyUsageExtensions().get(i);
+            }
+
+            certGen.addExtension(Extension.keyUsage, true, new KeyUsage(values));
 
             X509CertificateHolder certHolder = certGen.build(contentSigner);
 

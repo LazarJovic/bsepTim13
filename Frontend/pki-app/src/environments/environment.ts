@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   baseUrl: 'http://localhost:8080',
-  users: 'api/users'
+  users: 'api/users',
+  certificates: 'api/certificates'
 };
 
 /*

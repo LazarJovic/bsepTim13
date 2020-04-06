@@ -21,13 +21,15 @@ public class KeyStoreWriter {
         }
     }
 
-    public void loadKeyStore(String fileName, char[] password) {
+    public KeyStore loadKeyStore(String fileName, char[] password) {
         try {
             File f = new File(fileName);
             if(fileName != null && f.exists()) {
                 keyStore.load(new FileInputStream(fileName), password);
+                return this.keyStore;
             } else {
                 keyStore.load(null, password);
+                return this.keyStore;
             }
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -40,6 +42,8 @@ public class KeyStoreWriter {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 
     public void saveKeyStore(String fileName, char[] password) {
@@ -64,6 +68,10 @@ public class KeyStoreWriter {
         } catch (KeyStoreException e) {
             e.printStackTrace();
         }
+    }
+
+    public KeyStore getKeyStore() {
+        return this.keyStore;
     }
 
 }

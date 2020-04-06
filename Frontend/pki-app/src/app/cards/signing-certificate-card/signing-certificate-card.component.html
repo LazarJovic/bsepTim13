@@ -7,17 +7,16 @@
     
     <mat-card-content>
       <p class="cert-info-p">
-        <b>Issued to:</b> {{item?.subject}}
+        <b>Issued to:</b> {{item?.issuerCommonName}}
       </p>
       <p class="cert-info-p">
         <b>Valid from </b>{{item?.validFrom}} <b> to </b>{{item?.validTo}}
       </p>
       <p><b>Key usage:</b></p>
-      <ul>
-          <li>Digital singing</li>
-          <li>Key ensndsd</li>
-          <li>Cert signing</li>
-      </ul>
+      <!-- <ul>
+          <li *ngFor="let usage of item.keyUsage" > {{ usage }}</li>
+      </ul> -->
+      <p><i> {{ keyUsages }} </i></p>
     </mat-card-content>
     <mat-card-actions>
         <button mat-flat-button id="choose-button" (click)="chooseCertificate()">Choose</button>

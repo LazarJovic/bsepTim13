@@ -9,28 +9,31 @@ public class OtherCertData {
     private LocalDate startValidationDate;
     private LocalDate endValidationDate;
     private String signatureAlgorithm;
-    private ArrayList<String> keyUsageExtensions;
     private ArrayList<String> extendedKeyUsageExtensions;
     private BigInteger serialNumber;
+    private ArrayList<Integer> keyUsageValues;
 
-    public OtherCertData() {}
+    public OtherCertData() {
+        this.keyUsageValues = new ArrayList<>();
+    }
 
     public OtherCertData(LocalDate startValidationDate, LocalDate endValidationDate, String signatureAlgorithm,
-                         ArrayList<String> keyUsageExtensions, ArrayList<String> extendedKeyUsageExtensions, BigInteger serialNumber) {
+                         ArrayList<String> extendedKeyUsageExtensions,
+                         BigInteger serialNumber, ArrayList<Integer> keyUsageValues) {
         this.startValidationDate = startValidationDate;
         this.endValidationDate = endValidationDate;
         this.signatureAlgorithm = signatureAlgorithm;
-        this.keyUsageExtensions = keyUsageExtensions;
         this.extendedKeyUsageExtensions = extendedKeyUsageExtensions;
         this.serialNumber = serialNumber;
+        this.keyUsageValues = keyUsageValues;
     }
 
     public OtherCertData(String startValidationDate, String endValidationDate, String signatureAlgorithm,
-                         ArrayList<String> keyUsageExtensions, ArrayList<String> extendedKeyUsageExtensions, BigInteger serialNumber) {
+                         ArrayList<Integer> keyUsageValues, ArrayList<String> extendedKeyUsageExtensions, BigInteger serialNumber) {
         this.startValidationDate = LocalDate.parse(startValidationDate);
         this.endValidationDate = LocalDate.parse(endValidationDate);
         this.signatureAlgorithm = signatureAlgorithm;
-        this.keyUsageExtensions = keyUsageExtensions;
+        this.keyUsageValues = keyUsageValues;
         this.extendedKeyUsageExtensions = extendedKeyUsageExtensions;
         this.serialNumber = serialNumber;
     }
@@ -59,12 +62,12 @@ public class OtherCertData {
         this.signatureAlgorithm = signatureAlgorithm;
     }
 
-    public ArrayList<String> getKeyUsageExtensions() {
-        return keyUsageExtensions;
+    public ArrayList<Integer> getKeyUsageExtensions() {
+        return keyUsageValues;
     }
 
-    public void setKeyUsageExtensions(ArrayList<String> keyUsageExtensions) {
-        this.keyUsageExtensions = keyUsageExtensions;
+    public void setKeyUsageExtensions(ArrayList<Integer> keyUsageValues) {
+        this.keyUsageValues = keyUsageValues;
     }
 
     public ArrayList<String> getExtendedKeyUsageExtensions() {

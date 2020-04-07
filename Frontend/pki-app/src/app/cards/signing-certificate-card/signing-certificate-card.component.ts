@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Certificate } from 'src/app/model/certificate';
+import { CreateCertificate } from 'src/app/model/create-certificate';
 import { SigningCertificate } from 'src/app/model/signing-certificate';
 
 @Component({

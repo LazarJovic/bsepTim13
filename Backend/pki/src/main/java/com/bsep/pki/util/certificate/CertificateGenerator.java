@@ -1,10 +1,12 @@
 package com.bsep.pki.util.certificate;
 
+import com.bsep.pki.dto.CreateCertificateDTO;
 import com.bsep.pki.model.IssuerData;
 import com.bsep.pki.model.OtherCertData;
 import com.bsep.pki.model.SubjectData;
 import com.bsep.pki.model.User;
 import com.bsep.pki.util.MyKeyGenerator;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.*;
@@ -21,6 +23,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.cert.X509Extension;
+import java.time.format.DateTimeFormatter;
 
 public class CertificateGenerator {
 
@@ -37,10 +40,12 @@ public class CertificateGenerator {
 
             ContentSigner contentSigner = builder.build(issuerData.getKeyPair().getPrivate());
 
+            DateTimeFormatter europeanDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
             X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(issuerData.getX500name(),
                     other.getSerialNumber(),
-                    java.sql.Date.valueOf(other.getStartValidationDate()),
-                    java.sql.Date.valueOf(other.getEndValidationDate()),
+                    java.sql.Date.valueOf(other.getStartValidationDate().format(europeanDateFormatter)),
+                    java.sql.Date.valueOf(other.getEndValidationDate().format(europeanDateFormatter)),
                     subjectData.getX500name(),
                     subjectData.getKeyPair().getPublic());
 
@@ -74,7 +79,7 @@ public class CertificateGenerator {
         return null;
     }
 
-    public IssuerData generateIssuerData(User user, String keyAlgorithm) {
+    public X500Name generateX500Name(User user) {
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
         builder.addRDN(BCStyle.CN, user.getCommonName());
         builder.addRDN(BCStyle.SURNAME, user.getLastName());
@@ -84,7 +89,14 @@ public class CertificateGenerator {
         builder.addRDN(BCStyle.C, user.getCountry());
         builder.addRDN(BCStyle.E, user.getEmail());
 
-        return new IssuerData(builder.build(), myKeyGenerator.generateKeyPair(keyAlgorithm));
+        return builder.build();
     }
+
+    public IssuerData generateIssuerData(User user, String keyAlgorithm) {
+        X500Name issuerData = this.generateX500Name(user);
+
+        return new IssuerData(issuerData, myKeyGenerator.generateKeyPair(keyAlgorithm));
+    }
+
 
 }

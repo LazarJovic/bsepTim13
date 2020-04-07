@@ -7,7 +7,7 @@
     <div id="content-div">
       <h2>Create certificate</h2>
 
-      <form [formGroup]="createCertificateForm" (ngSubmit)="createCertificate()">
+      <form [formGroup]="createCertificateForm">
         <div>
           <mat-form-field id="issuer-field">
             <mat-label>Issuer</mat-label>
@@ -113,7 +113,7 @@
         <!--Ekstenzije kraj-->
         <div id="button-div">
           
-          <button mat-flat-button type="submit" id="submit-button">Create certificate</button>
+          <button mat-flat-button type="submit" (click)="createCertificate()" id="submit-button">Create certificate</button>
         </div>
       </form>
 

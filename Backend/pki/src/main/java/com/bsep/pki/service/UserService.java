@@ -44,6 +44,8 @@ public class UserService {
         return this.userRepository.findByEmail(email);
     }
 
+    public User findEntity(Long id) { return this.userRepository.findById(id).orElseGet(null); }
+
     private ArrayList<UserDTO> toDtoList(ArrayList<User> users) {
         ArrayList<UserDTO> retVal = new ArrayList<>();
         for(User u : users) {

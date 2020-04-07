@@ -1,10 +1,12 @@
 package com.bsep.pki.service;
 
+import com.bsep.pki.dto.CreateCertificateDTO;
 import com.bsep.pki.dto.SigningCertificateDTO;
 import com.bsep.pki.model.IssuerData;
 import com.bsep.pki.model.OtherCertData;
 import com.bsep.pki.model.SubjectData;
 import com.bsep.pki.model.User;
+import com.bsep.pki.util.MyKeyGenerator;
 import com.bsep.pki.util.PropertiesConfigurator;
 import com.bsep.pki.util.certificate.CertificateGenerator;
 import com.bsep.pki.util.keystore.KeyStoreReader;
@@ -23,10 +25,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.Security;
+import java.security.*;
 import java.security.cert.*;
+import java.security.cert.Certificate;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -46,6 +47,8 @@ public class CertificateService {
 
     private PropertiesConfigurator propertiesConfigurator;
 
+    private MyKeyGenerator myKeyGenerator;
+
     @Autowired
     private UserService userService;
 
@@ -54,6 +57,50 @@ public class CertificateService {
         this.keyStoreReader = new KeyStoreReader();
         this.certificateGenerator = new CertificateGenerator();
         this.propertiesConfigurator = new PropertiesConfigurator();
+        this.myKeyGenerator = new MyKeyGenerator();
+    }
+
+    public CreateCertificateDTO create(CreateCertificateDTO dto) {
+
+        User issuer = this.userService.findEntity(dto.issuerId);
+        String issuerAlias = dto.serialNum + dto.issuerEmail;
+        IssuerData issuerData = new IssuerData(this.certificateGenerator.generateX500Name(issuer), this.getKayPairOfIssuerByAlias(issuerAlias));
+        User subject = this.userService.findEntity(dto.subjectId);
+        SubjectData subjectData = new SubjectData(this.certificateGenerator.generateX500Name(subject), this.myKeyGenerator.generateKeyPair(dto.keyAlgorithm));
+        // KeyPurposeId[] extendedKeyUsageValues = this.getKeyPurposeArray(dto.extendedKeyUsage);
+        ArrayList<Integer> keyUsageValues = this.getIntegersOfKeyUsages(dto.keyUsage);
+
+        return null;
+    }
+
+    private KeyPair getKayPairOfIssuerByAlias(String alias) {
+        KeyStore selfSignedKS = loadSelfSignedKeyStore();
+        try {
+            if(selfSignedKS.containsAlias(alias)) {
+                String selfSignedPass = null;
+                try {
+                    selfSignedPass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.SELF_SIGNED);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Key privateKey = selfSignedKS.getKey(alias, selfSignedPass.toCharArray());
+                    if(privateKey instanceof PrivateKey) {
+                        PublicKey publicKey = selfSignedKS.getCertificate(alias).getPublicKey();
+
+                        return new KeyPair(publicKey, (PrivateKey) privateKey);
+                    }
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (UnrecoverableKeyException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public ArrayList<SigningCertificateDTO> getSelfSignedCertificatesForSigning() {
@@ -116,6 +163,29 @@ public class CertificateService {
 
     }
 
+    private KeyPurposeId[] getKeyPurposeArray(ArrayList<String> usages) {
+        HashMap<String, KeyPurposeId> map = new HashMap<>();
+        map.put("serverAuth", KeyPurposeId.id_kp_serverAuth);
+        map.put("clientAuth", KeyPurposeId.id_kp_clientAuth);
+        map.put("codeSigning", KeyPurposeId.id_kp_codeSigning);
+        map.put("emailProtection", KeyPurposeId.id_kp_emailProtection);
+        map.put("timeStamping", KeyPurposeId.id_kp_timeStamping);
+        map.put("ocspSigning", KeyPurposeId.id_kp_OCSPSigning);
+        map.put("ipsecEndSystem", KeyPurposeId.id_kp_ipsecEndSystem);
+        map.put("ipsecTunnel", KeyPurposeId.id_kp_ipsecTunnel);
+        map.put("ipsecUser", KeyPurposeId.id_kp_ipsecUser);
+
+        ArrayList<KeyPurposeId> retVal = new ArrayList<>();
+
+        for (Map.Entry<String, KeyPurposeId> entry : map.entrySet()) {
+            if(usages.contains(entry.getKey())) {
+                retVal.add(entry.getValue());
+            }
+        }
+
+        return  retVal.toArray(new KeyPurposeId[retVal.size()]);
+    }
+
     private ArrayList<String> getExtendedKeyUsagesOfCertificate(List<String> codes) {
         HashMap<String, String> map = new HashMap<>();
         map.put("1.3.6.1.5.5.7.3.1", "serverAuth");
@@ -152,7 +222,29 @@ public class CertificateService {
         return usages;
     }
 
+    private ArrayList<Integer> getIntegersOfKeyUsages(ArrayList<String> usages) {
 
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("digitalSignature", KeyUsage.digitalSignature);
+        map.put("nonRepudiation", KeyUsage.nonRepudiation);
+        map.put("keyEncipherment", KeyUsage.keyEncipherment);
+        map.put("dataEncipherment", KeyUsage.dataEncipherment);
+        map.put("keyAgreement", KeyUsage.keyAgreement);
+        map.put("keyCertSign", KeyUsage.keyCertSign);
+        map.put("CRLSign", KeyUsage.cRLSign);
+        map.put("encipherOnly", KeyUsage.encipherOnly);
+        map.put("decipherOnly", KeyUsage.decipherOnly);
+
+        ArrayList<Integer> retVal = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            if(usages.contains(entry.getKey())) {
+                retVal.add(entry.getValue());
+            }
+        }
+
+        return retVal;
+    }
 
     private KeyStore loadSelfSignedKeyStore() {
         String selfSignedPass = null;

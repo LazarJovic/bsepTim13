@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Certificate } from 'src/app/model/certificate';
+import { CreateCertificate } from 'src/app/model/create-certificate';
 import { MatDialogRef } from '@angular/material';
 import { CertificateService } from 'src/app/services/certificate-service/certificate.service';
 import { SigningCertificate } from 'src/app/model/signing-certificate';
@@ -10,8 +10,6 @@ import { SigningCertificate } from 'src/app/model/signing-certificate';
   styleUrls: ['./choose-certificate-dialog.component.css']
 })
 export class ChooseCertificateDialogComponent implements OnInit {
-
-  cert1: Certificate;
 
   signingCertificates: Array<SigningCertificate>;
 

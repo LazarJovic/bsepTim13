@@ -11,6 +11,8 @@ import { KeyUsage } from 'src/app/model/key-usage';
 import { ExtKeyUsage } from 'src/app/model/ext-key-usage';
 import { ChooseCertificateDialogComponent } from 'src/app/dialogs/choose-certificate-dialog/choose-certificate-dialog.component';
 import { SigningCertificate } from 'src/app/model/signing-certificate';
+import { CreateCertificate } from 'src/app/model/create-certificate';
+import { CertificateService } from 'src/app/services/certificate-service/certificate.service';
 
 @Component({
   selector: 'create-certificate',
@@ -28,13 +30,16 @@ export class CreateCertificateComponent implements OnInit {
   extKeyUsageDesc: string;
   signingCertificate: SigningCertificate;
   subjects: Array<User>;
-  selectedUser: User;
+  selectedSubject: User;
+
+  certificate: CreateCertificate;
 
   constructor(
     private router: Router,
     public dialog: MatDialog,
     public signingCertDialog: MatDialog,
     private userService: UserService,
+    private certificateService: CertificateService,
     private keyUsageDialog: MatDialog,
     private extendedKeyUsageDialog: MatDialog
   ) { }
@@ -58,6 +63,60 @@ export class CreateCertificateComponent implements OnInit {
 
   }
 
+  createCertificate() {
+    var keyUsages: Array<string> = this.toStringArray(this.keyUsage);
+    this.certificate = new CreateCertificate(null, this.signingCertificate.issuerId, this.signingCertificate.issuerEmail, this.signingCertificate.serialNum,
+      this.signingCertificate.issuerCommonName, this.createCertificateForm.value.validFrom, this.createCertificateForm.value.validTo,
+      this.selectedSubject.id, this.selectedSubject.commonName, this.createCertificateForm.value.signatureAlgorithm, this.createCertificateForm.value.pubKeyAlgorithm,
+      keyUsages);
+
+    this.certificateService.createCertificate(this.certificate).subscribe(
+      {
+        next: () => {
+          console.log("kreiran");
+        },
+        error: data => {
+          if (data.error && typeof data.error === "string")
+            console.log(data.error);
+          else
+            console.log("Nije kreiran subjekat");
+        }
+      }
+    );
+  }
+
+  toStringArray(ks: KeyUsage) {
+    let keyUsages: string[] = [];
+    if (ks.digitalSignature) {
+      keyUsages.push("digitalSignature");
+    }
+    if (ks.nonRepudiation) {
+      keyUsages.push("nonRepudiation");
+    }
+    if (ks.keyEncipherment) {
+      keyUsages.push("keyEncipherment");
+    }
+    if (ks.dataEncipherment) {
+      keyUsages.push("dataEncipherment");
+    }
+    if (ks.keyAgreement) {
+      keyUsages.push("keyAgreement");
+    }
+    if (ks.keyCertSign) {
+      keyUsages.push("keyCertSign");
+    }
+    if (ks.CRLSign) {
+      keyUsages.push("CRLSign");
+    }
+    if (ks.encipherOnly) {
+      keyUsages.push("encipherOnly");
+    }
+    if (ks.decipherOnly) {
+      keyUsages.push("decipherOnly");
+    }
+    return keyUsages;
+  }
+
   chooseCert() {
     const dialogRef = this.signingCertDialog.open(ChooseCertificateDialogComponent, {
       width: '80vw',
@@ -69,7 +128,6 @@ export class CreateCertificateComponent implements OnInit {
 
       if (result) {
         this.signingCertificate = result.certificate;
-
 
         this.createCertificateForm.patchValue({
           "issuer": this.signingCertificate.issuerCommonName
@@ -96,10 +154,6 @@ export class CreateCertificateComponent implements OnInit {
     });
   }
 
-  createCertificate() {
-    console.log(this.createCertificateForm);
-  }
-
   openSubjectDialog() {
     const dialogRef = this.dialog.open(DialogCreateSubjectComponent, {
       width: '40vw',
@@ -108,22 +162,24 @@ export class CreateCertificateComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      var subject = new User(0, result.givenName, result.lastName, result.commonName, result.country, result.organization,
-        result.organizationalUnit, result.locality, result.email);
+      if (result) {
+        var subject = new User(0, result.givenName, result.lastName, result.commonName, result.country, result.organization,
+          result.organizationalUnit, result.locality, result.email);
 
-      this.userService.createSubject(subject).subscribe(
-        {
-          next: () => {
-            this.getSubjects();
-          },
-          error: data => {
-            if (data.error && typeof data.error === "string")
-              console.log(data.error);
-            else
-              console.log("Nije kreiran subjekat");
+        this.userService.createSubject(subject).subscribe(
+          {
+            next: () => {
+              this.getSubjects();
+            },
+            error: data => {
+              if (data.error && typeof data.error === "string")
+                console.log(data.error);
+              else
+                console.log("Nije kreiran subjekat");
+            }
           }
-        }
-      );
+        );
+      }
     });
   }
 
@@ -143,7 +199,7 @@ export class CreateCertificateComponent implements OnInit {
         keyUsage: this.keyUsage,
         issuerKeyUsage: this.signingCertificate.keyUsage
       };
-    }else {
+    } else {
       dialogConfig.data = {
         keyUsage: this.keyUsage,
         issuerKeyUsage: undefined

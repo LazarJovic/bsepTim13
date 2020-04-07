@@ -22,38 +22,6 @@ export class KeyUsage {
         this.encipherOnly = encipherOnly;
         this.decipherOnly = decipherOnly;
     }
-    
-    toStringArray() {
-        let keyUsages: string[];
-        if (this.digitalSignature) {
-            keyUsages.push("digitalSignature");
-        }
-        if (this.nonRepudiation) {
-            keyUsages.push("nonRepudiation");
-        }
-        if (this.keyEncipherment) {
-            keyUsages.push("keyEncipherment");
-        }
-        if (this.dataEncipherment) {
-            keyUsages.push("dataEncipherment");
-        }
-        if (this.keyAgreement) {
-            keyUsages.push("keyAgreement");
-        }
-        if (this.keyCertSign) {
-            keyUsages.push("keyCertSign");
-        }
-        if (this.CRLSign) {
-            keyUsages.push("CRLSign");
-        }
-        if (this.encipherOnly) {
-            keyUsages.push("encipherOnly");
-        }
-        if (this.decipherOnly) {
-            keyUsages.push("decipherOnly");
-        }
-        return keyUsages;
-    }
 
     fromStringArray(keyUsages: Array<string>) {
         this.digitalSignature = false;

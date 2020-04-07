@@ -19,7 +19,7 @@
                 DataEncipherment
             </mat-checkbox>
             <mat-checkbox matTooltip="Key exchange or agreement (e.g. DH or ECDH certificate)"
-                matTooltipPosition="right" [(ngModel)]="ku.keyAgreement" (change)="keyAgreementChanged()"
+                matTooltipPosition="right" [(ngModel)]="ku.keyAgreement"
                 formControlName="keyAgreement">KeyAgreement
             </mat-checkbox>
             <mat-checkbox matTooltip="Certificate signing (CA)" matTooltipPosition="right" [(ngModel)]="ku.keyCertSign"

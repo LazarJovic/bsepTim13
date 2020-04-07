@@ -74,6 +74,8 @@ export class CreateCertificateComponent implements OnInit {
         this.createCertificateForm.patchValue({
           "issuer": this.signingCertificate.issuerCommonName
         });
+
+        this.keyUsage.fromStringArrayResolve(this.signingCertificate.keyUsage);
       }
     });
   }
@@ -136,9 +138,17 @@ export class CreateCertificateComponent implements OnInit {
     dialogConfig.autoFocus = false;
     dialogConfig.minWidth = "250px";
 
-    dialogConfig.data = {
-      keyUsage: this.keyUsage
-    };
+    if (this.signingCertificate) {
+      dialogConfig.data = {
+        keyUsage: this.keyUsage,
+        issuerKeyUsage: this.signingCertificate.keyUsage
+      };
+    }else {
+      dialogConfig.data = {
+        keyUsage: this.keyUsage,
+        issuerKeyUsage: undefined
+      };
+    }
     let dialogRef = this.keyUsageDialog.open(KeyUsageDialogComponent, dialogConfig).afterClosed()
       .subscribe(response => {
         if (response) {

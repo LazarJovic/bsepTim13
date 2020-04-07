@@ -23,5 +23,140 @@ export class KeyUsage {
         this.decipherOnly = decipherOnly;
     }
     
+    toStringArray() {
+        let keyUsages: string[];
+        if (this.digitalSignature) {
+            keyUsages.push("digitalSignature");
+        }
+        if (this.nonRepudiation) {
+            keyUsages.push("nonRepudiation");
+        }
+        if (this.keyEncipherment) {
+            keyUsages.push("keyEncipherment");
+        }
+        if (this.dataEncipherment) {
+            keyUsages.push("dataEncipherment");
+        }
+        if (this.keyAgreement) {
+            keyUsages.push("keyAgreement");
+        }
+        if (this.keyCertSign) {
+            keyUsages.push("keyCertSign");
+        }
+        if (this.CRLSign) {
+            keyUsages.push("CRLSign");
+        }
+        if (this.encipherOnly) {
+            keyUsages.push("encipherOnly");
+        }
+        if (this.decipherOnly) {
+            keyUsages.push("decipherOnly");
+        }
+        return keyUsages;
+    }
+
+    fromStringArray(keyUsages: Array<string>) {
+        this.digitalSignature = false;
+        this.nonRepudiation = false;
+        this.keyEncipherment = false;
+        this.dataEncipherment = false;
+        this.keyAgreement = false;
+        this.keyCertSign = false;
+        this.CRLSign = false;
+        this.encipherOnly = false;
+        this.decipherOnly = false;
+        for (let i = 0; i < 9; i++) {
+            if (!keyUsages[i])
+                return
+            if (keyUsages[i] === "digitalSignature") {
+                this.digitalSignature = true;
+                continue;
+            }
+            if (keyUsages[i] === "nonRepudiation") {
+                this.nonRepudiation = true;
+                continue;
+            }
+            if (keyUsages[i] === "keyEncipherment") {
+                this.keyEncipherment = true;
+                continue;
+            }
+            if (keyUsages[i] === "dataEncipherment") {
+                this.dataEncipherment = true;
+                continue;
+            }
+            if (keyUsages[i] === "keyAgreement") {
+                this.keyAgreement = true;
+                continue;
+            }
+            if (keyUsages[i] === "keyCertSign") {
+                this.keyCertSign = true;
+                continue;
+            }
+            if (keyUsages[i] === "cRLSign") {
+                this.CRLSign = true;
+                continue;
+            }
+            if (keyUsages[i] === "encipherOnly") {
+                this.encipherOnly = true;
+                continue;
+            }
+            if (keyUsages[i] === "decipherOnly") {
+                this.decipherOnly = true;
+                continue;
+            }
+        }
+    }
+
+    fromStringArrayResolve(keyUsages: string[]) {
+        this.digitalSignature = false;
+        this.nonRepudiation = false;
+        this.keyEncipherment = false;
+        this.dataEncipherment = false;
+        this.keyAgreement = false;
+        this.keyCertSign = false;
+        this.CRLSign = false;
+        this.encipherOnly = false;
+        this.decipherOnly = false;
+        for (let i = 0; i < 9; i++) {
+            if (!keyUsages[i])
+                return
+            if (!this.digitalSignature && keyUsages[i] === "digitalSignature") {
+                this.digitalSignature = true;
+                continue;
+            }
+            if (!this.nonRepudiation && keyUsages[i] === "nonRepudiation") {
+                this.nonRepudiation = true;
+                continue;
+            }
+            if (!this.keyEncipherment && keyUsages[i] === "keyEncipherment") {
+                this.keyEncipherment = true;
+                continue;
+            }
+            if (!this.dataEncipherment && keyUsages[i] === "dataEncipherment") {
+                this.dataEncipherment = true;
+                continue;
+            }
+            if (!this.keyAgreement && keyUsages[i] === "keyAgreement") {
+                this.keyAgreement = true;
+                continue;
+            }
+            if (!this.keyCertSign && keyUsages[i] === "keyCertSign") {
+                this.keyCertSign = true;
+                continue;
+            }
+            if (!this.CRLSign && keyUsages[i] === "cRLSign") {
+                this.CRLSign = true;
+                continue;
+            }
+            if (!this.encipherOnly && keyUsages[i] === "encipherOnly") {
+                this.encipherOnly = true;
+                continue;
+            }
+            if (!this.decipherOnly && keyUsages[i] === "decipherOnly") {
+                this.decipherOnly = true;
+                continue;
+            }
+        }
+    }
 
 }

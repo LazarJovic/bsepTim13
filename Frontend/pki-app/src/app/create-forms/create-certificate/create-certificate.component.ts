@@ -194,7 +194,7 @@ export class CreateCertificateComponent implements OnInit {
     dialogConfig.autoFocus = false;
     dialogConfig.minWidth = "250px";
 
-    if (this.signingCertificate) {
+    if (this.signingCertificate && this.signingCertificate.keyUsage) {
       dialogConfig.data = {
         keyUsage: this.keyUsage,
         issuerKeyUsage: this.signingCertificate.keyUsage
@@ -221,9 +221,17 @@ export class CreateCertificateComponent implements OnInit {
     dialogConfig.autoFocus = false;
     dialogConfig.minWidth = "250px";
 
-    dialogConfig.data = {
-      extKeyUsage: this.extKeyUsage
-    };
+    if (this.signingCertificate && this.signingCertificate.extendedKeyUsage) {
+      dialogConfig.data = {
+        extKeyUsage: this.extKeyUsage,
+        issuerExtKeyUsage: this.signingCertificate.extendedKeyUsage
+      };
+    }else {
+      dialogConfig.data = {
+        extKeyUsage: this.extKeyUsage,
+        issuerExtKeyUsage: undefined
+      };
+    }
     let dialogRef = this.extendedKeyUsageDialog.open(ExtendedKeyUsageDialogComponent, dialogConfig).afterClosed()
       .subscribe(response => {
         if (response) {

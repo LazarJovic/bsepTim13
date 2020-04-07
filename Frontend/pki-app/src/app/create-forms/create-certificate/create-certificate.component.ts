@@ -76,6 +76,7 @@ export class CreateCertificateComponent implements OnInit {
         });
 
         this.keyUsage.fromStringArrayResolve(this.signingCertificate.keyUsage);
+        this.extKeyUsage.fromStringArrayResolve(this.signingCertificate.extendedKeyUsage);
       }
     });
   }

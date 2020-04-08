@@ -36,7 +36,7 @@ public class CertificateController {
 
         try {
             retVal = this.certificateService.getCertificatesForSigning();
-            return new ResponseEntity<>(retVal, HttpStatus.CREATED);
+            return new ResponseEntity<>(retVal, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

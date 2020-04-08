@@ -1,6 +1,7 @@
 package com.bsep.pki.controller;
 
 import com.bsep.pki.dto.CreateCertificateDTO;
+import com.bsep.pki.dto.OverviewCertificateDTO;
 import com.bsep.pki.dto.SigningCertificateDTO;
 import com.bsep.pki.dto.UserDTO;
 import com.bsep.pki.service.CertificateService;
@@ -41,5 +42,29 @@ public class CertificateController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/signing-certificates-overview")
+    public ResponseEntity<?> getSigningCertificatesOverview() {
+        ArrayList<OverviewCertificateDTO> retVal = null;
+        try {
+            retVal = this.certificateService.getSigningCertificatesOverview();
+            return new ResponseEntity<>(retVal, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/end-entity-certificates-overview")
+    public ResponseEntity<?> getEndEntityCertificatesOverview() {
+        ArrayList<OverviewCertificateDTO> retVal = null;
+        try {
+            retVal = this.certificateService.getEndEntityCertificatesOverview();
+            return new ResponseEntity<>(retVal, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
     
 }

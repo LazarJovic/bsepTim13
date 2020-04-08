@@ -5,6 +5,7 @@ import { SigningCertificate } from 'src/app/model/signing-certificate';
 import { CreateCertificate } from 'src/app/model/create-certificate';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/model/user';
+import { OverviewCertificate } from 'src/app/model/overview-certificate';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,14 @@ export class CertificateService {
 
   getSigningCertificates() {
     return this.http.get<SigningCertificate[]>(`${environment.baseUrl}/${environment.certificates}/signing-certificates`);
+  }
+
+  getSigningCertificatesOverview() {
+    return this.http.get<OverviewCertificate[]>(`${environment.baseUrl}/${environment.certificates}/signing-certificates-overview`);
+  }
+
+  getEndEntityCertificatesOverview() {
+    return this.http.get<OverviewCertificate[]>(`${environment.baseUrl}/${environment.certificates}/end-entity-certificates-overview`);
   }
 
   createCertificate(data: CreateCertificate) : Observable<CreateCertificate> {

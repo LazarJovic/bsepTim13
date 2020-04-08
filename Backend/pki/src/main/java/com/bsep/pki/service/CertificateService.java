@@ -1,6 +1,7 @@
 package com.bsep.pki.service;
 
 import com.bsep.pki.dto.CreateCertificateDTO;
+import com.bsep.pki.dto.OverviewCertificateDTO;
 import com.bsep.pki.dto.SigningCertificateDTO;
 import com.bsep.pki.model.IssuerData;
 import com.bsep.pki.model.OtherCertData;
@@ -441,4 +442,128 @@ public class CertificateService {
         this.keyStoreWriter.saveKeyStore(PropertiesConfigurator.CA + ".jks", caPass.toCharArray());
         this.keyStoreWriter.saveKeyStore(PropertiesConfigurator.END_ENTITY + ".jks", endEntityPass.toCharArray());
     }
+
+    public ArrayList<OverviewCertificateDTO> getSigningCertificatesOverview() {
+        ArrayList<OverviewCertificateDTO> retVal = new ArrayList<>();
+        KeyStore keyStore = null;
+        String[] fileNames = {PropertiesConfigurator.SELF_SIGNED, PropertiesConfigurator.CA};
+        for(int i = 0; i < fileNames.length; i++) {
+            if(fileNames[i].equals(PropertiesConfigurator.SELF_SIGNED)) {
+                keyStore = this.loadSelfSignedKeyStore();
+            }
+            else {
+                keyStore = this.loadCAKeyStore();
+            }
+            Enumeration<String> aliases = null;
+            try {
+                aliases = keyStore.aliases();
+            } catch (KeyStoreException e) {
+                e.printStackTrace();
+            }
+
+            String keyAlias = null;
+            while (aliases.hasMoreElements()) {
+                keyAlias = aliases.nextElement();
+
+                Certificate certificate = null;
+                try {
+                    certificate = keyStore.getCertificate(keyAlias);
+                } catch (KeyStoreException e) {
+                    e.printStackTrace();
+                }
+
+                X500Name issuerName = null;
+                try {
+                    issuerName = new JcaX509CertificateHolder((X509Certificate) certificate).getIssuer();
+                } catch (CertificateEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                X500Name subjectName = null;
+                try {
+                    subjectName = new JcaX509CertificateHolder((X509Certificate) certificate).getSubject();
+                } catch (CertificateEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                String issuerCommonName = issuerName.getRDNs()[0].getFirst().getValue().toString();
+                String issuerEmail = issuerName.getRDNs()[6].getFirst().getValue().toString();
+                Long issuerId = this.userService.findByEmail(issuerEmail).getId();
+
+                String subjectCommonName = subjectName.getRDNs()[0].getFirst().getValue().toString();
+                String subjectEmail = subjectName.getRDNs()[6].getFirst().getValue().toString();
+                Long subjectId = this.userService.findByEmail(subjectEmail).getId();
+
+                String serialNumber = ((X509Certificate) certificate).getSerialNumber().toString();
+
+                String validFrom = ((X509Certificate) certificate).getNotBefore().toString();
+                String validTo = ((X509Certificate) certificate).getNotAfter().toString();
+
+                OverviewCertificateDTO dto = new OverviewCertificateDTO(issuerCommonName, issuerEmail, issuerId,
+                        subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo);
+
+                retVal.add(dto);
+            }
+
+        }
+        return retVal;
+    }
+
+    public ArrayList<OverviewCertificateDTO> getEndEntityCertificatesOverview() {
+        ArrayList<OverviewCertificateDTO> retVal = new ArrayList<>();
+        KeyStore keyStore = this.loadEndEntityKeyStore();
+        Enumeration<String> aliases = null;
+        try {
+            aliases = keyStore.aliases();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+
+        String keyAlias = null;
+        while (aliases.hasMoreElements()) {
+            keyAlias = aliases.nextElement();
+
+            Certificate certificate = null;
+            try {
+                certificate = keyStore.getCertificate(keyAlias);
+            } catch (KeyStoreException e) {
+                e.printStackTrace();
+            }
+
+            X500Name issuerName = null;
+            try {
+                issuerName = new JcaX509CertificateHolder((X509Certificate) certificate).getIssuer();
+            } catch (CertificateEncodingException e) {
+                e.printStackTrace();
+            }
+
+            X500Name subjectName = null;
+            try {
+                subjectName = new JcaX509CertificateHolder((X509Certificate) certificate).getSubject();
+            } catch (CertificateEncodingException e) {
+                e.printStackTrace();
+            }
+
+            String issuerCommonName = issuerName.getRDNs()[0].getFirst().getValue().toString();
+            String issuerEmail = issuerName.getRDNs()[6].getFirst().getValue().toString();
+            Long issuerId = this.userService.findByEmail(issuerEmail).getId();
+
+            String subjectCommonName = subjectName.getRDNs()[0].getFirst().getValue().toString();
+            String subjectEmail = subjectName.getRDNs()[6].getFirst().getValue().toString();
+            Long subjectId = this.userService.findByEmail(subjectEmail).getId();
+
+            String serialNumber = ((X509Certificate) certificate).getSerialNumber().toString();
+
+            String validFrom = ((X509Certificate) certificate).getNotBefore().toString();
+            String validTo = ((X509Certificate) certificate).getNotAfter().toString();
+
+            OverviewCertificateDTO dto = new OverviewCertificateDTO(issuerCommonName, issuerEmail, issuerId,
+                    subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo);
+
+            retVal.add(dto);
+        }
+        return retVal;
+    }
+
+
 }

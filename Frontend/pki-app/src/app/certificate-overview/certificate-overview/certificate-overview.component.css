@@ -1,6 +1,6 @@
-h1 {
+h1, h2 {
     color: white;
-    margin-left: 550px;
+    text-align: center;
 }
 
 certificate-card {
@@ -10,6 +10,7 @@ certificate-card {
 
 #container-div {
     background-color: #212c35;
+    height: 100%;
 }
 
 button {
@@ -26,5 +27,9 @@ button:hover {
 #back-button {
     margin-left: 10px;
     margin-top: 10px;
+}
+
+mat-select {
+    width: 25vw;
 }
 

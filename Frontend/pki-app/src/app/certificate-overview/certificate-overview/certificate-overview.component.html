@@ -4,8 +4,21 @@
         </mat-icon>
       </button>
     <h1>Certificates overview</h1>
-    <div id="component-div">
-        <certificate-card *ngFor="let item of lista" [item]='item'></certificate-card>
+    <h2 *ngIf="isEndEntity">End-Entity Cerificates</h2>
+    <h2 *ngIf="!isEndEntity">Self-Signed And CA Cerificates</h2>
+    <mat-select [(value)]="selected" (selectionChange)="onTypeChange()">
+        <mat-option value="end-entity" selected>
+            End-Entity Certificates
+        </mat-option>
+        <mat-option value="sefl-signed-ca">
+            Self-Signed And CA Certificates
+        </mat-option>
+    </mat-select>
+    <div class="component-div" *ngIf="isEndEntity">
+        <certificate-card *ngFor="let item of endEntityCertificates" [item]='item'></certificate-card>
+    </div>
+    <div class="component-div" *ngIf="!isEndEntity">
+        <certificate-card *ngFor="let item of signingCertificates" [item]='item'></certificate-card>
     </div>
 </div>
 

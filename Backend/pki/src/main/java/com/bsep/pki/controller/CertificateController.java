@@ -4,6 +4,7 @@ import com.bsep.pki.dto.CreateCertificateDTO;
 import com.bsep.pki.dto.SigningCertificateDTO;
 import com.bsep.pki.dto.UserDTO;
 import com.bsep.pki.service.CertificateService;
+import com.bsep.pki.util.PropertiesConfigurator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,10 @@ public class CertificateController {
 
     @PostMapping
     public ResponseEntity<?> createCertificate(@RequestBody CreateCertificateDTO dto) {
-        CreateCertificateDTO retVal = null;
 
         try {
-            retVal = this.certificateService.create(dto);
-            return new ResponseEntity<>(retVal, HttpStatus.CREATED);
+            this.certificateService.create(dto);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -35,7 +35,7 @@ public class CertificateController {
         ArrayList<SigningCertificateDTO> retVal = null;
 
         try {
-            retVal = this.certificateService.getSelfSignedCertificatesForSigning();
+            retVal = this.certificateService.getCertificatesForSigning();
             return new ResponseEntity<>(retVal, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

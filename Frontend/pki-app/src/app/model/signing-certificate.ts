@@ -1,6 +1,7 @@
 export class SigningCertificate {
     
     public issuerCommonName: string;
+    public issuerIssuerEmail: string;
     public issuerEmail: string;
     public issuerId: number;
     public serialNum: string;
@@ -9,9 +10,10 @@ export class SigningCertificate {
     public keyUsage: string[];
     public extendedKeyUsage: string[];
 
-    constructor(issuerCommonName: string, issuerEmail: string, issuerId: number, serialNum: string, validFrom: string,
+    constructor(issuerCommonName: string, issuerIssuerEmail: string, issuerEmail: string, issuerId: number, serialNum: string, validFrom: string,
         validTo: string, keyUsage: string[], extendedKeyUsage: string[]) {
         this.issuerCommonName = issuerCommonName;
+        this.issuerIssuerEmail = issuerIssuerEmail;
         this.issuerEmail = issuerEmail;
         this.issuerId = issuerId;
         this.serialNum = serialNum;

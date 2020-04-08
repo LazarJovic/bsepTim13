@@ -52,8 +52,8 @@ export class CreateCertificateComponent implements OnInit {
     this.createCertificateForm = new FormGroup({
       'issuer': new FormControl(null, [Validators.required]),
       'serialNumber': new FormControl(null, [Validators.required]),
-      'startDate': new FormControl({ value: null }, [Validators.required]),
-      'endDate': new FormControl({ value: null }, [Validators.required]),
+      'validFrom': new FormControl({ value: null }, [Validators.required]),
+      'validTo': new FormControl({ value: null }, [Validators.required]),
       'subject': new FormControl({ value: null }, [Validators.required]),
       'signatureAlgorithm': new FormControl({ value: null }, [Validators.required]),
       'pubKeyAlgorithm': new FormControl({ value: null }, [Validators.required])
@@ -64,11 +64,13 @@ export class CreateCertificateComponent implements OnInit {
   }
 
   createCertificate() {
-    var keyUsages: Array<string> = this.toStringArray(this.keyUsage);
-    this.certificate = new CreateCertificate(null, this.signingCertificate.issuerId, this.signingCertificate.issuerEmail, this.signingCertificate.serialNum,
+    var keyUsages: Array<string> = this.toStringArrayKeyUsage(this.keyUsage);
+    var extendedKeyUsage: Array<string> = this.toStringArrayExtKeyUsage(this.extKeyUsage);
+    this.selectedSubject = this.createCertificateForm.value.subject;
+    this.certificate = new CreateCertificate(null, this.signingCertificate.issuerId, this.signingCertificate.issuerIssuerEmail, this.signingCertificate.issuerEmail, this.signingCertificate.serialNum,
       this.signingCertificate.issuerCommonName, this.createCertificateForm.value.validFrom, this.createCertificateForm.value.validTo,
-      this.selectedSubject.id, this.selectedSubject.commonName, this.createCertificateForm.value.signatureAlgorithm, this.createCertificateForm.value.pubKeyAlgorithm,
-      keyUsages);
+      this.selectedSubject.id, this.selectedSubject.commonName, this.selectedSubject.email, this.createCertificateForm.value.signatureAlgorithm, this.createCertificateForm.value.pubKeyAlgorithm,
+      keyUsages, extendedKeyUsage);
 
     this.certificateService.createCertificate(this.certificate).subscribe(
       {
@@ -85,7 +87,7 @@ export class CreateCertificateComponent implements OnInit {
     );
   }
 
-  toStringArray(ks: KeyUsage) {
+  toStringArrayKeyUsage(ks: KeyUsage) {
     let keyUsages: string[] = [];
     if (ks.digitalSignature) {
       keyUsages.push("digitalSignature");
@@ -116,6 +118,39 @@ export class CreateCertificateComponent implements OnInit {
     }
     return keyUsages;
   }
+
+  toStringArrayExtKeyUsage(eku: ExtKeyUsage) {
+    let keyUsages: string[] = [];
+    if (eku.serverAuth) {
+        keyUsages.push("serverAuth");
+    }
+    if (eku.clientAuth) {
+        keyUsages.push("clientAuth");
+    }
+    if (eku.codeSigning) {
+        keyUsages.push("codeSigning");
+    }
+    if (eku.emailProtection) {
+        keyUsages.push("emailProtection");
+    }
+    if (eku.timeStamping) {
+        keyUsages.push("timeStamping");
+    }
+    if (eku.ocspSigning) {
+        keyUsages.push("ocspSigning");
+    }
+    if (eku.ipsecEndSystem) {
+        keyUsages.push("ipsecEndSystem");
+    }
+    if (eku.ipsecTunnel) {
+        keyUsages.push("ipsecTunnel");
+    }
+    if (eku.ipsecUser) {
+        keyUsages.push("ipsecUser");
+    }
+    return keyUsages;
+}
+
 
   chooseCert() {
     const dialogRef = this.signingCertDialog.open(ChooseCertificateDialogComponent, {

@@ -40,12 +40,10 @@ public class CertificateGenerator {
 
             ContentSigner contentSigner = builder.build(issuerData.getKeyPair().getPrivate());
 
-            DateTimeFormatter europeanDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
             X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(issuerData.getX500name(),
                     other.getSerialNumber(),
-                    java.sql.Date.valueOf(other.getStartValidationDate().format(europeanDateFormatter)),
-                    java.sql.Date.valueOf(other.getEndValidationDate().format(europeanDateFormatter)),
+                    java.sql.Date.valueOf(other.getStartValidationDate()),
+                    java.sql.Date.valueOf(other.getEndValidationDate()),
                     subjectData.getX500name(),
                     subjectData.getKeyPair().getPublic());
 

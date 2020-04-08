@@ -6,6 +6,7 @@ public class CreateCertificateDTO {
 
     public Long id;
     public Long issuerId;
+    public String issuerIssuerEmail;
     public String issuerEmail;
     public String serialNum;
     public String issuerCommonName;
@@ -16,14 +17,16 @@ public class CreateCertificateDTO {
     public String signatureAlgorithm;
     public String keyAlgorithm;
     public ArrayList<String> keyUsage;
+    public ArrayList<String> extendedKeyUsage;
 
     public CreateCertificateDTO() {}
 
-    public CreateCertificateDTO(Long id, Long issuerId, String issuerEmail, String serialNum, String issuerCommonName, String validFrom,
+    public CreateCertificateDTO(Long id, Long issuerId, String issuerIssuerEmail, String issuerEmail, String serialNum, String issuerCommonName, String validFrom,
                                 String validTo, Long subjectId, String subjectCommonName, String signatureAlgorithm,
-                                String keyAlgorithm, ArrayList<String> keyUsage) {
+                                String keyAlgorithm, ArrayList<String> keyUsage, ArrayList<String> extendedKeyUsage) {
         this.id = id;
         this.issuerId = issuerId;
+        this.issuerIssuerEmail = issuerIssuerEmail;
         this.issuerEmail = issuerEmail;
         this.serialNum = serialNum;
         this.issuerCommonName = issuerCommonName;
@@ -34,5 +37,6 @@ public class CreateCertificateDTO {
         this.signatureAlgorithm = signatureAlgorithm;
         this.keyAlgorithm = keyAlgorithm;
         this.keyUsage = keyUsage;
+        this.extendedKeyUsage = extendedKeyUsage;
     }
 }

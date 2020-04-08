@@ -4,11 +4,7 @@ import com.bsep.pki.util.keystore.PasswordGenerator;
 import org.springframework.util.DefaultPropertiesPersister;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class PropertiesConfigurator {
 
@@ -17,6 +13,7 @@ public class PropertiesConfigurator {
     public static final String END_ENTITY = "end-entity";
     public static final int PASS_LENGTH = 15;
     public static final String KEY_STORE_PROP = "key-store-pass.properties";
+    public static final String ALIAS_PASS_PROP = "alias-pass.properties";
 
     public PropertiesConfigurator() {}
 
@@ -35,6 +32,21 @@ public class PropertiesConfigurator {
 //        }
 //    }
 
+        public void putAliasKeyPass(String alias, String keyPass) {
+        try {
+            Properties props = new Properties();
+            props.setProperty(alias, keyPass);
+            File f = new File(ALIAS_PASS_PROP);
+            FileOutputStream out = new FileOutputStream(f);
+            DefaultPropertiesPersister p = new DefaultPropertiesPersister();
+            p.store(props, out,"");
+        } catch (Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     public String readValueFromKeyStoreProp(String key) throws IOException {
 
         InputStream inputStream = null;
@@ -48,6 +60,31 @@ public class PropertiesConfigurator {
                 prop.load(inputStream);
             } else {
                 throw new FileNotFoundException("property file '" + KEY_STORE_PROP + "' not found in the classpath");
+            }
+
+            result = prop.getProperty(key);
+
+        } catch (Exception e) {
+            System.out.println("Exception: " + e);
+        } finally {
+            inputStream.close();
+        }
+        return result;
+    }
+
+    public String readValueFromAliasPassProp(String key) throws IOException {
+
+        FileInputStream inputStream = null;
+        String result = "";
+        try {
+            File f = new File(ALIAS_PASS_PROP);
+            inputStream = new FileInputStream(f);
+            Properties prop = new Properties();
+
+            if (inputStream != null) {
+                prop.load(inputStream);
+            } else {
+                throw new FileNotFoundException("property file '" + ALIAS_PASS_PROP + "' not found in the classpath");
             }
 
             result = prop.getProperty(key);

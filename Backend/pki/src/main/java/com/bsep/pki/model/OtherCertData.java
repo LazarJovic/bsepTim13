@@ -31,7 +31,7 @@ public class OtherCertData {
     }
 
     public OtherCertData(String startValidationDate, String endValidationDate, String signatureAlgorithm,
-                         ArrayList<Integer> keyUsageValues, ArrayList<String> extendedKeyUsageExtensions, BigInteger serialNumber,
+                         ArrayList<Integer> keyUsageValues, BigInteger serialNumber,
                          KeyPurposeId[] extendedKeyUsageValues) {
         this.startValidationDate = LocalDate.parse(startValidationDate);
         this.endValidationDate = LocalDate.parse(endValidationDate);

@@ -62,9 +62,9 @@ public class KeyStoreWriter {
         }
     }
 
-    public void write(String alias, PrivateKey privateKey, char[] password, X509Certificate certificate) {
+    public void write(String alias, PrivateKey privateKey, String password, X509Certificate certificate) {
         try {
-            keyStore.setKeyEntry(alias, privateKey, password, (java.security.cert.X509Certificate[]) new X509Certificate[] {certificate});
+            keyStore.setKeyEntry(alias, privateKey, password.toCharArray(), (java.security.cert.X509Certificate[]) new X509Certificate[] {certificate});
         } catch (KeyStoreException e) {
             e.printStackTrace();
         }

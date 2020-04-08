@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class SigningCertificateDTO {
 
     public String issuerCommonName;
+    public String issuerIssuerEmail;
     public String issuerEmail;
     public Long issuerId;
     public String validFrom;
@@ -15,9 +16,10 @@ public class SigningCertificateDTO {
 
     public SigningCertificateDTO() {}
 
-    public SigningCertificateDTO(String issuerCommonName, String issuerEmail, Long issuerId, String validFrom,
+    public SigningCertificateDTO(String issuerCommonName, String issuerIssuerEmail, String issuerEmail, Long issuerId, String validFrom,
                                  String validTo, String serialNum, ArrayList<String> keyUsage, ArrayList<String> extendedKeyUsage) {
         this.issuerCommonName = issuerCommonName;
+        this.issuerIssuerEmail = issuerIssuerEmail;
         this.issuerEmail = issuerEmail;
         this.issuerId = issuerId;
         this.validFrom = validFrom;

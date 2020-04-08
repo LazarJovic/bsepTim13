@@ -1,6 +1,8 @@
 package com.bsep.pki.util;
 
 import com.bsep.pki.util.keystore.PasswordGenerator;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.springframework.util.DefaultPropertiesPersister;
 
 import java.io.*;
@@ -32,7 +34,7 @@ public class PropertiesConfigurator {
 //        }
 //    }
 
-        public void putAliasKeyPass(String alias, String keyPass) {
+        public void firstAliasKeyPass(String alias, String keyPass) {
         try {
             Properties props = new Properties();
             props.setProperty(alias, keyPass);
@@ -41,6 +43,17 @@ public class PropertiesConfigurator {
             DefaultPropertiesPersister p = new DefaultPropertiesPersister();
             p.store(props, out,"");
         } catch (Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public void putAliasKeyPass(String alias, String keyPass) throws IOException {
+
+        try {
+            PropertiesConfiguration properties = new PropertiesConfiguration(ALIAS_PASS_PROP);
+            properties.setProperty(alias, keyPass);
+            properties.save();
+        } catch (ConfigurationException e) {
             e.printStackTrace();
         }
     }

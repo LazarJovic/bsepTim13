@@ -4,5 +4,20 @@ h1 {
 
 signing-certificate-card {
     display: inline-block;
-    margin: 10px 10px 20px 20px;
+    margin: 10px 10px 20px 8px;
+}
+
+#back-button:hover {
+    background-color:white;
+    color: darkorange;
+    border: 1px solid darkorange;
+}
+
+#back-button {
+    margin-left: 10px;
+    margin-top: 10px;
+    position: fixed;
+    margin-bottom: -3vw;
+    background-color: darkorange;
+    color: white;
 }

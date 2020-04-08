@@ -11,11 +11,12 @@ public class UserDTO {
     public String organizationalUnit;
     public String locality;
     public String email;
+    public Long numberOfCert;
 
     public UserDTO() {}
 
     public UserDTO(Long id, String givenName, String lastName, String commonName, String country, String organization,
-                   String organizationalUnit, String locality, String email) {
+                   String organizationalUnit, String locality, String email, Long numberOfCert) {
         this.id = id;
         this.givenName = givenName;
         this.lastName = lastName;
@@ -25,6 +26,7 @@ public class UserDTO {
         this.organizationalUnit = organizationalUnit;
         this.locality = locality;
         this.email = email;
+        this.numberOfCert = numberOfCert;
     }
 
 }

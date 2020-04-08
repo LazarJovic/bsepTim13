@@ -94,7 +94,11 @@ public class CertificateService {
 
         this.writeInKeyStore(certificate, certAlias, subjectKeyPair.getPrivate(), privateKeyPass, subject.getEmail(), dto.issuerEmail);
 
-        this.propertiesConfigurator.putAliasKeyPass(certAlias, privateKeyPass);
+        try {
+            this.propertiesConfigurator.putAliasKeyPass(certAlias, privateKeyPass);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void writeInKeyStore(X509Certificate certificate, String certAlias, PrivateKey privateKey, String privateKeyPass,
@@ -182,7 +186,7 @@ public class CertificateService {
             }
 
             String keyAlias = null;
-            if (aliases.hasMoreElements()) {
+            while (aliases.hasMoreElements()) {
                 keyAlias = aliases.nextElement();
 
                 Certificate certificate = null;
@@ -409,7 +413,7 @@ public class CertificateService {
             String keyPass = PasswordGenerator.generateRandomPassword(15);
             String alias = this.generateAlias(certificate.getSerialNumber().longValue(), rootEmail, rootEmail);
 
-            this.propertiesConfigurator.putAliasKeyPass(alias, keyPass);
+            this.propertiesConfigurator.firstAliasKeyPass(alias, keyPass);
 
             String ssPass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.SELF_SIGNED);
 

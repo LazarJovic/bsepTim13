@@ -200,7 +200,7 @@ export class CreateCertificateComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         var subject = new User(0, result.givenName, result.lastName, result.commonName, result.country, result.organization,
-          result.organizationalUnit, result.locality, result.email);
+          result.organizationalUnit, result.locality, result.email, 0);
 
         this.userService.createSubject(subject).subscribe(
           {

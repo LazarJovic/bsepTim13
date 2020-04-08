@@ -17,6 +17,7 @@ public class SubjectMapper implements MapperInterface<User, UserDTO> {
         user.setLocality(dto.locality);
         user.setEmail(dto.email);
         user.setCA(false);
+        user.setNumberOfCert(dto.numberOfCert);
 
         return user;
     }
@@ -25,6 +26,6 @@ public class SubjectMapper implements MapperInterface<User, UserDTO> {
     public UserDTO toDto(User entity) {
         return new UserDTO(entity.getId(), entity.getGivenName(), entity.getLastName(), entity.getCommonName(),
                 entity.getCountry(), entity.getOrganization(), entity.getOrganizationUnit(), entity.getLocality(),
-                entity.getEmail());
+                entity.getEmail(), entity.getNumberOfCert());
     }
 }

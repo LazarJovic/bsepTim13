@@ -3,10 +3,6 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { User } from 'src/app/model/user';
 
-interface DialogData {
-  polje: string;
-}
-
 @Component({
   selector: 'app-dialog-create-subject',
   templateUrl: './dialog-create-subject.component.html',

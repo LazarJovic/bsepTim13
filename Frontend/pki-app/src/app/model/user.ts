@@ -9,9 +9,10 @@ export class User {
     public organizationalUnit: string;
     public locality: string;
     public email: string;
+    public numberOfCert: number;
 
     constructor(id: number, givenName: string, lastName: string, commonName: string, country: string, organization: string, organizationalUnit: string,
-        locality: string, email: string) {
+        locality: string, email: string, numberOfCert: number) {
         this.id = id;
         this.givenName = givenName;
         this.lastName = lastName;
@@ -21,6 +22,7 @@ export class User {
         this.organizationalUnit = organizationalUnit;
         this.locality = locality;
         this.email = email;
+        this.numberOfCert = numberOfCert;
     }
     
 }

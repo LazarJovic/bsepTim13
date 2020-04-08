@@ -7,6 +7,8 @@ import com.bsep.pki.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class UserService {
 
@@ -24,7 +26,33 @@ public class UserService {
         User subject = this.subjectMapper.toEntity(dto);
 
         return this.subjectMapper.toDto(this.userRepository.save(subject));
+    }
 
+    public ArrayList<UserDTO> getAllUsers() {
+        return this.toDtoList((ArrayList<User>) this.userRepository.findAll());
+    }
+
+    public UserDTO createEntity(User user) {
+        return this.subjectMapper.toDto(this.userRepository.save(user));
+    }
+
+    public ArrayList<User> findAllEntity() {
+        return (ArrayList<User>) this.userRepository.findAll();
+    }
+
+    public User findByEmail(String email) {
+        return this.userRepository.findByEmail(email);
+    }
+
+    public User findEntity(Long id) { return this.userRepository.findById(id).orElseGet(null); }
+
+    private ArrayList<UserDTO> toDtoList(ArrayList<User> users) {
+        ArrayList<UserDTO> retVal = new ArrayList<>();
+        for(User u : users) {
+            retVal.add(this.subjectMapper.toDto(u));
+        }
+
+        return retVal;
     }
 
     private boolean validSubjectData(UserDTO dto) {

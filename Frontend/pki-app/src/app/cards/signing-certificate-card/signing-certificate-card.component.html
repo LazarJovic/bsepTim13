@@ -1,4 +1,3 @@
-
 <mat-card class="example-card">
     <mat-card-header>
       <div mat-card-avatar class="example-header-image"></div>
@@ -8,20 +7,17 @@
     
     <mat-card-content>
       <p class="cert-info-p">
-        <b>Issued by:</b> {{item?.issuer}}
+        <b>Issued to:</b> {{item?.issuerCommonName}}
       </p>
       <p class="cert-info-p">
-        <b>Issued to:</b> {{item?.subject}}
+        <b>Valid from </b>{{item?.validFrom}} <b> to </b>{{item?.validTo}}
       </p>
-      <p class="cert-info-p">
-        <b>Valid from </b> {{item?.validFrom}}<b> to </b> {{item?.validTo}}
-      </p>
-      <p id="p-download">
-        For more information, download.
-      </p>
+      <p><b>Key usage:</b></p>
+      <div id="usages-div">
+      <p><i> {{ keyUsages }} </i></p>
+      </div>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-flat-button id="download-button" (click)="downloadCertificate()">Download</button>
+        <button mat-flat-button id="choose-button" (click)="chooseCertificate()">Choose</button>
     </mat-card-actions>
   </mat-card>
-

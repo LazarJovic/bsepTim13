@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Choose Extended Key Usage</h2>
+<form [formGroup]="form">
+
+    <mat-dialog-content>
+        <div fxLayout="column">
+            <mat-checkbox
+                matTooltip="TLS Web server authentication"
+                matTooltipPosition="right" [(ngModel)]="eku.serverAuth" formControlName="serverAuth">
+                ServerAuth
+            </mat-checkbox>
+            <mat-checkbox matTooltip="TLS Web client authentication" matTooltipPosition="right"
+                [(ngModel)]="eku.clientAuth" formControlName="clientAuth">ClientAuth 
+            </mat-checkbox>
+            <mat-checkbox matTooltip="Code signing" matTooltipPosition="right"
+                [(ngModel)]="eku.codeSigning" formControlName="codeSigning">CodeSigning
+            </mat-checkbox>
+            <mat-checkbox matTooltip="E-mail protection"
+                matTooltipPosition="right" [(ngModel)]="eku.emailProtection" formControlName="emailProtection">
+                EmailProtection
+            </mat-checkbox>
+            <mat-checkbox matTooltip="Timestamping"
+                matTooltipPosition="right" [(ngModel)]="eku.timeStamping"
+                formControlName="timeStamping">TimeStamping
+            </mat-checkbox>
+            <mat-checkbox matTooltip="OCSPstamping" matTooltipPosition="right"
+            [(ngModel)]="eku.ocspSigning" formControlName="ocspSigning">OCSPSigning
+            </mat-checkbox>
+            <mat-checkbox matTooltip="IP security end system" matTooltipPosition="right"
+            [(ngModel)]="eku.ipsecEndSystem" formControlName="ipsecEndSystem">IpsecEndSystem
+            </mat-checkbox>
+            <mat-checkbox
+                matTooltip="IP security tunnel termination"
+                matTooltipPosition="right" [(ngModel)]="eku.ipsecTunnel" formControlName="ipsecTunnel">IpsecTunnel
+            </mat-checkbox>
+            <mat-checkbox
+                matTooltip="IP security user"
+                matTooltipPosition="right" [(ngModel)]="eku.ipsecUser" formControlName="ipsecUser">IpsecUser
+            </mat-checkbox>
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <button class="mat-raised-button" (click)="close()">Cancel</button>
+        <button class="mat-raised-button mat-primary" type="submit"
+            (click)="onSubmit()">Save</button>
+    </mat-dialog-actions>
+</form>

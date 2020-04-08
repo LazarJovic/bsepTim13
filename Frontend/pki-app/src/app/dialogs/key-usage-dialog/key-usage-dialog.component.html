@@ -5,37 +5,37 @@
         <div fxLayout="column">
             <mat-checkbox
                 matTooltip="General digital signing, including that within higher-level entity authentication, and data authentication mechanisms"
-                matTooltipPosition="right" [(ngModel)]="digitalSignature" formControlName="digitalSignature">
+                matTooltipPosition="right" [(ngModel)]="ku.digitalSignature" formControlName="digitalSignature">
                 DigitalSignature
             </mat-checkbox>
             <mat-checkbox matTooltip="Digital signing within a non-repudiation service" matTooltipPosition="right"
-                [(ngModel)]="nonRepudiation" formControlName="nonRepudiation">NonRepudiation
+                [(ngModel)]="ku.nonRepudiation" formControlName="nonRepudiation">NonRepudiation
             </mat-checkbox>
             <mat-checkbox matTooltip="Key transport (e.g. RSA key exchange)" matTooltipPosition="right"
-                [(ngModel)]="keyEncipherment" formControlName="keyEncipherment">KeyEncipherment
+                [(ngModel)]="ku.keyEncipherment" formControlName="keyEncipherment">KeyEncipherment
             </mat-checkbox>
             <mat-checkbox matTooltip="Data encryption (other than that for transporting keys)"
-                matTooltipPosition="right" [(ngModel)]="dataEncipherment" formControlName="dataEncipherment">
+                matTooltipPosition="right" [(ngModel)]="ku.dataEncipherment" formControlName="dataEncipherment">
                 DataEncipherment
             </mat-checkbox>
             <mat-checkbox matTooltip="Key exchange or agreement (e.g. DH or ECDH certificate)"
-                matTooltipPosition="right" [(ngModel)]="keyAgreement" (change)="keyAgreementChanged()"
+                matTooltipPosition="right" [(ngModel)]="ku.keyAgreement"
                 formControlName="keyAgreement">KeyAgreement
             </mat-checkbox>
-            <mat-checkbox matTooltip="Certificate signing (CA)" matTooltipPosition="right" [(ngModel)]="keyCertSign"
+            <mat-checkbox matTooltip="Certificate signing (CA)" matTooltipPosition="right" [(ngModel)]="ku.keyCertSign"
                 formControlName="keyCertSign">KeyCertSign
             </mat-checkbox>
-            <mat-checkbox matTooltip="CRL signing (CA/status service)" matTooltipPosition="right" [(ngModel)]="CRLSign"
-                formControlName="CRLSign">CRLSign
+            <mat-checkbox matTooltip="CRL signing (CA/status service)" matTooltipPosition="right"
+                [(ngModel)]="ku.CRLSign" formControlName="CRLSign">CRLSign
             </mat-checkbox>
 
             <mat-checkbox
                 matTooltip="Only makes sense if the KeyAgreement flag is set. Indicate which operations with the key are allowed within the key agreement routine"
-                matTooltipPosition="right" [(ngModel)]="encipherOnly" formControlName="encipherOnly">EncipherOnly
+                matTooltipPosition="right" [(ngModel)]="ku.encipherOnly" formControlName="encipherOnly">EncipherOnly
             </mat-checkbox>
             <mat-checkbox
                 matTooltip="Only makes sense if the KeyAgreement flag is set. Indicate which operations with the key are allowed within the key agreement routine"
-                matTooltipPosition="right" [(ngModel)]="decipherOnly" formControlName="decipherOnly">DecipherOnly
+                matTooltipPosition="right" [(ngModel)]="ku.decipherOnly" formControlName="decipherOnly">DecipherOnly
             </mat-checkbox>
         </div>
 

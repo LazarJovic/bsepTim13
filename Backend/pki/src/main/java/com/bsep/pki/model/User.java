@@ -38,10 +38,13 @@ public class User {
     @Column(name = "isCA")
     private boolean isCA;
 
+    @Column( name = "numberOfCert")
+    private Long numberOfCert;
+
     public User() {}
 
     public User(String givenName, String lastName, String commonName, String country, String organization,
-                String organizationUnit, String locality, String email, boolean isCA) {
+                String organizationUnit, String locality, String email, boolean isCA, Long numberOfCert) {
         this.givenName = givenName;
         this.lastName = lastName;
         this.commonName = commonName;
@@ -51,6 +54,7 @@ public class User {
         this.locality = locality;
         this.email = email;
         this.isCA = isCA;
+        this.numberOfCert = numberOfCert;
     }
 
     public Long getId() {
@@ -133,4 +137,11 @@ public class User {
         isCA = CA;
     }
 
+    public Long getNumberOfCert() {
+        return numberOfCert;
+    }
+
+    public void setNumberOfCert(Long numberOfCert) {
+        this.numberOfCert = numberOfCert;
+    }
 }

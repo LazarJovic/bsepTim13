@@ -1,0 +1,10 @@
+<div id="container-div">
+    <button mat-icon-button aria-label="Example icon-button with a heart icon" id="back-button" (click)="onNoClick()">
+        <mat-icon>keyboard_backspace
+        </mat-icon>
+      </button>
+    <h1>Available certificates for signing</h1>
+    <div id="component-div">
+        <signing-certificate-card *ngFor="let item of signingCertificates" [item]='item' (certificateChosen)='onSubmit($event)'></signing-certificate-card>
+    </div>
+</div>

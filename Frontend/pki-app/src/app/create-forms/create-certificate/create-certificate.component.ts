@@ -168,8 +168,6 @@ export class CreateCertificateComponent implements OnInit {
           "issuer": this.signingCertificate.issuerCommonName
         });
 
-        //this.keyUsage.fromStringArrayResolve(this.signingCertificate.keyUsage);
-        //this.extKeyUsage.fromStringArrayResolve(this.signingCertificate.extendedKeyUsage);
         this.onChangeIssuerUpdateKeyUsage();
       }
     });

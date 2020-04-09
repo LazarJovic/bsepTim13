@@ -13,7 +13,6 @@ import { ChooseCertificateDialogComponent } from 'src/app/dialogs/choose-certifi
 import { SigningCertificate } from 'src/app/model/signing-certificate';
 import { CreateCertificate } from 'src/app/model/create-certificate';
 import { CertificateService } from 'src/app/services/certificate-service/certificate.service';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'create-certificate',
@@ -42,8 +41,7 @@ export class CreateCertificateComponent implements OnInit {
     private userService: UserService,
     private certificateService: CertificateService,
     private keyUsageDialog: MatDialog,
-    private extendedKeyUsageDialog: MatDialog,
-    private toastr: ToastrService
+    private extendedKeyUsageDialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -63,11 +61,6 @@ export class CreateCertificateComponent implements OnInit {
 
     this.getSubjects();
 
-  }
-
-  checkInput() {
-    this.toastr.error("Greska");
-    console.log("event");
   }
 
   createCertificate() {

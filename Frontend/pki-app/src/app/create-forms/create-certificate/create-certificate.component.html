@@ -11,7 +11,7 @@
         <div>
           <mat-form-field id="issuer-field">
             <mat-label>Issuer</mat-label>
-            <input matInput type="text" formControlName="issuer" oninvalid="checkInput($event)" readonly>
+            <input matInput type="text" formControlName="issuer" readonly>
           </mat-form-field>
           <button mat-flat-button class="in-form-button" (click)="chooseCert()">Choose</button>
         </div>
@@ -113,7 +113,7 @@
         <!--Ekstenzije kraj-->
         <div id="button-div">
           
-          <button mat-flat-button type="submit" (click)="createCertificate()" [disabled]="!createCertificateForm.valid" id="submit-button">Create certificate</button>
+          <button mat-flat-button type="submit" (click)="createCertificate()" id="submit-button">Create certificate</button>
         </div>
       </form>
 

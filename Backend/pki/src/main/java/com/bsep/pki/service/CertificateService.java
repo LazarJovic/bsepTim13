@@ -101,23 +101,6 @@ public class CertificateService {
         }
     }
 
-    private boolean validSubjectData(CreateCertificateDTO dto) {
-        if(notValidSingleData(dto.issuerEmail) || notValidSingleData(dto.issuerIssuerEmail) || notValidSingleData(dto.keyAlgorithm)
-                || notValidSingleData(dto.serialNum) || notValidSingleData(dto.signatureAlgorithm) || notValidSingleData(dto.validFrom)
-                || notValidSingleData(dto.validTo) || notValidSingleData(dto.issuerCommonName) || notValidSingleData(dto.subjectCommonName))
-            return false;
-        else
-            return true;
-    }
-
-    private boolean notValidSingleData(String data) {
-        if(data == null || data.equals("")) {
-            return true;
-        }
-
-        return false;
-    }
-
     private void writeInKeyStore(X509Certificate certificate, String certAlias, PrivateKey privateKey, String privateKeyPass,
                                  String subjectEmail, String issuerEmail) {
         String fileName = null;

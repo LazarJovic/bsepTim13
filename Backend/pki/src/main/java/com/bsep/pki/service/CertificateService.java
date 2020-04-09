@@ -573,8 +573,7 @@ public class CertificateService {
         String alias = this.generateAlias(Long.parseLong(dto.serialNum), dto.subjectEmail, dto.issuerEmail);
         String file = null;
         String filePass = null;
-        //String certFileName = "C:\\Users\\Bojana\\Downloads\\" + dto.issuerCommonName + dto.serialNum + ".cer";
-        String certFileName = "src\\main\\resources\\downloads\\" + dto.issuerCommonName + dto.serialNum + ".cer";
+        String certFileName = System.getProperty("user.home") + "\\Downloads\\" + dto.issuerCommonName + dto.serialNum + ".cer";
 
         try {
             if(dto.isCA) {

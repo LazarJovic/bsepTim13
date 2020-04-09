@@ -99,3 +99,9 @@ mat-card p{
     margin-bottom: 5px;
 }
 
+span {
+    float: left;
+    display: block;
+    color: red;
+}
+

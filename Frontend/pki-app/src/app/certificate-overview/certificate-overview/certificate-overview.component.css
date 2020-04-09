@@ -30,6 +30,11 @@ button:hover {
 }
 
 mat-select {
+    padding: 15px;
+    margin-left: 36vw;
+    margin-bottom: 20px;
+    background-color: white;
     width: 25vw;
 }
+
 

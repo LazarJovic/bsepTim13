@@ -4,8 +4,6 @@
         </mat-icon>
       </button>
     <h1>Certificates overview</h1>
-    <h2 *ngIf="isEndEntity">End-Entity Cerificates</h2>
-    <h2 *ngIf="!isEndEntity">Self-Signed And CA Cerificates</h2>
     <mat-select [(value)]="selected" (selectionChange)="onTypeChange()">
         <mat-option value="end-entity" selected>
             End-Entity Certificates

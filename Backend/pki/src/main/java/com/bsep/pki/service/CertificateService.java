@@ -14,10 +14,8 @@ import com.bsep.pki.util.keystore.KeyStoreReader;
 import com.bsep.pki.util.keystore.KeyStoreWriter;
 import com.bsep.pki.util.keystore.PasswordGenerator;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
-import org.bouncycastle.cert.X509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -29,6 +27,7 @@ import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.*;
 import java.security.cert.Certificate;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -64,7 +63,11 @@ public class CertificateService {
         this.myKeyGenerator = new MyKeyGenerator();
     }
 
-    public void create(CreateCertificateDTO dto) {
+    public void create(CreateCertificateDTO dto) throws Exception {
+
+        if (!validateCertificateData(dto).equals("OK")) {
+            throw new Exception(validateCertificateData(dto));
+        }
 
         User issuer = this.userService.findEntity(dto.issuerId);
         String issuerAlias = dto.serialNum + dto.issuerEmail + dto.issuerIssuerEmail;
@@ -211,11 +214,16 @@ public class CertificateService {
                     e.printStackTrace();
                 }
 
+                SimpleDateFormat sdf = new SimpleDateFormat(
+                        "YYYY-MM-dd");
+
                 String issuerCommonName = subjectName.getRDNs()[0].getFirst().getValue().toString();
                 String issuerEmail = subjectName.getRDNs()[6].getFirst().getValue().toString();
                 String serialNumber = ((X509Certificate) certificate).getSerialNumber().toString();
-                String validFrom = ((X509Certificate) certificate).getNotBefore().toString();
-                String validTo = ((X509Certificate) certificate).getNotAfter().toString();
+                Date validFromDate = ((X509Certificate) certificate).getNotBefore();
+                String validFrom = sdf.format(validFromDate);
+                Date validToDate = ((X509Certificate) certificate).getNotAfter();
+                String validTo = sdf.format(validToDate);
                 Long issuerId = this.userService.findByEmail(issuerEmail).getId();
 
                 boolean[] keyUsages = ((X509Certificate) certificate).getKeyUsage();
@@ -367,6 +375,103 @@ public class CertificateService {
         this.userRepository.save(user);
 
         return serialNum;
+    }
+
+    private String validateCertificateData(CreateCertificateDTO dto) {
+        if(!this.validIssuerData(dto)) {
+            return "Issuer is not chosen correctly!";
+        }
+        else if(!this.validSubjectData(dto)) {
+            return "Subject is not chosen correctly!";
+        }
+        else if(notValidSingleData(dto.signatureAlgorithm)) {
+            return "Signature algorithm is not chosen correctly!";
+        }
+        else if(notValidSingleData(dto.keyAlgorithm)) {
+            return "Key algorithm is not chosen correctly!";
+        }
+        else if(!validDate(dto.validFrom)) {
+            return "Starting validity date is not chosen correctly!";
+        }
+        else if(!validDate(dto.validTo)) {
+            return "Ending validity date is not chosen correctly!";
+        }
+        else if(dto.keyUsage == null) {
+            return "Key usages are not chosen correctly!";
+        }
+        else if(dto.extendedKeyUsage == null) {
+            return "Extended key usages are not chosen correctly!";
+        }
+        else if(!areDatesInRightOrder(dto.validFrom, dto.validTo)) {
+            return "Start validity date must be before end validity date!";
+        }
+        else if(!isInsideIssuerDate(dto)) {
+            return "Validation period must be inside issuer certificate validation period!";
+        }
+
+        return "OK";
+    }
+
+    private boolean areDatesInRightOrder(String from, String to) {
+        LocalDate validFrom = LocalDate.parse(from);
+        LocalDate validTo = LocalDate.parse(to);
+
+        if(validFrom.isBefore(validTo)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isInsideIssuerDate(CreateCertificateDTO dto) {
+        LocalDate issuerValidFrom = LocalDate.parse(dto.issuerValidFrom);
+        LocalDate issuerValidTo = LocalDate.parse(dto.issuerValidTo);
+        LocalDate validFrom = LocalDate.parse(dto.validFrom);
+        LocalDate validTo = LocalDate.parse(dto.validTo);
+
+        if(issuerValidFrom.isBefore(validFrom) &&  issuerValidTo.isAfter(validTo)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean validDate(String date) {
+        if(!notValidSingleData(date)) {
+            try {
+                LocalDate.parse(date);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean validIssuerData(CreateCertificateDTO dto) {
+        if(notValidSingleData(dto.issuerEmail) || notValidSingleData(dto.issuerIssuerEmail) || notValidSingleData(dto.issuerCommonName) ||
+         notValidSingleData(dto.serialNum) || dto.issuerId == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validSubjectData(CreateCertificateDTO dto) {
+        if(notValidSingleData(dto.subjectCommonName) || dto.subjectId == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean notValidSingleData(String data) {
+        if(data == null || data.equals("")) {
+            return true;
+        }
+
+        return false;
     }
 
     @EventListener(ApplicationReadyEvent.class)

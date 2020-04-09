@@ -112,8 +112,7 @@
         </div>
         <!--Ekstenzije kraj-->
         <div id="button-div">
-          
-          <button mat-flat-button type="submit" (click)="createCertificate()" id="submit-button">Create certificate</button>
+          <button mat-flat-button type="submit" (click)="createCertificate()" id="submit-button" [disabled]="!createCertificateForm.valid">Create certificate</button>
         </div>
       </form>
 

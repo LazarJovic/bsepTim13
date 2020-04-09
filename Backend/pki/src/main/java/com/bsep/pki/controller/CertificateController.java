@@ -65,6 +65,14 @@ public class CertificateController {
         }
     }
 
-
+    @PostMapping("/download")
+    public ResponseEntity<?> downloadCertificate(@RequestBody OverviewCertificateDTO dto) {
+        try {
+            boolean retVal = this.certificateService.downloadCertificate(dto);
+            return new ResponseEntity<>(retVal, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
     
 }

@@ -13,12 +13,13 @@ public class OverviewCertificateDTO {
     public String serialNum;
     public String validFrom;
     public String validTo;
+    public boolean isCA;
 
     public OverviewCertificateDTO() { }
 
     public OverviewCertificateDTO(String issuerCommonName, String issuerEmail, Long issuerId, String subjectCommonName,
                                   String subjectEmail, Long subjectId, String serialNum, String validFrom,
-                                  String validTo) {
+                                  String validTo, boolean isCA) {
         this.issuerCommonName = issuerCommonName;
         this.issuerEmail = issuerEmail;
         this.issuerId = issuerId;
@@ -28,5 +29,6 @@ public class OverviewCertificateDTO {
         this.serialNum = serialNum;
         this.validFrom = validFrom;
         this.validTo = validTo;
+        this.isCA = isCA;
     }
 }

@@ -25,6 +25,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.*;
@@ -500,7 +502,7 @@ public class CertificateService {
                 String validTo = ((X509Certificate) certificate).getNotAfter().toString();
 
                 OverviewCertificateDTO dto = new OverviewCertificateDTO(issuerCommonName, issuerEmail, issuerId,
-                        subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo);
+                        subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo, true);
 
                 retVal.add(dto);
             }
@@ -558,11 +560,70 @@ public class CertificateService {
             String validTo = ((X509Certificate) certificate).getNotAfter().toString();
 
             OverviewCertificateDTO dto = new OverviewCertificateDTO(issuerCommonName, issuerEmail, issuerId,
-                    subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo);
+                    subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo, false);
 
             retVal.add(dto);
         }
         return retVal;
+    }
+
+    public boolean downloadCertificate(OverviewCertificateDTO dto) {
+
+        String alias = this.generateAlias(Long.parseLong(dto.serialNum), dto.subjectEmail, dto.issuerEmail);
+        String file = null;
+        String filePass = null;
+        //String certFileName = "C:\\Users\\Bojana\\Downloads\\" + dto.issuerCommonName + dto.serialNum + ".cer";
+        String certFileName = "src\\main\\resources\\downloads\\" + dto.issuerCommonName + dto.serialNum + ".cer";
+
+        try {
+            if(dto.isCA) {
+                if(dto.issuerEmail.equals(dto.subjectEmail)) {
+                    this.loadSelfSignedKeyStore();
+                    file = PropertiesConfigurator.SELF_SIGNED + ".jks";
+                    filePass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.SELF_SIGNED);
+                } else {
+                    this.loadCAKeyStore();
+                    file = PropertiesConfigurator.CA + ".jks";
+                    filePass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.CA);
+                }
+            } else {
+                this.loadEndEntityKeyStore();
+                file = PropertiesConfigurator.END_ENTITY + ".jks";
+                filePass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.END_ENTITY);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(file != null && filePass != null) {
+            Certificate certificate = this.keyStoreReader.readCertificate(file, filePass, alias);
+            byte[] certByte = null;
+            FileOutputStream outputStream = null;
+
+            try {
+                outputStream = new FileOutputStream(certFileName);
+
+                try {
+                    certByte = certificate.getEncoded();
+                } catch (CertificateEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    outputStream.write(certByte);
+                    outputStream.close();
+                    return true;
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return false;
     }
 
 

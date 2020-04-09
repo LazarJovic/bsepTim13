@@ -32,4 +32,8 @@ export class CertificateService {
     return this.http.post<CreateCertificate>(`${environment.baseUrl}/${environment.certificates}`, data);
   }
 
+  downloadCertificate(data: OverviewCertificate) : Observable<OverviewCertificate> {
+    return this.http.post<OverviewCertificate>(`${environment.baseUrl}/${environment.certificates}/download`, data);
+  }
+
 }

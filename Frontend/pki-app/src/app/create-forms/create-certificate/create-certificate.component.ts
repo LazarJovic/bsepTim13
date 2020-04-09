@@ -168,8 +168,9 @@ export class CreateCertificateComponent implements OnInit {
           "issuer": this.signingCertificate.issuerCommonName
         });
 
-        this.keyUsage.fromStringArrayResolve(this.signingCertificate.keyUsage);
-        this.extKeyUsage.fromStringArrayResolve(this.signingCertificate.extendedKeyUsage);
+        //this.keyUsage.fromStringArrayResolve(this.signingCertificate.keyUsage);
+        //this.extKeyUsage.fromStringArrayResolve(this.signingCertificate.extendedKeyUsage);
+        this.onChangeIssuerUpdateKeyUsage();
       }
     });
   }
@@ -340,6 +341,113 @@ export class CreateCertificateComponent implements OnInit {
     }
     this.extKeyUsageDesc = this.extKeyUsageDesc.substr(0, this.extKeyUsageDesc.length - 2);
   }
+
+  onChangeIssuerUpdateKeyUsage() {
+    let temp = Object.assign({}, this.keyUsage);
+    this.keyUsage.digitalSignature = false;
+    this.keyUsage.nonRepudiation = false;
+    this.keyUsage.keyEncipherment = false;
+    this.keyUsage.dataEncipherment = false;
+    this.keyUsage.keyAgreement = false;
+    this.keyUsage.keyCertSign = false;
+    this.keyUsage.CRLSign = false;
+    this.keyUsage.encipherOnly = false;
+    this.keyUsage.decipherOnly = false;
+
+    for (let i = 0; i < 9; i++) {
+        if (!this.signingCertificate.keyUsage[i])
+            break;
+        if (temp.digitalSignature && this.signingCertificate.keyUsage[i] === "digitalSignature") {
+            this.keyUsage.digitalSignature = true;
+            continue;
+        }
+        if (temp.nonRepudiation && this.signingCertificate.keyUsage[i] === "nonRepudiation") {
+            this.keyUsage.nonRepudiation = true;
+            continue;
+        }
+        if (temp.keyEncipherment && this.signingCertificate.keyUsage[i] === "keyEncipherment") {
+            this.keyUsage.keyEncipherment = true;
+            continue;
+        }
+        if (temp.dataEncipherment && this.signingCertificate.keyUsage[i] === "dataEncipherment") {
+            this.keyUsage.dataEncipherment = true;
+            continue;
+        }
+        if (temp.keyAgreement && this.signingCertificate.keyUsage[i] === "keyAgreement") {
+            this.keyUsage.keyAgreement = true;
+            continue;
+        }
+        if (temp.keyCertSign && this.signingCertificate.keyUsage[i] === "keyCertSign") {
+            this.keyUsage.keyCertSign = true;
+            continue;
+        }
+        if (temp.CRLSign && this.signingCertificate.keyUsage[i] === "cRLSign") {
+            this.keyUsage.CRLSign = true;
+            continue;
+        }
+        if (temp.encipherOnly && this.signingCertificate.keyUsage[i] === "encipherOnly") {
+            this.keyUsage.encipherOnly = true;
+            continue;
+        }
+        if (temp.decipherOnly && this.signingCertificate.keyUsage[i] === "decipherOnly") {
+            this.keyUsage.decipherOnly = true;
+            continue;
+        }
+    }
+    this.updateKeyUsageDesc();
+    //Extended key usage
+    let temp2 = Object.assign({}, this.extKeyUsage);
+    this.extKeyUsage.serverAuth = false;
+    this.extKeyUsage.clientAuth = false;
+    this.extKeyUsage.codeSigning = false;
+    this.extKeyUsage.emailProtection = false;
+    this.extKeyUsage.timeStamping = false;
+    this.extKeyUsage.ocspSigning = false;
+    this.extKeyUsage.ipsecEndSystem = false;
+    this.extKeyUsage.ipsecTunnel = false;
+    this.extKeyUsage.ipsecUser = false;
+    for (let i = 0; i < 9; i++) {
+      if (!this.signingCertificate.extendedKeyUsage[i])
+          break;
+      if (temp2.serverAuth && this.signingCertificate.extendedKeyUsage[i] === "serverAuth") {
+          this.extKeyUsage.serverAuth = true;
+          continue;
+      }
+      if (temp2.clientAuth && this.signingCertificate.extendedKeyUsage[i] === "clientAuth") {
+          this.extKeyUsage.clientAuth = true;
+          continue;
+      }
+      if (temp2.codeSigning && this.signingCertificate.extendedKeyUsage[i] === "codeSigning") {
+          this.extKeyUsage.codeSigning = true;
+          continue;
+      }
+      if (temp2.emailProtection && this.signingCertificate.extendedKeyUsage[i] === "emailProtection") {
+          this.extKeyUsage.emailProtection = true;
+          continue;
+      }
+      if (temp2.timeStamping && this.signingCertificate.extendedKeyUsage[i] === "timeStamping") {
+          this.extKeyUsage.timeStamping = true;
+          continue;
+      }
+      if (temp2.ocspSigning && this.signingCertificate.extendedKeyUsage[i] === "ocspSigning") {
+          this.extKeyUsage.ocspSigning = true;
+          continue;
+      }
+      if (temp2.ipsecEndSystem && this.signingCertificate.extendedKeyUsage[i] === "ipsecEndSystem") {
+          this.extKeyUsage.ipsecEndSystem = true;
+          continue;
+      }
+      if (temp2.ipsecTunnel && this.signingCertificate.extendedKeyUsage[i] === "ipsecTunnel") {
+          this.extKeyUsage.ipsecTunnel = true;
+          continue;
+      }
+      if (temp2.ipsecUser && this.signingCertificate.extendedKeyUsage[i] === "ipsecUser") {
+          this.extKeyUsage.ipsecUser = true;
+          continue;
+      }
+  }
+  this.updateExtKeyUsageDesc();
+}
 
 }
 

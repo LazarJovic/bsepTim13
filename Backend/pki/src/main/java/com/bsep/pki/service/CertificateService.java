@@ -25,6 +25,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -601,7 +602,11 @@ public class CertificateService {
             FileOutputStream outputStream = null;
 
             try {
-                outputStream = new FileOutputStream(certFileName);
+                File f = new File(certFileName);
+                if(f.exists()) {
+                    return true;
+                }
+                outputStream = new FileOutputStream(f);
 
                 try {
                     certByte = certificate.getEncoded();

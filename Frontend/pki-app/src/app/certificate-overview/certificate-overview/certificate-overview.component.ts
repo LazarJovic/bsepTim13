@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CreateCertificate } from 'src/app/model/create-certificate';
 import { Router } from '@angular/router';
+import { OverviewCertificate } from 'src/app/model/overview-certificate';
+import { CertificateService } from 'src/app/services/certificate-service/certificate.service';
 
 @Component({
   selector: 'certificate-overview',
@@ -9,16 +10,55 @@ import { Router } from '@angular/router';
 })
 export class CertificateOverviewComponent implements OnInit {
 
-  constructor(private router: Router) { 
-    
-  }
+  endEntityCertificates: Array<OverviewCertificate>;
+  signingCertificates: Array<OverviewCertificate>;
+  selected: string;
+  isEndEntity: boolean;
+
+  constructor(
+    private router: Router,
+    public certificateService: CertificateService
+  ) { }
 
   ngOnInit() {
-
+    this.selected = "end-entity";
+    this.isEndEntity = true;
+    this.getEndEntityCertificates();
   }
 
   back() {
     this.router.navigate(['']);
+  }
+
+  getEndEntityCertificates() {
+    this.certificateService.getEndEntityCertificatesOverview().subscribe(
+      {
+        next: (result) => {
+          this.endEntityCertificates = result;
+        },
+        error: data => {
+          console.log("greska");
+        }
+      }
+    );
+  }
+
+  getSigningCertificates() {
+    this.certificateService.getSigningCertificatesOverview().subscribe(
+      {
+        next: (result) => {
+          this.signingCertificates = result;
+        },
+        error: data => {
+          console.log("greska");
+        }
+      }
+    );
+  }
+
+  onTypeChange() {
+    this.isEndEntity = this.isEndEntity ? false : true;
+    this.isEndEntity ? this.getEndEntityCertificates() : this.getSigningCertificates();
   }
 
 }

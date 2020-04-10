@@ -1,6 +1,7 @@
 package com.bsep.pki.service;
 
 import com.bsep.pki.dto.CreateCertificateDTO;
+import com.bsep.pki.dto.OverviewCertificateDTO;
 import com.bsep.pki.dto.SigningCertificateDTO;
 import com.bsep.pki.model.IssuerData;
 import com.bsep.pki.model.OtherCertData;
@@ -24,6 +25,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.*;
@@ -441,4 +445,190 @@ public class CertificateService {
         this.keyStoreWriter.saveKeyStore(PropertiesConfigurator.CA + ".jks", caPass.toCharArray());
         this.keyStoreWriter.saveKeyStore(PropertiesConfigurator.END_ENTITY + ".jks", endEntityPass.toCharArray());
     }
+
+    public ArrayList<OverviewCertificateDTO> getSigningCertificatesOverview() {
+        ArrayList<OverviewCertificateDTO> retVal = new ArrayList<>();
+        KeyStore keyStore = null;
+        String[] fileNames = {PropertiesConfigurator.SELF_SIGNED, PropertiesConfigurator.CA};
+        for(int i = 0; i < fileNames.length; i++) {
+            if(fileNames[i].equals(PropertiesConfigurator.SELF_SIGNED)) {
+                keyStore = this.loadSelfSignedKeyStore();
+            }
+            else {
+                keyStore = this.loadCAKeyStore();
+            }
+            Enumeration<String> aliases = null;
+            try {
+                aliases = keyStore.aliases();
+            } catch (KeyStoreException e) {
+                e.printStackTrace();
+            }
+
+            String keyAlias = null;
+            while (aliases.hasMoreElements()) {
+                keyAlias = aliases.nextElement();
+
+                Certificate certificate = null;
+                try {
+                    certificate = keyStore.getCertificate(keyAlias);
+                } catch (KeyStoreException e) {
+                    e.printStackTrace();
+                }
+
+                X500Name issuerName = null;
+                try {
+                    issuerName = new JcaX509CertificateHolder((X509Certificate) certificate).getIssuer();
+                } catch (CertificateEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                X500Name subjectName = null;
+                try {
+                    subjectName = new JcaX509CertificateHolder((X509Certificate) certificate).getSubject();
+                } catch (CertificateEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                String issuerCommonName = issuerName.getRDNs()[0].getFirst().getValue().toString();
+                String issuerEmail = issuerName.getRDNs()[6].getFirst().getValue().toString();
+                Long issuerId = this.userService.findByEmail(issuerEmail).getId();
+
+                String subjectCommonName = subjectName.getRDNs()[0].getFirst().getValue().toString();
+                String subjectEmail = subjectName.getRDNs()[6].getFirst().getValue().toString();
+                Long subjectId = this.userService.findByEmail(subjectEmail).getId();
+
+                String serialNumber = ((X509Certificate) certificate).getSerialNumber().toString();
+
+                String validFrom = ((X509Certificate) certificate).getNotBefore().toString();
+                String validTo = ((X509Certificate) certificate).getNotAfter().toString();
+
+                OverviewCertificateDTO dto = new OverviewCertificateDTO(issuerCommonName, issuerEmail, issuerId,
+                        subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo, true);
+
+                retVal.add(dto);
+            }
+
+        }
+        return retVal;
+    }
+
+    public ArrayList<OverviewCertificateDTO> getEndEntityCertificatesOverview() {
+        ArrayList<OverviewCertificateDTO> retVal = new ArrayList<>();
+        KeyStore keyStore = this.loadEndEntityKeyStore();
+        Enumeration<String> aliases = null;
+        try {
+            aliases = keyStore.aliases();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+
+        String keyAlias = null;
+        while (aliases.hasMoreElements()) {
+            keyAlias = aliases.nextElement();
+
+            Certificate certificate = null;
+            try {
+                certificate = keyStore.getCertificate(keyAlias);
+            } catch (KeyStoreException e) {
+                e.printStackTrace();
+            }
+
+            X500Name issuerName = null;
+            try {
+                issuerName = new JcaX509CertificateHolder((X509Certificate) certificate).getIssuer();
+            } catch (CertificateEncodingException e) {
+                e.printStackTrace();
+            }
+
+            X500Name subjectName = null;
+            try {
+                subjectName = new JcaX509CertificateHolder((X509Certificate) certificate).getSubject();
+            } catch (CertificateEncodingException e) {
+                e.printStackTrace();
+            }
+
+            String issuerCommonName = issuerName.getRDNs()[0].getFirst().getValue().toString();
+            String issuerEmail = issuerName.getRDNs()[6].getFirst().getValue().toString();
+            Long issuerId = this.userService.findByEmail(issuerEmail).getId();
+
+            String subjectCommonName = subjectName.getRDNs()[0].getFirst().getValue().toString();
+            String subjectEmail = subjectName.getRDNs()[6].getFirst().getValue().toString();
+            Long subjectId = this.userService.findByEmail(subjectEmail).getId();
+
+            String serialNumber = ((X509Certificate) certificate).getSerialNumber().toString();
+
+            String validFrom = ((X509Certificate) certificate).getNotBefore().toString();
+            String validTo = ((X509Certificate) certificate).getNotAfter().toString();
+
+            OverviewCertificateDTO dto = new OverviewCertificateDTO(issuerCommonName, issuerEmail, issuerId,
+                    subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo, false);
+
+            retVal.add(dto);
+        }
+        return retVal;
+    }
+
+    public boolean downloadCertificate(OverviewCertificateDTO dto) {
+
+        String alias = this.generateAlias(Long.parseLong(dto.serialNum), dto.subjectEmail, dto.issuerEmail);
+        String file = null;
+        String filePass = null;
+        String certFileName = System.getProperty("user.home") + "\\Downloads\\" + dto.issuerCommonName + dto.serialNum + ".cer";
+
+        try {
+            if(dto.isCA) {
+                if(dto.issuerEmail.equals(dto.subjectEmail)) {
+                    this.loadSelfSignedKeyStore();
+                    file = PropertiesConfigurator.SELF_SIGNED + ".jks";
+                    filePass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.SELF_SIGNED);
+                } else {
+                    this.loadCAKeyStore();
+                    file = PropertiesConfigurator.CA + ".jks";
+                    filePass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.CA);
+                }
+            } else {
+                this.loadEndEntityKeyStore();
+                file = PropertiesConfigurator.END_ENTITY + ".jks";
+                filePass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.END_ENTITY);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(file != null && filePass != null) {
+            Certificate certificate = this.keyStoreReader.readCertificate(file, filePass, alias);
+            byte[] certByte = null;
+            FileOutputStream outputStream = null;
+
+            try {
+                File f = new File(certFileName);
+                if(f.exists()) {
+                    return true;
+                }
+                outputStream = new FileOutputStream(f);
+
+                try {
+                    certByte = certificate.getEncoded();
+                } catch (CertificateEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    outputStream.write(certByte);
+                    outputStream.close();
+                    return true;
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return false;
+    }
+
+
 }

@@ -35,7 +35,6 @@ export class ChooseCertificateDialogComponent implements OnInit {
       {
         next: (result) => {
           this.signingCertificates = result;
-          console.log(this.signingCertificates);
         },
         error: data => {
           console.log("greska");

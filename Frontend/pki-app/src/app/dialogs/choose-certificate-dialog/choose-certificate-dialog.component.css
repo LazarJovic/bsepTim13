@@ -5,6 +5,7 @@ h1 {
 signing-certificate-card {
     display: inline-block;
     margin: 10px 10px 20px 8px;
+    border: 1px solid black;
 }
 
 #back-button:hover {

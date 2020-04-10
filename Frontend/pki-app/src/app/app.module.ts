@@ -18,6 +18,7 @@ import { KeyUsageDialogComponent } from './dialogs/key-usage-dialog/key-usage-di
 import { ExtendedKeyUsageDialogComponent } from './dialogs/extended-key-usage-dialog/extended-key-usage-dialog.component';
 import { ChooseCertificateDialogComponent } from './dialogs/choose-certificate-dialog/choose-certificate-dialog.component';
 import { SigningCertificateCardComponent } from './cards/signing-certificate-card/signing-certificate-card.component';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,12 @@ import { SigningCertificateCardComponent } from './cards/signing-certificate-car
     MatFormFieldModule,
     MatDialogModule,
     HttpClientModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+    })
   ],
   providers: [],
   bootstrap: [AppComponent],

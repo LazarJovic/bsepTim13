@@ -6,6 +6,8 @@ export class CreateCertificate {
     public issuerEmail: string;
     public serialNum: string;
     public issuerCommonName: string;
+    public issuerValidFrom: string;
+    public issuerValidTo: string;
     public validFrom: string;
     public validTo: string;
     public subjectId: number;
@@ -16,7 +18,8 @@ export class CreateCertificate {
     public keyUsage: Array<string>;
     public extendedKeyUsage: Array<string>;
 
-    constructor(id: number, issuerId: number, issuerIssuerEmail: string, issuerEmail: string, serialNum: string, issuerCommonName: string, validFrom: string, validTo: string,
+    constructor(id: number, issuerId: number, issuerIssuerEmail: string, issuerEmail: string, serialNum: string,
+        issuerCommonName: string, issuerValidFrom: string, issuerValidTo: string, validFrom: string, validTo: string,
         subjectId: number, subjectCommonName: string, subjectEmail: string, signatureAlgorithm: string, keyAlgorithm: string, keyUsage: Array<string>,
         extendedKeyUsage: Array<string>) {
         this.issuerId = issuerId;
@@ -24,6 +27,8 @@ export class CreateCertificate {
         this.issuerEmail = issuerEmail;
         this.serialNum = serialNum;
         this.issuerCommonName = issuerCommonName;
+        this.issuerValidFrom = issuerValidFrom;
+        this.issuerValidTo = issuerValidTo;
         this.validFrom = validFrom;
         this.validTo = validTo;
         this.subjectId = subjectId;

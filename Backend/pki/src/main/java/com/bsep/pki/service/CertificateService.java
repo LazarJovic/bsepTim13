@@ -3,10 +3,7 @@ package com.bsep.pki.service;
 import com.bsep.pki.dto.CreateCertificateDTO;
 import com.bsep.pki.dto.OverviewCertificateDTO;
 import com.bsep.pki.dto.SigningCertificateDTO;
-import com.bsep.pki.model.IssuerData;
-import com.bsep.pki.model.OtherCertData;
-import com.bsep.pki.model.SubjectData;
-import com.bsep.pki.model.User;
+import com.bsep.pki.model.*;
 import com.bsep.pki.repository.UserRepository;
 import com.bsep.pki.util.MyKeyGenerator;
 import com.bsep.pki.util.PropertiesConfigurator;
@@ -734,6 +731,5 @@ public class CertificateService {
 
         return false;
     }
-
 
 }

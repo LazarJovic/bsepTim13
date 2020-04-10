@@ -4,6 +4,7 @@ import com.bsep.pki.dto.CreateCertificateDTO;
 import com.bsep.pki.dto.OverviewCertificateDTO;
 import com.bsep.pki.dto.SigningCertificateDTO;
 import com.bsep.pki.dto.UserDTO;
+import com.bsep.pki.model.RevokedCertificate;
 import com.bsep.pki.service.CertificateService;
 import com.bsep.pki.util.PropertiesConfigurator;
 import org.springframework.beans.factory.annotation.Autowired;

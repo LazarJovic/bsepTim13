@@ -80,7 +80,6 @@ export class CreateCertificateComponent implements OnInit {
           this.createCertificateForm.reset();
         },
         error: data => {
-          console.log(data);
           if (data.error && typeof data.error === "string")
             this.toast.error(data.error);
           else
@@ -163,8 +162,6 @@ export class CreateCertificateComponent implements OnInit {
       data: {}
     });
 
-    console.log(this.createCertificateForm);
-
     dialogRef.afterClosed().subscribe(result => {
 
       if (result) {
@@ -186,9 +183,9 @@ export class CreateCertificateComponent implements OnInit {
       },
       error: data => {
         if (data.error && typeof data.error === "string")
-          console.log(data.error);
+            this.toast.error(data.error);
         else
-          console.log("Nisu dobavljeni subjekti");
+            this.toast.error("Could not load subjects.");
       }
 
     });
@@ -206,6 +203,8 @@ export class CreateCertificateComponent implements OnInit {
         var subject = new User(0, result.givenName, result.lastName, result.commonName, result.country, result.organization,
           result.organizationalUnit, result.locality, result.email, 0);
 
+        this.toast.success("Subject created successfully!");
+
         this.userService.createSubject(subject).subscribe(
           {
             next: () => {
@@ -213,9 +212,9 @@ export class CreateCertificateComponent implements OnInit {
             },
             error: data => {
               if (data.error && typeof data.error === "string")
-                console.log(data.error);
+                this.toast.error(data.error);
               else
-                console.log("Nije kreiran subjekat");
+                this.toast.error("Could not load subjects.");
             }
           }
         );

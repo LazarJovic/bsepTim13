@@ -17,6 +17,7 @@ import { TemplateService } from 'src/app/services/template-service/template.serv
 import { Template } from 'src/app/model/template';
 import { toBase64String } from '@angular/compiler/src/output/source_map';
 import { TemplateNameDialogComponent } from 'src/app/dialogs/template-name-dialog/template-name-dialog.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'create-certificate',
@@ -47,7 +48,8 @@ export class CreateCertificateComponent implements OnInit {
     private templateService: TemplateService,
     private keyUsageDialog: MatDialog,
     private extendedKeyUsageDialog: MatDialog,
-    private templateNameDialog: MatDialog
+    private templateNameDialog: MatDialog,
+    private toast: ToastrService
   ) { }
 
   ngOnInit() {
@@ -57,12 +59,11 @@ export class CreateCertificateComponent implements OnInit {
     this.extKeyUsageDesc = "ServerAuth, ClientAuth, CodeSigning, EmailProtection, TimeStamping, OCSPSigning, IpsecEndSystem, IpsecTunnel, IpsecUser";
     this.createCertificateForm = new FormGroup({
       'issuer': new FormControl(null, [Validators.required]),
-      'serialNumber': new FormControl(null, [Validators.required]),
-      'validFrom': new FormControl({ value: null }, [Validators.required]),
-      'validTo': new FormControl({ value: null }, [Validators.required]),
-      'subject': new FormControl({ value: null }, [Validators.required]),
-      'signatureAlgorithm': new FormControl({ value: null }, [Validators.required]),
-      'pubKeyAlgorithm': new FormControl({ value: null }, [Validators.required])
+      'validFrom': new FormControl({value: null}, [Validators.required]),
+      'validTo': new FormControl({value: null}, [Validators.required]),
+      'subject': new FormControl({value: null}, [Validators.required]),
+      'signatureAlgorithm': new FormControl({value: null}, [Validators.required]),
+      'pubKeyAlgorithm': new FormControl({value: null}, [Validators.required])
     });
 
     this.getSubjects();
@@ -74,20 +75,21 @@ export class CreateCertificateComponent implements OnInit {
     var extendedKeyUsage: Array<string> = this.toStringArrayExtKeyUsage(this.extKeyUsage);
     this.selectedSubject = this.createCertificateForm.value.subject;
     this.certificate = new CreateCertificate(null, this.signingCertificate.issuerId, this.signingCertificate.issuerIssuerEmail, this.signingCertificate.issuerEmail, this.signingCertificate.serialNum,
-      this.signingCertificate.issuerCommonName, this.createCertificateForm.value.validFrom, this.createCertificateForm.value.validTo,
+      this.signingCertificate.issuerCommonName, this.signingCertificate.validFrom, this.signingCertificate.validTo, this.createCertificateForm.value.validFrom, this.createCertificateForm.value.validTo,
       this.selectedSubject.id, this.selectedSubject.commonName, this.selectedSubject.email, this.createCertificateForm.value.signatureAlgorithm, this.createCertificateForm.value.pubKeyAlgorithm,
       keyUsages, extendedKeyUsage);
 
     this.certificateService.createCertificate(this.certificate).subscribe(
       {
         next: () => {
-          console.log("kreiran");
+          this.toast.success("Certificate successfully created!");
+          this.createCertificateForm.reset();
         },
         error: data => {
           if (data.error && typeof data.error === "string")
-            console.log(data.error);
+            this.toast.error(data.error);
           else
-            console.log("Nije kreiran subjekat");
+          this.toast.error("Error creating certificate!");
         }
       }
     );
@@ -159,6 +161,7 @@ export class CreateCertificateComponent implements OnInit {
 
 
   chooseCert() {
+
     const dialogRef = this.signingCertDialog.open(ChooseCertificateDialogComponent, {
       width: '80vw',
       height: '90vh',
@@ -169,7 +172,6 @@ export class CreateCertificateComponent implements OnInit {
 
       if (result) {
         this.signingCertificate = result.certificate;
-
         this.createCertificateForm.patchValue({
           "issuer": this.signingCertificate.issuerCommonName
         });
@@ -187,9 +189,9 @@ export class CreateCertificateComponent implements OnInit {
       },
       error: data => {
         if (data.error && typeof data.error === "string")
-          console.log(data.error);
+            this.toast.error(data.error);
         else
-          console.log("Nisu dobavljeni subjekti");
+            this.toast.error("Could not load subjects.");
       }
 
     });
@@ -207,6 +209,8 @@ export class CreateCertificateComponent implements OnInit {
         var subject = new User(0, result.givenName, result.lastName, result.commonName, result.country, result.organization,
           result.organizationalUnit, result.locality, result.email, 0);
 
+        this.toast.success("Subject created successfully!");
+
         this.userService.createSubject(subject).subscribe(
           {
             next: () => {
@@ -214,9 +218,9 @@ export class CreateCertificateComponent implements OnInit {
             },
             error: data => {
               if (data.error && typeof data.error === "string")
-                console.log(data.error);
+                this.toast.error(data.error);
               else
-                console.log("Nije kreiran subjekat");
+                this.toast.error("Could not load subjects.");
             }
           }
         );

@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Save template?</h2>
+
+<mat-dialog-content>
+    <div fxLayout="column">
+        <form [formGroup]="form">
+            <mat-form-field id="name-field">
+                <mat-label>Template name</mat-label>
+                <input matInput type="text" formControlName="name">
+            </mat-form-field>
+        </form>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="close()">Cancel</button>
+    <button class="mat-raised-button mat-primary" type="submit"
+        (click)="onSubmit()">Save</button>
+</mat-dialog-actions>

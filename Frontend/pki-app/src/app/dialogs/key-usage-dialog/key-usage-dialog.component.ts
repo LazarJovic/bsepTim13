@@ -39,7 +39,6 @@ export class KeyUsageDialogComponent implements OnInit {
       'encipherOnly': new FormControl({value: true}, null),
       'decipherOnly': new FormControl({value: true}, null)    
     });
-    //this.keyAgreementChanged();
     if (this.issuerKeyUsage)
       this.adjustToIssuer();
   }

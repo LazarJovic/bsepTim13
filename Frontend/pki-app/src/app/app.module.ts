@@ -18,6 +18,7 @@ import { KeyUsageDialogComponent } from './dialogs/key-usage-dialog/key-usage-di
 import { ExtendedKeyUsageDialogComponent } from './dialogs/extended-key-usage-dialog/extended-key-usage-dialog.component';
 import { ChooseCertificateDialogComponent } from './dialogs/choose-certificate-dialog/choose-certificate-dialog.component';
 import { SigningCertificateCardComponent } from './cards/signing-certificate-card/signing-certificate-card.component';
+import { TemplateNameDialogComponent } from './dialogs/template-name-dialog/template-name-dialog.component';
 import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
@@ -32,7 +33,8 @@ import { ToastrModule } from 'ngx-toastr';
     KeyUsageDialogComponent,
     ExtendedKeyUsageDialogComponent,
     ChooseCertificateDialogComponent,
-    SigningCertificateCardComponent
+    SigningCertificateCardComponent,
+    TemplateNameDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +60,8 @@ import { ToastrModule } from 'ngx-toastr';
     DialogCreateSubjectComponent,
     KeyUsageDialogComponent,
     ExtendedKeyUsageDialogComponent,
-    ChooseCertificateDialogComponent
+    ChooseCertificateDialogComponent,
+    TemplateNameDialogComponent
   ]
 })
 export class AppModule { }

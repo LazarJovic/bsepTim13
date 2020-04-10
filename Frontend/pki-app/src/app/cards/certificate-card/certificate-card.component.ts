@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CreateCertificate } from 'src/app/model/create-certificate';
+import { OverviewCertificate } from 'src/app/model/overview-certificate';
+import { CertificateService } from 'src/app/services/certificate-service/certificate.service';
 
 @Component({
   selector: 'certificate-card',
@@ -9,15 +10,28 @@ import { CreateCertificate } from 'src/app/model/create-certificate';
 export class CertificateCardComponent implements OnInit {
 
   @Input()
-  item: CreateCertificate;
+  item: OverviewCertificate;
 
-  constructor() { }
+  constructor(
+    private certificateService: CertificateService
+  ) { }
 
   ngOnInit() {
   }
 
   downloadCertificate() {
-    
+    this.certificateService.downloadCertificate(this.item).subscribe(
+      {
+        next: (data) => {
+          if(data) {
+            console.log("Downloaded!");
+          }
+        },
+        error: data => {
+          console.log("greska");
+        }
+      }
+    );
   }
 
 }

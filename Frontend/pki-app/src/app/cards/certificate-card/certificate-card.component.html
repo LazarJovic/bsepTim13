@@ -8,10 +8,10 @@
     
     <mat-card-content>
       <p class="cert-info-p">
-        <b>Issued by:</b> {{item?.issuer}}
+        <b>Issued by:</b> {{item?.issuerCommonName}}
       </p>
       <p class="cert-info-p">
-        <b>Issued to:</b> {{item?.subject}}
+        <b>Issued to:</b> {{item?.subjectCommonName}}
       </p>
       <p class="cert-info-p">
         <b>Valid from </b> {{item?.validFrom}}<b> to </b> {{item?.validTo}}

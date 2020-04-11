@@ -1,0 +1,10 @@
+<div id="container-div">
+    <button mat-icon-button aria-label="Back" id="back-button" (click)="close()">
+        <mat-icon>keyboard_backspace
+        </mat-icon>
+      </button>
+    <h1>Available templates</h1>
+    <div id="component-div">
+        <template-card *ngFor="let item of templates" [item]='item' (templateChosen)='onSubmit($event)'></template-card>
+    </div>
+</div>

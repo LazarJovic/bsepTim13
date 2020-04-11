@@ -105,3 +105,10 @@ mat-card p{
     position: fixed;
     float: right;
 }
+
+#load-button {
+    margin: 10px;
+    margin-top: 110px;
+    position: fixed;
+    float: right;
+}

@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule, MatDialogModule, MatCheckboxModule } from '@angular/material';
+import { MatInputModule, MatFormFieldModule, MatDialogModule, MatCheckboxModule } from '@angular/material';
 import { CreateCertificateComponent } from './create-forms/create-certificate/create-certificate.component';
 import { CreateSubjectComponent } from './create-forms/create-subject/create-subject.component';
 import { CertificateOverviewComponent } from './certificate-overview/certificate-overview/certificate-overview.component';
@@ -20,6 +20,8 @@ import { ChooseCertificateDialogComponent } from './dialogs/choose-certificate-d
 import { SigningCertificateCardComponent } from './cards/signing-certificate-card/signing-certificate-card.component';
 import { TemplateNameDialogComponent } from './dialogs/template-name-dialog/template-name-dialog.component';
 import { ToastrModule } from 'ngx-toastr';
+import { TemplateCardComponent } from './cards/template-card/template-card.component';
+import { LoadTemplateDialogComponent } from './dialogs/load-template-dialog/load-template-dialog.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import { ToastrModule } from 'ngx-toastr';
     ExtendedKeyUsageDialogComponent,
     ChooseCertificateDialogComponent,
     SigningCertificateCardComponent,
-    TemplateNameDialogComponent
+    TemplateNameDialogComponent,
+    TemplateCardComponent,
+    LoadTemplateDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +65,8 @@ import { ToastrModule } from 'ngx-toastr';
     KeyUsageDialogComponent,
     ExtendedKeyUsageDialogComponent,
     ChooseCertificateDialogComponent,
-    TemplateNameDialogComponent
+    TemplateNameDialogComponent,
+    LoadTemplateDialogComponent
   ]
 })
 export class AppModule { }

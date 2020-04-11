@@ -7,6 +7,9 @@ import com.bsep.pki.repository.TemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class TemplateService {
 
@@ -23,5 +26,14 @@ public class TemplateService {
         Template template = this.templateMapper.toEntity(dto);
 
         return this.templateMapper.toDto(this.templateRepository.save(template));
+    }
+
+    public List<TemplateDTO> getTemplates() {
+        List<Template> result = this.templateRepository.findAll();
+        List<TemplateDTO> retVal = new ArrayList<>();
+        for (Template t: result) {
+            retVal.add(templateMapper.toDto(t));
+        }
+        return retVal;
     }
 }

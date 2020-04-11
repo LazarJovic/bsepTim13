@@ -1,0 +1,28 @@
+.example-card {
+    width: 300px;
+    min-height: 300px;
+  }
+  
+.example-header-image {
+    background-image: url('https://image.flaticon.com/icons/svg/705/705324.svg');
+    background-size: cover;
+  }
+
+button {
+    background-color: darkorange;
+    color: white;
+    width: 150px;
+    height: 40px;
+    font-size: 18px;
+    margin-left: 80px;
+}
+
+button:hover {
+  background-color:white;
+  color: darkorange;
+  border: 1px solid darkorange;
+}
+
+.usages-div {
+  height: 60px;
+}

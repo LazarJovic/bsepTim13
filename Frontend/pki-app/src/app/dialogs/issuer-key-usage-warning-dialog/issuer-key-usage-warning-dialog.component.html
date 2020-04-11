@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Continue?</h2>
+
+<mat-dialog-content>
+    <div fxLayout="column">
+        <p>Choosing this certificate will remove and disable some of your currently selected
+            Key Usages and/or Extended Key Usages. Are you sure you want to continue?
+        </p>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button id="close-button" class="mat-raised-button" (click)="close()">Cancel</button>
+    <button class="mat-raised-button mat-primary" type="submit"
+        (click)="onSubmit()">Continue</button>
+</mat-dialog-actions>

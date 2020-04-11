@@ -22,6 +22,7 @@ import { TemplateNameDialogComponent } from './dialogs/template-name-dialog/temp
 import { ToastrModule } from 'ngx-toastr';
 import { TemplateCardComponent } from './cards/template-card/template-card.component';
 import { LoadTemplateDialogComponent } from './dialogs/load-template-dialog/load-template-dialog.component';
+import { IssuerKeyUsageWarningDialogComponent } from './dialogs/issuer-key-usage-warning-dialog/issuer-key-usage-warning-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { LoadTemplateDialogComponent } from './dialogs/load-template-dialog/load
     SigningCertificateCardComponent,
     TemplateNameDialogComponent,
     TemplateCardComponent,
-    LoadTemplateDialogComponent
+    LoadTemplateDialogComponent,
+    IssuerKeyUsageWarningDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -66,7 +68,8 @@ import { LoadTemplateDialogComponent } from './dialogs/load-template-dialog/load
     ExtendedKeyUsageDialogComponent,
     ChooseCertificateDialogComponent,
     TemplateNameDialogComponent,
-    LoadTemplateDialogComponent
+    LoadTemplateDialogComponent,
+    IssuerKeyUsageWarningDialogComponent
   ]
 })
 export class AppModule { }

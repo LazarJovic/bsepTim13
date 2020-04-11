@@ -2,6 +2,7 @@ package com.bsep.pki.util.keystore;
 
 import java.io.*;
 import java.security.*;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -62,12 +63,24 @@ public class KeyStoreWriter {
         }
     }
 
-    public void write(String alias, PrivateKey privateKey, String password, X509Certificate certificate) {
+    public void write(String alias, PrivateKey privateKey, String password, Certificate certificate, Certificate[] issuerChain) {
         try {
-            keyStore.setKeyEntry(alias, privateKey, password.toCharArray(), (java.security.cert.X509Certificate[]) new X509Certificate[] {certificate});
+            keyStore.setKeyEntry(alias, privateKey, password.toCharArray(), this.getIssuerChain(certificate, issuerChain));
         } catch (KeyStoreException e) {
             e.printStackTrace();
         }
+    }
+
+    private Certificate[] getIssuerChain(Certificate certificate, Certificate[] issuerChain) {
+
+        Certificate[] newChain = new Certificate[issuerChain.length + 1];
+        newChain[0] = certificate;
+
+        for(int i = 0; i < issuerChain.length; i++) {
+            newChain[i + 1] = issuerChain[i];
+        }
+
+        return newChain;
     }
 
     public KeyStore getKeyStore() {

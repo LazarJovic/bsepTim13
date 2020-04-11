@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OverviewCertificate } from 'src/app/model/overview-certificate';
 import { CertificateService } from 'src/app/services/certificate-service/certificate.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'certificate-overview',
@@ -17,7 +18,8 @@ export class CertificateOverviewComponent implements OnInit {
 
   constructor(
     private router: Router,
-    public certificateService: CertificateService
+    private certificateService: CertificateService,
+    private toast: ToastrService
   ) { }
 
   ngOnInit() {
@@ -37,7 +39,10 @@ export class CertificateOverviewComponent implements OnInit {
           this.endEntityCertificates = result;
         },
         error: data => {
-          console.log("greska");
+          if (data.error && typeof data.error === "string")
+            this.toast.error(data.error);
+          else
+            this.toast.error("Could not load end-entity certificates.");
         }
       }
     );
@@ -50,7 +55,10 @@ export class CertificateOverviewComponent implements OnInit {
           this.signingCertificates = result;
         },
         error: data => {
-          console.log("greska");
+          if (data.error && typeof data.error === "string")
+            this.toast.error(data.error);
+          else
+            this.toast.error("Could not load signing certificates.");
         }
       }
     );

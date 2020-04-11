@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { SigningCertificate } from 'src/app/model/signing-certificate';
 import { CreateCertificate } from 'src/app/model/create-certificate';
@@ -38,7 +38,13 @@ export class CertificateService {
   }
 
   revokeCertificate(data: OverviewCertificate) {
-    return this.http.post<RevokedCertificate>(`${environment.baseUrl}/${environment.revokedCertificates}`, data);
+
+    // var  headers = new HttpHeaders();
+    // headers = headers.set("Content-Type", "application/ocsp-request");
+    // headers = headers.set("Accept", "application/ocsp-response");
+
+    return this.http.post<RevokedCertificate>(`${environment.baseUrl}/${environment.revokedCertificates}`, 
+    data); //, {headers}
   }
 
 }

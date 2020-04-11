@@ -96,7 +96,7 @@ public class CertificateService {
         String certAlias = this.generateAlias(serialNumber.longValue(), subject.getEmail(), dto.issuerEmail);
         String privateKeyPass = PasswordGenerator.generateRandomPassword(15);
 
-        this.writeInKeyStore(certificate, certAlias, subjectKeyPair.getPrivate(), privateKeyPass, subject.getEmail(), dto.issuerEmail);
+        this.writeInKeyStore(certificate, certAlias, subjectKeyPair.getPrivate(), privateKeyPass, subject.getEmail(), dto.issuerEmail, issuerAlias);
 
         try {
             this.propertiesConfigurator.putAliasKeyPass(certAlias, privateKeyPass);
@@ -106,7 +106,7 @@ public class CertificateService {
     }
 
     private void writeInKeyStore(X509Certificate certificate, String certAlias, PrivateKey privateKey, String privateKeyPass,
-                                 String subjectEmail, String issuerEmail) {
+                                 String subjectEmail, String issuerEmail, String issuerAlias) {
         String fileName = null;
         String filePass = null;
         try {
@@ -128,8 +128,48 @@ public class CertificateService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.keyStoreWriter.write(certAlias, privateKey, privateKeyPass, certificate);
-        this.keyStoreWriter.saveKeyStore(fileName, filePass.toCharArray());
+
+        KeyStore issuerKeyStore = this.findKeyStoreByAlias(issuerAlias);
+        Certificate[] issuerChain = null;
+        try {
+            issuerChain = issuerKeyStore.getCertificateChain(issuerAlias);
+            this.keyStoreWriter.write(certAlias, privateKey, privateKeyPass, certificate, issuerChain);
+            this.keyStoreWriter.saveKeyStore(fileName, filePass.toCharArray());
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private KeyStore findKeyStoreByAlias(String alias) {
+
+        KeyStore keyStore = null;
+        String[] fileNames = {PropertiesConfigurator.SELF_SIGNED, PropertiesConfigurator.CA, PropertiesConfigurator.END_ENTITY};
+        try {
+            for(int i = 0; i < fileNames.length; i++) {
+                if (fileNames[i].equals(PropertiesConfigurator.SELF_SIGNED)) {
+                    keyStore = this.loadSelfSignedKeyStore();
+                        if(keyStore.containsAlias(alias)) {
+                            return keyStore;
+                        }
+                } else if(fileNames[i].equals(PropertiesConfigurator.CA)){
+                    keyStore = this.loadCAKeyStore();
+                    if(keyStore.containsAlias(alias)) {
+                        return keyStore;
+                    }
+                } else {
+                    keyStore = this.loadEndEntityKeyStore();
+                    if(keyStore.containsAlias(alias)) {
+                        return keyStore;
+                    }
+                }
+            }
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+
+        return keyStore;
     }
 
     private boolean isCA(X509Certificate certificate) {
@@ -175,6 +215,7 @@ public class CertificateService {
         ArrayList<SigningCertificateDTO> retVal = new ArrayList<>();
         KeyStore keyStore = null;
         String[] fileNames = {PropertiesConfigurator.SELF_SIGNED, PropertiesConfigurator.CA};
+        ArrayList<String> usedAliases = new ArrayList<>();
         for(int i = 0; i < fileNames.length; i++) {
             if(fileNames[i].equals(PropertiesConfigurator.SELF_SIGNED)) {
                 keyStore = this.loadSelfSignedKeyStore();
@@ -192,6 +233,10 @@ public class CertificateService {
             String keyAlias = null;
             while (aliases.hasMoreElements()) {
                 keyAlias = aliases.nextElement();
+
+                if(usedAliases.contains(keyAlias)) {
+                    continue;
+                }
 
                 Certificate certificate = null;
                 try {
@@ -246,6 +291,7 @@ public class CertificateService {
                         serialNumber, keyUsage, extendedKeyUsage);
 
                 retVal.add(dto);
+                usedAliases.add(keyAlias);
             }
 
         }
@@ -523,11 +569,10 @@ public class CertificateService {
 
             String ssPass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.SELF_SIGNED);
 
-            this.keyStoreWriter.write(alias, issuerRootData.getKeyPair().getPrivate(), keyPass, certificate);
+            this.keyStoreWriter.write(alias, issuerRootData.getKeyPair().getPrivate(), keyPass, certificate, new X509Certificate[0]);
             this.keyStoreWriter.saveKeyStore(PropertiesConfigurator.SELF_SIGNED + ".jks", ssPass.toCharArray());
 
             Certificate c = this.keyStoreReader.readCertificate(PropertiesConfigurator.SELF_SIGNED + ".jks", ssPass, alias);
-
 
         }
 
@@ -552,6 +597,7 @@ public class CertificateService {
         ArrayList<OverviewCertificateDTO> retVal = new ArrayList<>();
         KeyStore keyStore = null;
         String[] fileNames = {PropertiesConfigurator.SELF_SIGNED, PropertiesConfigurator.CA};
+        ArrayList<String> usedAliases = new ArrayList<>();
         for(int i = 0; i < fileNames.length; i++) {
             if(fileNames[i].equals(PropertiesConfigurator.SELF_SIGNED)) {
                 keyStore = this.loadSelfSignedKeyStore();
@@ -569,6 +615,10 @@ public class CertificateService {
             String keyAlias = null;
             while (aliases.hasMoreElements()) {
                 keyAlias = aliases.nextElement();
+
+                if(usedAliases.contains(keyAlias)) {
+                    continue;
+                }
 
                 Certificate certificate = null;
                 try {
@@ -604,10 +654,15 @@ public class CertificateService {
                 String validFrom = ((X509Certificate) certificate).getNotBefore().toString();
                 String validTo = ((X509Certificate) certificate).getNotAfter().toString();
 
+                String issuerNameHash = this.encryptIssuerDN(issuerName);
+                String issuerKeyHash = this.encryptIssuerPublicKey(this.getIssuerCertificate(keyAlias, keyStore).getPublicKey());
+
                 OverviewCertificateDTO dto = new OverviewCertificateDTO(issuerCommonName, issuerEmail, issuerId,
-                        subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo, true);
+                        subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo, true,
+                        "sha1", issuerNameHash, issuerKeyHash);
 
                 retVal.add(dto);
+                usedAliases.add(keyAlias);
             }
 
         }
@@ -633,6 +688,10 @@ public class CertificateService {
                 certificate = keyStore.getCertificate(keyAlias);
             } catch (KeyStoreException e) {
                 e.printStackTrace();
+            }
+
+            if(this.isCA((X509Certificate) certificate)) {
+                continue;
             }
 
             X500Name issuerName = null;
@@ -662,12 +721,79 @@ public class CertificateService {
             String validFrom = ((X509Certificate) certificate).getNotBefore().toString();
             String validTo = ((X509Certificate) certificate).getNotAfter().toString();
 
+            String issuerNameHash = this.encryptIssuerDN(issuerName);
+            String issuerKeyHash = this.encryptIssuerPublicKey(this.getIssuerCertificate(keyAlias, keyStore).getPublicKey());
+
             OverviewCertificateDTO dto = new OverviewCertificateDTO(issuerCommonName, issuerEmail, issuerId,
-                    subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo, false);
+                    subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo, false,
+                    "sha1", issuerNameHash, issuerKeyHash);
 
             retVal.add(dto);
         }
         return retVal;
+    }
+
+    private Certificate getIssuerCertificate(String alias, KeyStore keyStore) {
+        try {
+            if(keyStore.containsAlias(alias)) {
+                Certificate[] certs = keyStore.getCertificateChain(alias);
+                if(certs.length == 1) {
+                    return certs[0];
+                } else {
+                    return certs[1];
+                }
+            }
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private String encryptIssuerDN(X500Name input)
+    {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+
+            byte[] messageDigest = md.digest(input.getEncoded());
+
+            BigInteger no = new BigInteger(1, messageDigest);
+
+            String hashtext = no.toString(16);
+
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+
+            return hashtext;
+        }
+
+        catch (NoSuchAlgorithmException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String encryptIssuerPublicKey(PublicKey input)
+    {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+
+            byte[] messageDigest = md.digest(input.getEncoded());
+
+            BigInteger no = new BigInteger(1, messageDigest);
+
+            String hashtext = no.toString(16);
+
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+
+            return hashtext;
+        }
+
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean downloadCertificate(OverviewCertificateDTO dto) {

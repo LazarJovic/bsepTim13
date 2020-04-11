@@ -5,6 +5,6 @@
       </button>
     <h1>Available certificates for signing</h1>
     <div id="component-div">
-        <signing-certificate-card *ngFor="let item of signingCertificates" [item]='item' (certificateChosen)='onSubmit($event)'></signing-certificate-card>
+        <signing-certificate-card *ngFor="let item of signingCertificates" [item]='item' [chosenKeyUsage]='chosenKeyUsage' [chosenExtendedKeyUsage]='chosenExtendedKeyUsage' (certificateChosen)='onSubmit($event)'></signing-certificate-card>
     </div>
 </div>

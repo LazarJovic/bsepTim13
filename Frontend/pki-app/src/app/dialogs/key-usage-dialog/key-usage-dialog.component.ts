@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { KeyUsage } from 'src/app/model/key-usage';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-key-usage-dialog',
@@ -20,8 +21,9 @@ export class KeyUsageDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<KeyUsageDialogComponent>,
+    private toastr: ToastrService,
     @Inject(MAT_DIALOG_DATA) data
-    ) { 
+  ) {
     this.ku = Object.assign({}, data.keyUsage);
     if (data.issuerKeyUsage)
       this.issuerKeyUsage = Object.assign({}, data.issuerKeyUsage);
@@ -29,15 +31,15 @@ export class KeyUsageDialogComponent implements OnInit {
 
   ngOnInit() {
     this.form = new FormGroup({
-      'digitalSignature': new FormControl({value: true}, null),
-      'nonRepudiation': new FormControl({value: true}, null),
-      'keyEncipherment': new FormControl({value: true}, null),
-      'dataEncipherment': new FormControl({value: true}, null),
-      'keyAgreement': new FormControl({value: true}, null),
-      'keyCertSign': new FormControl({value: true}, null),
-      'CRLSign': new FormControl({value: true}, null),
-      'encipherOnly': new FormControl({value: true}, null),
-      'decipherOnly': new FormControl({value: true}, null)    
+      'digitalSignature': new FormControl({ value: true }, null),
+      'nonRepudiation': new FormControl({ value: true }, null),
+      'keyEncipherment': new FormControl({ value: true }, null),
+      'dataEncipherment': new FormControl({ value: true }, null),
+      'keyAgreement': new FormControl({ value: true }, null),
+      'keyCertSign': new FormControl({ value: true }, null),
+      'CRLSign': new FormControl({ value: true }, null),
+      'encipherOnly': new FormControl({ value: true }, null),
+      'decipherOnly': new FormControl({ value: true }, null)
     });
     if (this.issuerKeyUsage)
       this.adjustToIssuer();
@@ -49,7 +51,7 @@ export class KeyUsageDialogComponent implements OnInit {
       this.ku.decipherOnly = true;
       this.form.controls['encipherOnly'].enable();
       this.form.controls['decipherOnly'].enable();
-    }else {
+    } else {
       this.ku.encipherOnly = false;
       this.ku.decipherOnly = false;
       this.form.controls['encipherOnly'].disable();
@@ -61,7 +63,16 @@ export class KeyUsageDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  public allFalse(): boolean {
+    return !this.ku.digitalSignature && !this.ku.nonRepudiation && !this.ku.keyEncipherment && !this.ku.dataEncipherment
+      && !this.ku.keyAgreement && !this.ku.keyCertSign && !this.ku.CRLSign && !this.ku.encipherOnly && !this.ku.decipherOnly;
+  }
+
   onSubmit() {
+    if (this.allFalse()) {
+      this.toastr.warning("You must select at least one Key Usage");
+      return;
+    }
     this.dialogRef.close({ keyUsage: this.ku });
   }
 

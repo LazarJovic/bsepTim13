@@ -117,7 +117,7 @@ export class CreateCertificateComponent implements OnInit {
       keyUsages.push("keyCertSign");
     }
     if (ks.CRLSign) {
-      keyUsages.push("CRLSign");
+      keyUsages.push("cRLSign");
     }
     if (ks.encipherOnly) {
       keyUsages.push("encipherOnly");
@@ -162,11 +162,22 @@ export class CreateCertificateComponent implements OnInit {
 
 
   chooseCert() {
-
+    let tempKeyUsage = undefined;
+    let tempExtKeyUsage = undefined;
+    if (this.keyUsageChecked) {
+      tempKeyUsage = this.toStringArrayKeyUsage(this.keyUsage);
+    }
+    if (this.keyUsageChecked) {
+      tempExtKeyUsage = this.toStringArrayExtKeyUsage(this.extKeyUsage);
+    }
+      
     const dialogRef = this.signingCertDialog.open(ChooseCertificateDialogComponent, {
       width: '80vw',
       height: '90vh',
-      data: {}
+      data: {
+        chosenKeyUsage: tempKeyUsage,
+        chosenExtendedKeyUsage: tempExtKeyUsage
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {

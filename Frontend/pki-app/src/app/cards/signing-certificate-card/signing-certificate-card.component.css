@@ -26,3 +26,18 @@ button:hover {
 #usages-div {
   height: 60px;
 }
+
+#choose-button-conflict {
+  background-color: firebrick;
+  color: white;
+  width: 150px;
+  height: 40px;
+  font-size: 18px;
+  margin-left: 80px;
+}
+
+#choose-button-conflict:hover {
+  background-color:white;
+  color: darkorange;
+  border: 1px solid darkorange;
+}

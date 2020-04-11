@@ -40,4 +40,16 @@ public class TemplateController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTemplate(@PathVariable long id) {
+        TemplateDTO retVal = null;
+
+        try {
+            retVal = this.templateService.deleteTemplate(id);
+            return new ResponseEntity<>(retVal, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

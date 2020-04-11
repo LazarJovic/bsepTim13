@@ -43,7 +43,7 @@ export class LoadTemplateDialogComponent implements OnInit {
         if (data.error && typeof data.error === "string")
           this.toast.error(data.error);
         else
-          this.toast.error("Could not load templates!");
+          this.toast.error("An error occured while loading templates!");
       }
     })
   }

@@ -20,4 +20,8 @@ export class TemplateService {
   getTemplates() {
     return this.http.get<Template[]>(`${environment.baseUrl}/${environment.templates}`);
   }
+
+  deleteTemplate(id: number) {
+    return this.http.delete<Template>(`${environment.baseUrl}/${environment.templates}/${id}`);
+  }
 }

@@ -8,7 +8,7 @@
     background-size: cover;
   }
 
-button {
+#choose-button {
     background-color: darkorange;
     color: white;
     width: 150px;
@@ -17,7 +17,7 @@ button {
     margin-left: 80px;
 }
 
-button:hover {
+#choose-button:hover {
   background-color:white;
   color: darkorange;
   border: 1px solid darkorange;
@@ -25,4 +25,17 @@ button:hover {
 
 .usages-div {
   height: 60px;
+}
+
+#delete-button {
+  margin-left: 260px;
+  position: absolute;
+  background-color: darkorange;
+  color: white;
+}
+
+#delete-button:hover {
+  background-color:white;
+  color: darkorange;
+  border: 1px solid darkorange;
 }

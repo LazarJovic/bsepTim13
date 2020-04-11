@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Template } from 'src/app/model/template';
+import { TemplateService } from 'src/app/services/template-service/template.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'template-card',
@@ -14,10 +16,16 @@ export class TemplateCardComponent implements OnInit {
   @Output()
   templateChosen = new EventEmitter();
 
+  @Output()
+  templateDeleted = new EventEmitter();
+
   keyUsages: string;
   extendedKeyUsages: string;
 
-  constructor() { }
+  constructor(
+    private templateService: TemplateService,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit() {
     this.updateKeyUsage();
@@ -52,5 +60,19 @@ export class TemplateCardComponent implements OnInit {
       this.extendedKeyUsages += this.item.extendedKeyUsage[i] + ", ";
     }
     this.extendedKeyUsages = this.extendedKeyUsages.substr(0, this.extendedKeyUsages.length - 2);
+  }
+
+  delete() {
+    this.templateService.deleteTemplate(this.item.id).subscribe({
+      next: (result) => {
+        this.templateDeleted.emit();
+      },
+      error: (data) => {
+        if (data.error && typeof data.error === "string")
+          this.toastr.error(data.error);
+        else
+          this.toastr.error("An error occured while deleting template!");
+      }
+    });
   }
 }

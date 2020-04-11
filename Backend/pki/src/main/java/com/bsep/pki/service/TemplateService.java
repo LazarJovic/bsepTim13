@@ -36,4 +36,10 @@ public class TemplateService {
         }
         return retVal;
     }
+
+    public TemplateDTO deleteTemplate(long id) {
+        Template template = templateRepository.findById(id).get();
+        templateRepository.delete(template);
+        return templateMapper.toDto(template);
+    }
 }

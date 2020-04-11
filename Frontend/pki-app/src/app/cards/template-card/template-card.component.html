@@ -1,4 +1,11 @@
 <mat-card class="example-card">
+  <button mat-icon-button aria-label="Delete template" id="delete-button" (click)="delete()"
+  matTooltip="Delete template"
+  matTooltipPosition="below"
+  [matTooltipShowDelay]="500">
+    <mat-icon>delete
+    </mat-icon>
+  </button>
     <mat-card-header>
       <div mat-card-avatar class="example-header-image"></div>
       <mat-card-title>{{item?.name}}</mat-card-title>
@@ -7,10 +14,10 @@
     
     <mat-card-content>
       <p class="cert-info-p">
-        <b>Signature Algorithm:</b> {{ item?.signatureAlgorithm }}
+        <b>Signature Algorithm: </b>{{ item?.signatureAlgorithm }}
       </p>
       <p class="cert-info-p">
-        <b>Key Algorithm:</b>{{ item?.keyAlgorithm }}
+        <b>Key Algorithm: </b>{{ item?.keyAlgorithm }}
       </p>
       <p><b>Key Usage:</b></p>
       <div class="usages-div">
@@ -22,6 +29,6 @@
       </div>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-flat-button id="choose-button" (click)="chooseTemplate()">Choose</button>
+        <button mat-flat-button id="choose-button" (click)="chooseTemplate()">Load</button>
     </mat-card-actions>
   </mat-card>

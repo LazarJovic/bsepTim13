@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { OverviewCertificate } from 'src/app/model/overview-certificate';
 import { CertificateService } from 'src/app/services/certificate-service/certificate.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'certificate-card',
@@ -13,7 +14,8 @@ export class CertificateCardComponent implements OnInit {
   item: OverviewCertificate;
 
   constructor(
-    private certificateService: CertificateService
+    private certificateService: CertificateService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
@@ -24,11 +26,26 @@ export class CertificateCardComponent implements OnInit {
       {
         next: (data) => {
           if(data) {
-            console.log("Downloaded!");
+            this.toastr.success("Downloaded into your Downloads folder!");
           }
         },
         error: data => {
-          console.log("greska");
+          this.toastr.error("Certificate download failed!");
+        }
+      }
+    );
+  }
+
+  revokeCertificate() {
+    this.certificateService.revokeCertificate(this.item).subscribe(
+      {
+        next: (data) => {
+          if(data) {
+            this.toastr.success("Certificate successfully revoked.");
+          }
+        },
+        error: data => {
+          this.toastr.error("Certificate revocation failed!");
         }
       }
     );

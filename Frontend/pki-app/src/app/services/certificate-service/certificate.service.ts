@@ -6,6 +6,7 @@ import { CreateCertificate } from 'src/app/model/create-certificate';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/model/user';
 import { OverviewCertificate } from 'src/app/model/overview-certificate';
+import { RevokedCertificate } from 'src/app/model/revokedCertificare';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,10 @@ export class CertificateService {
 
   downloadCertificate(data: OverviewCertificate) : Observable<OverviewCertificate> {
     return this.http.post<OverviewCertificate>(`${environment.baseUrl}/${environment.certificates}/download`, data);
+  }
+
+  revokeCertificate(data: OverviewCertificate) {
+    return this.http.post<RevokedCertificate>(`${environment.baseUrl}/${environment.revokedCertificates}`, data);
   }
 
 }

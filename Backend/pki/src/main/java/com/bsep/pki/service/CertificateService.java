@@ -336,7 +336,7 @@ public class CertificateService {
         return retVal;
     }
 
-    private KeyStore loadSelfSignedKeyStore() {
+    public KeyStore loadSelfSignedKeyStore() {
         String selfSignedPass = null;
         try {
             selfSignedPass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.SELF_SIGNED);
@@ -346,7 +346,7 @@ public class CertificateService {
         return this.keyStoreWriter.loadKeyStore(PropertiesConfigurator.SELF_SIGNED + ".jks", selfSignedPass.toCharArray());
     }
 
-    private KeyStore loadCAKeyStore() {
+    public KeyStore loadCAKeyStore() {
         String caPass = null;
         try {
             caPass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.CA);
@@ -356,7 +356,7 @@ public class CertificateService {
         return this.keyStoreWriter.loadKeyStore(PropertiesConfigurator.CA + ".jks", caPass.toCharArray());
     }
 
-    private KeyStore loadEndEntityKeyStore() {
+    public KeyStore loadEndEntityKeyStore() {
         String endEntityPass = null;
         try {
             endEntityPass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.END_ENTITY);
@@ -366,7 +366,7 @@ public class CertificateService {
         return this.keyStoreWriter.loadKeyStore(PropertiesConfigurator.END_ENTITY + ".jks", endEntityPass.toCharArray());
     }
 
-    private String generateAlias(Long serialNumber, String subjectEmail, String issuerEmail) {
+    public String generateAlias(Long serialNumber, String subjectEmail, String issuerEmail) {
         return serialNumber.toString() + subjectEmail + issuerEmail;
     }
 
@@ -672,39 +672,16 @@ public class CertificateService {
 
     public boolean downloadCertificate(OverviewCertificateDTO dto) {
 
-        String alias = this.generateAlias(Long.parseLong(dto.serialNum), dto.subjectEmail, dto.issuerEmail);
-        String file = null;
-        String filePass = null;
         String certFileName = System.getProperty("user.home") + "\\Downloads\\" + dto.issuerCommonName + dto.serialNum + ".cer";
+        Certificate certificate = this.getCertificateFromOverview(dto);
 
-        try {
-            if(dto.isCA) {
-                if(dto.issuerEmail.equals(dto.subjectEmail)) {
-                    this.loadSelfSignedKeyStore();
-                    file = PropertiesConfigurator.SELF_SIGNED + ".jks";
-                    filePass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.SELF_SIGNED);
-                } else {
-                    this.loadCAKeyStore();
-                    file = PropertiesConfigurator.CA + ".jks";
-                    filePass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.CA);
-                }
-            } else {
-                this.loadEndEntityKeyStore();
-                file = PropertiesConfigurator.END_ENTITY + ".jks";
-                filePass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.END_ENTITY);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if(file != null && filePass != null) {
-            Certificate certificate = this.keyStoreReader.readCertificate(file, filePass, alias);
+        if(certificate != null) {
             byte[] certByte = null;
             FileOutputStream outputStream = null;
 
             try {
                 File f = new File(certFileName);
-                if(f.exists()) {
+                if (f.exists()) {
                     return true;
                 }
                 outputStream = new FileOutputStream(f);
@@ -730,6 +707,40 @@ public class CertificateService {
         }
 
         return false;
+    }
+
+    public Certificate getCertificateFromOverview(OverviewCertificateDTO dto) {
+
+        String alias = this.generateAlias(Long.parseLong(dto.serialNum), dto.subjectEmail, dto.issuerEmail);
+        String file = null;
+        String filePass = null;
+        Certificate certificate = null;
+
+        try {
+            if(dto.isCA) {
+                if(dto.issuerEmail.equals(dto.subjectEmail)) {
+                    this.loadSelfSignedKeyStore();
+                    file = PropertiesConfigurator.SELF_SIGNED + ".jks";
+                    filePass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.SELF_SIGNED);
+                } else {
+                    this.loadCAKeyStore();
+                    file = PropertiesConfigurator.CA + ".jks";
+                    filePass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.CA);
+                }
+            } else {
+                this.loadEndEntityKeyStore();
+                file = PropertiesConfigurator.END_ENTITY + ".jks";
+                filePass = propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.END_ENTITY);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(file != null && filePass != null) {
+            certificate = this.keyStoreReader.readCertificate(file, filePass, alias);
+        }
+
+        return certificate;
     }
 
 }

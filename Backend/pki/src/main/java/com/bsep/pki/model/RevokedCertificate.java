@@ -3,7 +3,7 @@ package com.bsep.pki.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "revoked-certificates")
+@Table(name = "revoked_certificates")
 public class RevokedCertificate {
 
     @Id
@@ -16,8 +16,7 @@ public class RevokedCertificate {
 
     public RevokedCertificate() { }
 
-    public RevokedCertificate(Long id, String alias) {
-        this.id = id;
+    public RevokedCertificate(String alias) {
         this.alias = alias;
     }
 

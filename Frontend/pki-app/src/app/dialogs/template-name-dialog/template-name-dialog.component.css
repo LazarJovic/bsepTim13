@@ -1,0 +1,21 @@
+mat-form-field { 
+    display:block;
+    width: 90%;
+}
+
+.mat-primary {
+    margin-left: 10px;
+}
+
+button {
+    width: 100px;
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+}
+
+#close-button {
+    margin-left: 4.5vw;
+}

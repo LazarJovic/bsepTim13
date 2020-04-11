@@ -31,6 +31,9 @@ public class Template {
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
 
+    public Template() {
+    }
+
     public Template(String signatureAlgorithm, String keyAlgorithm, ArrayList<String> keyUsage, ArrayList<String> extendedKeyUsage, String name, LocalDateTime timestamp) {
         this.signatureAlgorithm = signatureAlgorithm;
         this.keyAlgorithm = keyAlgorithm;

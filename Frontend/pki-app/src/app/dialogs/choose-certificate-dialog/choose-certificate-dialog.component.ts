@@ -3,6 +3,7 @@ import { CreateCertificate } from 'src/app/model/create-certificate';
 import { MatDialogRef } from '@angular/material';
 import { CertificateService } from 'src/app/services/certificate-service/certificate.service';
 import { SigningCertificate } from 'src/app/model/signing-certificate';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-choose-certificate-dialog',
@@ -15,7 +16,8 @@ export class ChooseCertificateDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<ChooseCertificateDialogComponent>,
-    public certificateService: CertificateService
+    public certificateService: CertificateService,
+    public toast: ToastrService
   ) { }
 
   ngOnInit() {
@@ -37,7 +39,10 @@ export class ChooseCertificateDialogComponent implements OnInit {
           this.signingCertificates = result;
         },
         error: data => {
-          console.log("greska");
+          if (data.error && typeof data.error === "string")
+          this.toast.error(data.error);
+        else
+          this.toast.error("Could not load signing certificates!");
         }
       }
     );

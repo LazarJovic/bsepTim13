@@ -18,6 +18,7 @@ import { Template } from 'src/app/model/template';
 import { toBase64String } from '@angular/compiler/src/output/source_map';
 import { TemplateNameDialogComponent } from 'src/app/dialogs/template-name-dialog/template-name-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { LoadTemplateDialogComponent } from 'src/app/dialogs/load-template-dialog/load-template-dialog.component';
 
 @Component({
   selector: 'create-certificate',
@@ -59,11 +60,11 @@ export class CreateCertificateComponent implements OnInit {
     this.extKeyUsageDesc = "ServerAuth, ClientAuth, CodeSigning, EmailProtection, TimeStamping, OCSPSigning, IpsecEndSystem, IpsecTunnel, IpsecUser";
     this.createCertificateForm = new FormGroup({
       'issuer': new FormControl(null, [Validators.required]),
-      'validFrom': new FormControl({value: null}, [Validators.required]),
-      'validTo': new FormControl({value: null}, [Validators.required]),
-      'subject': new FormControl({value: null}, [Validators.required]),
-      'signatureAlgorithm': new FormControl({value: null}, [Validators.required]),
-      'pubKeyAlgorithm': new FormControl({value: null}, [Validators.required])
+      'validFrom': new FormControl({ value: null }, [Validators.required]),
+      'validTo': new FormControl({ value: null }, [Validators.required]),
+      'subject': new FormControl({ value: null }, [Validators.required]),
+      'signatureAlgorithm': new FormControl({ value: null }, [Validators.required]),
+      'pubKeyAlgorithm': new FormControl({ value: null }, [Validators.required])
     });
 
     this.getSubjects();
@@ -89,7 +90,7 @@ export class CreateCertificateComponent implements OnInit {
           if (data.error && typeof data.error === "string")
             this.toast.error(data.error);
           else
-          this.toast.error("Error creating certificate!");
+            this.toast.error("Error creating certificate!");
         }
       }
     );
@@ -189,9 +190,9 @@ export class CreateCertificateComponent implements OnInit {
       },
       error: data => {
         if (data.error && typeof data.error === "string")
-            this.toast.error(data.error);
+          this.toast.error(data.error);
         else
-            this.toast.error("Could not load subjects.");
+          this.toast.error("Could not load subjects.");
       }
 
     });
@@ -458,9 +459,8 @@ export class CreateCertificateComponent implements OnInit {
   }
 
   openTemplateName() {
-    if (!this.createCertificateForm.value.signatureAlgorithm || !this.createCertificateForm.value.pubKeyAlgorithm) {
-      //TODO: toastr
-      console.log("Please select a Signature Algorithm and a Public Key Algorithm");
+    if (typeof this.createCertificateForm.value.signatureAlgorithm !== "string" || typeof this.createCertificateForm.value.pubKeyAlgorithm !== "string") {
+      this.toast.warning("Please select a Signature Algorithm and a Public Key Algorithm");
       return;
     }
     const dialogConfig = new MatDialogConfig();
@@ -484,21 +484,161 @@ export class CreateCertificateComponent implements OnInit {
     let template = new Template(0,
       this.createCertificateForm.value.signatureAlgorithm,
       this.createCertificateForm.value.pubKeyAlgorithm,
-      tempKeyUsage, tempExtendedKeyUsage, name);
+      tempKeyUsage, tempExtendedKeyUsage, name, "");
     if (!this.keyUsageChecked)
       template.keyUsage = undefined;
     if (!this.extendedKeyUsageChecked)
       template.extendedKeyUsage = undefined;
     this.templateService.saveTemplate(template).subscribe({
       next: () => {
-        //TODO: toastr
-        console.log("Template saved!");
+        this.toast.success("Template saved!");
       },
-      error: () => {
-        //TODO: toastr
-        console.log("An error occured while saving template!");
+      error: (data) => {
+        if (data.error && typeof data.error === "string")
+          this.toast.error(data.error);
+        else
+          this.toast.error("An error occured while saving template!");
       }
     })
+  }
+
+  openLoadTemplate() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = false;
+    dialogConfig.width = "80vw";
+    dialogConfig.height = "90vh";
+
+    let dialogRef = this.keyUsageDialog.open(LoadTemplateDialogComponent, dialogConfig).afterClosed()
+      .subscribe(response => {
+        if (response) {
+          this.createCertificateForm.patchValue({
+            "signatureAlgorithm": response.template.signatureAlgorithm,
+            "pubKeyAlgorithm": response.template.keyAlgorithm
+          });
+
+          this.onLoadTemplateUpdateKeyUsage(response.template);
+          this.onLoadTemplateUpdateExtendedKeyUsage(response.template);
+        }
+      });
+  }
+
+  onLoadTemplateUpdateKeyUsage(template: Template) {
+    if (!template.keyUsage) {
+      this.keyUsageChecked = false;
+      return;
+    }
+    this.keyUsageChecked = true;
+    this.keyUsage.digitalSignature = false;
+    this.keyUsage.nonRepudiation = false;
+    this.keyUsage.keyEncipherment = false;
+    this.keyUsage.dataEncipherment = false;
+    this.keyUsage.keyAgreement = false;
+    this.keyUsage.keyCertSign = false;
+    this.keyUsage.CRLSign = false;
+    this.keyUsage.encipherOnly = false;
+    this.keyUsage.decipherOnly = false;
+
+    for (let i = 0; i < 9; i++) {
+      if (!template.keyUsage[i])
+        break;
+      if (template.keyUsage[i] === "digitalSignature") {
+        this.keyUsage.digitalSignature = true;
+        continue;
+      }
+      if (template.keyUsage[i] === "nonRepudiation") {
+        this.keyUsage.nonRepudiation = true;
+        continue;
+      }
+      if (template.keyUsage[i] === "keyEncipherment") {
+        this.keyUsage.keyEncipherment = true;
+        continue;
+      }
+      if (template.keyUsage[i] === "dataEncipherment") {
+        this.keyUsage.dataEncipherment = true;
+        continue;
+      }
+      if (template.keyUsage[i] === "keyAgreement") {
+        this.keyUsage.keyAgreement = true;
+        continue;
+      }
+      if (template.keyUsage[i] === "keyCertSign") {
+        this.keyUsage.keyCertSign = true;
+        continue;
+      }
+      if (template.keyUsage[i] === "cRLSign") {
+        this.keyUsage.CRLSign = true;
+        continue;
+      }
+      if (template.keyUsage[i] === "encipherOnly") {
+        this.keyUsage.encipherOnly = true;
+        continue;
+      }
+      if (template.keyUsage[i] === "decipherOnly") {
+        this.keyUsage.decipherOnly = true;
+        continue;
+      }
+    }
+    this.updateKeyUsageDesc();
+  }
+
+  onLoadTemplateUpdateExtendedKeyUsage(template: Template) {
+    if (!template.extendedKeyUsage) {
+      this.extendedKeyUsageChecked = false;
+      return;
+    }
+    this.extendedKeyUsageChecked = true;
+    this.extKeyUsage.serverAuth = false;
+    this.extKeyUsage.clientAuth = false;
+    this.extKeyUsage.codeSigning = false;
+    this.extKeyUsage.emailProtection = false;
+    this.extKeyUsage.timeStamping = false;
+    this.extKeyUsage.ocspSigning = false;
+    this.extKeyUsage.ipsecEndSystem = false;
+    this.extKeyUsage.ipsecTunnel = false;
+    this.extKeyUsage.ipsecUser = false;
+    for (let i = 0; i < 9; i++) {
+      if (!template.extendedKeyUsage[i])
+        break;
+      if (template.extendedKeyUsage[i] === "serverAuth") {
+        this.extKeyUsage.serverAuth = true;
+        continue;
+      }
+      if (template.extendedKeyUsage[i] === "clientAuth") {
+        this.extKeyUsage.clientAuth = true;
+        continue;
+      }
+      if (template.extendedKeyUsage[i] === "codeSigning") {
+        this.extKeyUsage.codeSigning = true;
+        continue;
+      }
+      if (template.extendedKeyUsage[i] === "emailProtection") {
+        this.extKeyUsage.emailProtection = true;
+        continue;
+      }
+      if (template.extendedKeyUsage[i] === "timeStamping") {
+        this.extKeyUsage.timeStamping = true;
+        continue;
+      }
+      if (template.extendedKeyUsage[i] === "ocspSigning") {
+        this.extKeyUsage.ocspSigning = true;
+        continue;
+      }
+      if (template.extendedKeyUsage[i] === "ipsecEndSystem") {
+        this.extKeyUsage.ipsecEndSystem = true;
+        continue;
+      }
+      if (template.extendedKeyUsage[i] === "ipsecTunnel") {
+        this.extKeyUsage.ipsecTunnel = true;
+        continue;
+      }
+      if (template.extendedKeyUsage[i] === "ipsecUser") {
+        this.extKeyUsage.ipsecUser = true;
+        continue;
+      }
+    }
+    this.updateExtKeyUsageDesc();
   }
 
 }

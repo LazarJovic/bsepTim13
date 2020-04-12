@@ -1,11 +1,9 @@
-
 <mat-card class="example-card">
     <mat-card-header>
       <div mat-card-avatar class="example-header-image"></div>
       <mat-card-title>Certificate information</mat-card-title>
       <mat-card-subtitle>Serial number: {{item?.serialNum}}</mat-card-subtitle>
     </mat-card-header>
-    
     <mat-card-content>
       <p class="cert-info-p">
         <b>Issued by:</b> {{item?.issuerCommonName}}
@@ -16,12 +14,19 @@
       <p class="cert-info-p">
         <b>Valid from </b> {{item?.validFrom}}<b> to </b> {{item?.validTo}}
       </p>
-      <p id="p-download">
-        For more information, download.
-      </p>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-flat-button id="download-button" (click)="downloadCertificate()">Download</button>
+        <div>
+          <button mat-icon-button id="download-button" (click)="downloadCertificate()">
+            <mat-icon>save_alt</mat-icon>
+          </button>
+          <button mat-icon-button id="revoke-button" (click)="revokeCertificate()">
+            <mat-icon>remove_circle_outline</mat-icon>
+          </button>
+          <button mat-icon-button>
+            <mat-icon>help_outline</mat-icon>
+          </button>
+        </div>
     </mat-card-actions>
   </mat-card>
 

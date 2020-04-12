@@ -7,6 +7,7 @@ export const environment = {
   baseUrl: 'http://localhost:8080',
   users: 'api/users',
   certificates: 'api/certificates',
+  revokedCertificates: 'api/revoked-certificates',
   templates: 'api/templates'
 };
 

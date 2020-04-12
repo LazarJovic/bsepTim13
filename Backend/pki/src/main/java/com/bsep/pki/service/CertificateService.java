@@ -371,7 +371,7 @@ public class CertificateService {
         map.put("dataEncipherment", KeyUsage.dataEncipherment);
         map.put("keyAgreement", KeyUsage.keyAgreement);
         map.put("keyCertSign", KeyUsage.keyCertSign);
-        map.put("CRLSign", KeyUsage.cRLSign);
+        map.put("cRLSign", KeyUsage.cRLSign);
         map.put("encipherOnly", KeyUsage.encipherOnly);
         map.put("decipherOnly", KeyUsage.decipherOnly);
 

@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormControl, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ExtKeyUsage } from 'src/app/model/ext-key-usage';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-extended-key-usage-dialog',
@@ -17,6 +18,7 @@ export class ExtendedKeyUsageDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ExtendedKeyUsageDialogComponent>,
+    private toastr: ToastrService,
     @Inject(MAT_DIALOG_DATA) data
   ) { 
     this.eku = Object.assign({}, data.extKeyUsage);
@@ -44,7 +46,17 @@ export class ExtendedKeyUsageDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  public allFalse(): boolean {
+    return !this.eku.serverAuth && !this.eku.clientAuth && !this.eku.codeSigning && !this.eku.emailProtection
+      && !this.eku.timeStamping && !this.eku.ocspSigning && !this.eku.ipsecEndSystem
+      && !this.eku.ipsecTunnel && !this.eku.ipsecUser;
+  }
+
   onSubmit() {
+    if (this.allFalse()) {
+      this.toastr.warning("You must select at least one Extended Key Usage");
+      return;
+    }
     this.dialogRef.close({ extKeyUsage: this.eku });
   }
 

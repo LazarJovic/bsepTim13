@@ -1,14 +1,14 @@
 .example-card {
-    max-width: 300px;
+    width: 300px;
     min-height: 300px;
   }
   
 .example-header-image {
-    background-image: url('https://image.flaticon.com/icons/svg/2762/2762265.svg');
+    background-image: url('https://image.flaticon.com/icons/svg/705/705324.svg');
     background-size: cover;
   }
 
-button {
+#choose-button {
     background-color: darkorange;
     color: white;
     width: 150px;
@@ -17,26 +17,24 @@ button {
     margin-left: 80px;
 }
 
-button:hover {
+#choose-button:hover {
   background-color:white;
   color: darkorange;
   border: 1px solid darkorange;
 }
 
-#usages-div {
+.usages-div {
   height: 60px;
 }
 
-#choose-button-conflict {
-  background-color: firebrick;
+#delete-button {
+  margin-left: 260px;
+  position: absolute;
+  background-color: darkorange;
   color: white;
-  width: 150px;
-  height: 40px;
-  font-size: 18px;
-  margin-left: 80px;
 }
 
-#choose-button-conflict:hover {
+#delete-button:hover {
   background-color:white;
   color: darkorange;
   border: 1px solid darkorange;

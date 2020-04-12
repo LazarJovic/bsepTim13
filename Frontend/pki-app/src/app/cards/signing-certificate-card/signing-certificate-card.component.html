@@ -18,6 +18,9 @@
       </div>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-flat-button id="choose-button" (click)="chooseCertificate()">Choose</button>
+        <button mat-flat-button *ngIf="!conflicting" (click)="chooseCertificate()">Choose</button>
+        <button mat-flat-button *ngIf="conflicting" id="choose-button-conflict" (click)="warnKeyUsage()"
+        matTooltip="This certificate does not have some of your currently selected Key Usages and/or Extended Key Usages"
+        matTooltipPosition="below">Choose</button>
     </mat-card-actions>
   </mat-card>

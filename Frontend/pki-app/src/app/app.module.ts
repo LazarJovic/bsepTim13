@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule, MatIconModule, MatInputModule, MatFormFieldModule, MatDialogModule, MatCheckboxModule } from '@angular/material';
+import { MatInputModule, MatFormFieldModule, MatDialogModule, MatCheckboxModule } from '@angular/material';
 import { CreateCertificateComponent } from './create-forms/create-certificate/create-certificate.component';
 import { CreateSubjectComponent } from './create-forms/create-subject/create-subject.component';
 import { CertificateOverviewComponent } from './certificate-overview/certificate-overview/certificate-overview.component';
@@ -18,7 +18,11 @@ import { KeyUsageDialogComponent } from './dialogs/key-usage-dialog/key-usage-di
 import { ExtendedKeyUsageDialogComponent } from './dialogs/extended-key-usage-dialog/extended-key-usage-dialog.component';
 import { ChooseCertificateDialogComponent } from './dialogs/choose-certificate-dialog/choose-certificate-dialog.component';
 import { SigningCertificateCardComponent } from './cards/signing-certificate-card/signing-certificate-card.component';
+import { TemplateNameDialogComponent } from './dialogs/template-name-dialog/template-name-dialog.component';
 import { ToastrModule } from 'ngx-toastr';
+import { TemplateCardComponent } from './cards/template-card/template-card.component';
+import { LoadTemplateDialogComponent } from './dialogs/load-template-dialog/load-template-dialog.component';
+import { IssuerKeyUsageWarningDialogComponent } from './dialogs/issuer-key-usage-warning-dialog/issuer-key-usage-warning-dialog.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +36,11 @@ import { ToastrModule } from 'ngx-toastr';
     KeyUsageDialogComponent,
     ExtendedKeyUsageDialogComponent,
     ChooseCertificateDialogComponent,
-    SigningCertificateCardComponent
+    SigningCertificateCardComponent,
+    TemplateNameDialogComponent,
+    TemplateCardComponent,
+    LoadTemplateDialogComponent,
+    IssuerKeyUsageWarningDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +66,10 @@ import { ToastrModule } from 'ngx-toastr';
     DialogCreateSubjectComponent,
     KeyUsageDialogComponent,
     ExtendedKeyUsageDialogComponent,
-    ChooseCertificateDialogComponent
+    ChooseCertificateDialogComponent,
+    TemplateNameDialogComponent,
+    LoadTemplateDialogComponent,
+    IssuerKeyUsageWarningDialogComponent
   ]
 })
 export class AppModule { }

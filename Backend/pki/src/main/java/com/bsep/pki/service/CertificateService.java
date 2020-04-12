@@ -77,6 +77,11 @@ public class CertificateService {
 
         User issuer = this.userService.findEntity(dto.issuerId);
         String issuerAlias = dto.serialNum + dto.issuerEmail + dto.issuerIssuerEmail;
+
+        if(!this.validateCertificate(issuerAlias)) {
+            throw new Exception("Issuer certificate is not valid!");
+        }
+
         KeyPair issuerKeyPair = null;
         if(dto.issuerEmail.equals(dto.issuerIssuerEmail)) {
             issuerKeyPair = this.getKeyPairOfIssuerByAlias(issuerAlias, true);
@@ -885,18 +890,117 @@ public class CertificateService {
     }
 
     public CertificateStatusDTO checkStatus(String alias) {
-        validateCertificate(alias);
-        return new CertificateStatusDTO(false, this.isRevoked(alias));
+        return new CertificateStatusDTO(this.validateCertificate(alias), this.isRevoked(alias));
     }
 
     private boolean validateCertificate(String alias) {
         KeyStore keyStore = findKeyStoreByAlias(alias);
         try {
             Certificate[] certificates = keyStore.getCertificateChain(alias);
-            return true;
+            for(int i = 0; i < certificates.length; i++) {
+                String certAlias = this.getAliasByCertificate(certificates[i]);
+                if(this.isRevoked(certAlias)) {
+                    return false;
+                }
+                else if(this.checkValidityPeriod(certificates[i])) {
+                    return false;
+                }
+                if(i == certificates.length - 1) {
+                    if(!this.checkSignatureValidity(certificates[i], certificates[i])) {
+                        return false;
+                    }
+                }
+                else {
+                    if(!this.checkSignatureValidity(certificates[i], certificates[i + 1])) {
+                        return false;
+                    }
+                }
+            }
+
         } catch (KeyStoreException e) {
             e.printStackTrace();
         }
         return true;
+    }
+
+    private boolean checkSignatureValidity(Certificate certificate, Certificate issuerCert) {
+        try {
+            certificate.verify(issuerCert.getPublicKey());
+        } catch (CertificateException e) {
+            return false;
+        } catch (NoSuchAlgorithmException e) {
+            return false;
+        } catch (InvalidKeyException e) {
+            return false;
+        } catch (NoSuchProviderException e) {
+            return false;
+        } catch (SignatureException e) {
+            return false;
+        }
+
+//        String sigAlgName = ((X509Certificate)certificate).getSigAlgName();
+//        byte[] signature = ((X509Certificate)certificate).getSignature();
+//
+//        Signature privateSignature = null;
+//        try {
+//            privateSignature = Signature.getInstance(sigAlgName);
+//
+//            Key privateKey = null;
+//            String issuerAlias = this.getAliasByCertificate(issuerCert);
+//            KeyStore issuerKeyStore = this.findKeyStoreByAlias(issuerAlias);
+//
+//            privateKey = issuerKeyStore.getKey(issuerAlias, this.propertiesConfigurator.readValueFromAliasPassProp(issuerAlias).toCharArray());
+//
+//            privateSignature.initSign((PrivateKey) privateKey);
+//            privateSignature.update(certificate.getEncoded());
+//            byte[] s = privateSignature.sign();
+//
+//            if(!signature.equals(s)) {
+//                return false;
+//            }
+//
+//        }catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (KeyStoreException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        } catch (UnrecoverableKeyException e) {
+//            e.printStackTrace();
+//        } catch (InvalidKeyException e) {
+//            e.printStackTrace();
+//        } catch (CertificateEncodingException e) {
+//            e.printStackTrace();
+//        } catch (SignatureException e) {
+//            e.printStackTrace();
+//        }
+
+        return true;
+
+    }
+
+    private boolean checkValidityPeriod(Certificate certificate) {
+        return ((X509Certificate)certificate).getNotAfter().before(java.sql.Date.valueOf(LocalDate.now()));
+    }
+
+    private String getAliasByCertificate(Certificate certificate) {
+        X500Name issuerName = null;
+        try {
+            issuerName = new JcaX509CertificateHolder((X509Certificate) certificate).getIssuer();
+        } catch (CertificateEncodingException e) {
+            e.printStackTrace();
+        }
+
+        X500Name subjectName = null;
+        try {
+            subjectName = new JcaX509CertificateHolder((X509Certificate) certificate).getSubject();
+        } catch (CertificateEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String issuerEmail = issuerName.getRDNs()[6].getFirst().getValue().toString();
+        String subjectEmail = subjectName.getRDNs()[6].getFirst().getValue().toString();
+
+        return ((X509Certificate) certificate).getSerialNumber().toString() + subjectEmail + issuerEmail;
     }
 }

@@ -4,6 +4,7 @@ import com.bsep.pki.dto.CreateCertificateDTO;
 import com.bsep.pki.dto.OverviewCertificateDTO;
 import com.bsep.pki.dto.SigningCertificateDTO;
 import com.bsep.pki.model.*;
+import com.bsep.pki.repository.RevokedCertificateRepository;
 import com.bsep.pki.repository.UserRepository;
 import com.bsep.pki.util.MyKeyGenerator;
 import com.bsep.pki.util.PropertiesConfigurator;
@@ -55,6 +56,9 @@ public class CertificateService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RevokedCertificateRepository revokedCertificateRepository;
 
     public CertificateService() {
         this.keyStoreWriter = new KeyStoreWriter();
@@ -593,6 +597,13 @@ public class CertificateService {
         this.keyStoreWriter.saveKeyStore(PropertiesConfigurator.END_ENTITY + ".jks", endEntityPass.toCharArray());
     }
 
+    private boolean isRevoked(String alias) {
+        if(this.revokedCertificateRepository.findByAlias(alias) != null) {
+            return true;
+        }
+        return false;
+    }
+
     public ArrayList<OverviewCertificateDTO> getSigningCertificatesOverview() {
         ArrayList<OverviewCertificateDTO> retVal = new ArrayList<>();
         KeyStore keyStore = null;
@@ -657,9 +668,14 @@ public class CertificateService {
                 String issuerNameHash = this.encryptIssuerDN(issuerName);
                 String issuerKeyHash = this.encryptIssuerPublicKey(this.getIssuerCertificate(keyAlias, keyStore).getPublicKey());
 
+                boolean isValid = true;
+                // TODO: validity check
+
+                boolean isRevoked = this.isRevoked(keyAlias);
+
                 OverviewCertificateDTO dto = new OverviewCertificateDTO(issuerCommonName, issuerEmail, issuerId,
                         subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo, true,
-                        "sha1", issuerNameHash, issuerKeyHash);
+                        "sha1", issuerNameHash, issuerKeyHash, isValid, isRevoked);
 
                 retVal.add(dto);
                 usedAliases.add(keyAlias);
@@ -724,9 +740,14 @@ public class CertificateService {
             String issuerNameHash = this.encryptIssuerDN(issuerName);
             String issuerKeyHash = this.encryptIssuerPublicKey(this.getIssuerCertificate(keyAlias, keyStore).getPublicKey());
 
+            boolean isValid = true;
+            // TODO: validity check
+
+            boolean isRevoked = this.isRevoked(keyAlias);
+
             OverviewCertificateDTO dto = new OverviewCertificateDTO(issuerCommonName, issuerEmail, issuerId,
                     subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo, false,
-                    "sha1", issuerNameHash, issuerKeyHash);
+                    "sha1", issuerNameHash, issuerKeyHash, isValid, isRevoked);
 
             retVal.add(dto);
         }

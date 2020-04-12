@@ -1,6 +1,6 @@
 .example-card {
     max-width: 300px;
-    max-height: 400px;
+    min-height: 220px;
   }
   
 .example-header-image {
@@ -21,4 +21,13 @@ button:hover {
   background-color:white;
   color: darkorange;
   border: 1px solid darkorange;
+}
+
+button {
+  width: 50px;
+  height: 50px;
+}
+
+#download-button {
+  margin-left: 45px;
 }

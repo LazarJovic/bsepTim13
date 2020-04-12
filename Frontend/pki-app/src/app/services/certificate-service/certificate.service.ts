@@ -4,9 +4,8 @@ import { environment } from 'src/environments/environment';
 import { SigningCertificate } from 'src/app/model/signing-certificate';
 import { CreateCertificate } from 'src/app/model/create-certificate';
 import { Observable } from 'rxjs';
-import { User } from 'src/app/model/user';
 import { OverviewCertificate } from 'src/app/model/overview-certificate';
-import { RevokedCertificate } from 'src/app/model/revokedCertificare';
+import { RevokedCertificate } from 'src/app/model/revoked-certificare';
 
 @Injectable({
   providedIn: 'root'
@@ -39,18 +38,16 @@ export class CertificateService {
 
   revokeCertificate(data: OverviewCertificate) {
 
-    var  headers = new HttpHeaders();
-    // headers = headers.set("Hash Algorithm", data.hashAlgorithm);
-    // headers = headers.set("Issuer Name Hash", data.issuerNameHash);
-    // headers = headers.set("Issuer Key Hash", data.issuerKeyHash);
-    // headers = headers.set("Serial Number", data.serialNum);
-    headers.append("Hash Algorithm", data.hashAlgorithm);
-    headers.append("Issuer Name Hash", data.issuerNameHash);
-    headers.append("Issuer Key Hash", data.issuerKeyHash);
-    headers.append("Serial Number", data.serialNum);
+    // var  headers = new HttpHeaders();
+    // headers.append("Hash-Algorithm", data.hashAlgorithm);
+    // headers.append("Issuer-Name-Hash", data.issuerNameHash);
+    // headers.append("Issuer-Key-Hash", data.issuerKeyHash);
+    // headers.append("Serial-Number", data.serialNum);
     
     return this.http.post<RevokedCertificate>(`${environment.baseUrl}/${environment.revokedCertificates}`, 
-    data, {headers});
+    data);
+
+    
   }
 
 }

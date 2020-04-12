@@ -1,7 +1,5 @@
 package com.bsep.pki.dto;
 
-import java.util.ArrayList;
-
 public class OverviewCertificateDTO {
 
     public String issuerCommonName;
@@ -18,12 +16,15 @@ public class OverviewCertificateDTO {
     public String issuerNameHash;
     public String issuerKeyHash;
 
+    public boolean isValid;
+    public boolean isRevoked;
+
     public OverviewCertificateDTO() { }
 
     public OverviewCertificateDTO(String issuerCommonName, String issuerEmail, Long issuerId, String subjectCommonName,
                                   String subjectEmail, Long subjectId, String serialNum, String validFrom,
                                   String validTo, boolean isCA, String hashAlgorithm,
-                                  String issuerNameHash, String issuerKeyHash) {
+                                  String issuerNameHash, String issuerKeyHash, boolean isValid, boolean isRevoked) {
         this.issuerCommonName = issuerCommonName;
         this.issuerEmail = issuerEmail;
         this.issuerId = issuerId;
@@ -37,5 +38,7 @@ public class OverviewCertificateDTO {
         this.hashAlgorithm = hashAlgorithm;
         this.issuerNameHash = issuerNameHash;
         this.issuerKeyHash = issuerKeyHash;
+        this.isValid = isValid;
+        this.isRevoked = isRevoked;
     }
 }

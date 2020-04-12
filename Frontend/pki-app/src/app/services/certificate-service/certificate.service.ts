@@ -6,6 +6,7 @@ import { CreateCertificate } from 'src/app/model/create-certificate';
 import { Observable } from 'rxjs';
 import { OverviewCertificate } from 'src/app/model/overview-certificate';
 import { RevokedCertificate } from 'src/app/model/revoked-certificare';
+import { CertificateStatus } from 'src/app/model/certificate-status';
 
 @Injectable({
   providedIn: 'root'
@@ -46,8 +47,10 @@ export class CertificateService {
     
     return this.http.post<RevokedCertificate>(`${environment.baseUrl}/${environment.revokedCertificates}`, 
     data);
+  }
 
-    
+  checkStatus(alias: string) {
+    return this.http.put<CertificateStatus>(`${environment.baseUrl}/${environment.certificates}`, alias);
   }
 
 }

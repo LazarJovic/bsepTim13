@@ -17,13 +17,19 @@
     </mat-card-content>
     <mat-card-actions>
         <div>
-          <button mat-icon-button id="download-button" (click)="downloadCertificate()">
+          <button mat-icon-button id="download-button" (click)="downloadCertificate()"
+          matTooltip="Download certificate"
+          matTooltipPosition="below">
             <mat-icon>save_alt</mat-icon>
           </button>
-          <button mat-icon-button id="revoke-button" (click)="openRevokeWarning()">
+          <button mat-icon-button id="revoke-button" (click)="openRevokeWarning()"
+          matTooltip="Revoke certificate"
+          matTooltipPosition="below">
             <mat-icon>remove_circle_outline</mat-icon>
           </button>
-          <button mat-icon-button>
+          <button mat-icon-button
+          matTooltip="Check certificate status"
+          matTooltipPosition="below" (click)="checkStatus()">
             <mat-icon>help_outline</mat-icon>
           </button>
         </div>

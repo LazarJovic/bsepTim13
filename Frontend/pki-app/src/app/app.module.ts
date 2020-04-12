@@ -24,6 +24,7 @@ import { TemplateCardComponent } from './cards/template-card/template-card.compo
 import { LoadTemplateDialogComponent } from './dialogs/load-template-dialog/load-template-dialog.component';
 import { IssuerKeyUsageWarningDialogComponent } from './dialogs/issuer-key-usage-warning-dialog/issuer-key-usage-warning-dialog.component';
 import { RevokeWarningDialogComponent } from './dialogs/revoke-warning-dialog/revoke-warning-dialog.component';
+import { CertificateStatusDialogComponent } from './dialogs/certificate-status-dialog/certificate-status-dialog.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { RevokeWarningDialogComponent } from './dialogs/revoke-warning-dialog/re
     TemplateCardComponent,
     LoadTemplateDialogComponent,
     IssuerKeyUsageWarningDialogComponent,
-    RevokeWarningDialogComponent
+    RevokeWarningDialogComponent,
+    CertificateStatusDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -72,7 +74,8 @@ import { RevokeWarningDialogComponent } from './dialogs/revoke-warning-dialog/re
     TemplateNameDialogComponent,
     LoadTemplateDialogComponent,
     IssuerKeyUsageWarningDialogComponent,
-    RevokeWarningDialogComponent
+    RevokeWarningDialogComponent,
+    CertificateStatusDialogComponent
   ]
 })
 export class AppModule { }

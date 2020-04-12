@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Certificate status</h2>
+
+<mat-dialog-content>
+    <div fxLayout="column">
+        <p *ngIf="status?.isValid" class="green-p">
+            This certificate is valid.
+        </p>
+        <p *ngIf="!status?.isValid" class="red-p">
+            This certificate is not valid.
+        </p>
+        <p *ngIf="status?.isRevoked" class="red-p">
+            This certificate is revoked.
+        </p>
+        <p *ngIf="!status?.isRevoked" class="green-p">
+            This certificate is not revoked.
+        </p>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button id="close-button" class="mat-raised-button" (click)="close()">Ok</button>
+</mat-dialog-actions>

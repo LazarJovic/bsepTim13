@@ -61,12 +61,6 @@ export class CertificateCardComponent implements OnInit {
         alias: this.item.serialNum + this.item.subjectEmail + this.item.issuerEmail 
       }
     });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        
-      }
-    });
   }
 
 }

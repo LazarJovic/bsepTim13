@@ -39,7 +39,8 @@ export class ExtendedKeyUsageDialogComponent implements OnInit {
       'ipsecTunnel': new FormControl({value: true}, null),
       'ipsecUser': new FormControl({value: true}, null)    
     });
-    this.adjustToIssuer();
+    if (this.issuerExtKeyUsage)
+      this.adjustToIssuer();
   }
 
   close() {

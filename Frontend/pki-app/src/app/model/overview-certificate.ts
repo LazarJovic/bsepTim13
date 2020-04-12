@@ -13,12 +13,10 @@ export class OverviewCertificate {
     public hashAlgorithm: string;
     public issuerNameHash: string;
     public issuerKeyHash: string;
-    public isValid: boolean;
-    public isRevoked: boolean;
 
     constructor(issuerCommonName: string, issuerEmail: string, issuerId: number, subjectCommonName: string, subjectEmail: string, 
         subjectId: number, serialNum: string, validFrom: string,
-        validTo: string, isCA: boolean, hashAlgorithm: string, issuerNameHash: string,  issuerKeyHash: string, isValid: boolean, isRevoked: boolean) {
+        validTo: string, isCA: boolean, hashAlgorithm: string, issuerNameHash: string,  issuerKeyHash: string) {
         this.issuerCommonName = issuerCommonName;
         this.issuerEmail = issuerEmail;
         this.issuerId = issuerId;
@@ -32,8 +30,6 @@ export class OverviewCertificate {
         this.hashAlgorithm = hashAlgorithm;
         this.issuerNameHash = issuerNameHash;
         this.issuerKeyHash = issuerKeyHash;
-        this.isValid = isValid;
-        this.isRevoked = isRevoked;
     }
     
 }

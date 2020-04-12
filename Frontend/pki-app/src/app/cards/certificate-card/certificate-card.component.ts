@@ -56,10 +56,9 @@ export class CertificateCardComponent implements OnInit {
 
   checkStatus() {
     const dialogRef = this.statusDialog.open(CertificateStatusDialogComponent, {
-      maxWidth: '400px',
+      width: '300px',
       data: { 
-        isValid: this.item.isValid, 
-        isRevoked: this.item.isRevoked
+        alias: this.item.serialNum + this.item.subjectEmail + this.item.issuerEmail 
       }
     });
 
@@ -71,3 +70,4 @@ export class CertificateCardComponent implements OnInit {
   }
 
 }
+3

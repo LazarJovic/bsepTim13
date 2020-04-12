@@ -1,5 +1,6 @@
 package com.bsep.pki.service;
 
+import com.bsep.pki.dto.CertificateStatusDTO;
 import com.bsep.pki.dto.CreateCertificateDTO;
 import com.bsep.pki.dto.OverviewCertificateDTO;
 import com.bsep.pki.dto.SigningCertificateDTO;
@@ -668,14 +669,9 @@ public class CertificateService {
                 String issuerNameHash = this.encryptIssuerDN(issuerName);
                 String issuerKeyHash = this.encryptIssuerPublicKey(this.getIssuerCertificate(keyAlias, keyStore).getPublicKey());
 
-                boolean isValid = true;
-                // TODO: validity check
-
-                boolean isRevoked = this.isRevoked(keyAlias);
-
                 OverviewCertificateDTO dto = new OverviewCertificateDTO(issuerCommonName, issuerEmail, issuerId,
                         subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo, true,
-                        "sha1", issuerNameHash, issuerKeyHash, isValid, isRevoked);
+                        "sha1", issuerNameHash, issuerKeyHash);
 
                 retVal.add(dto);
                 usedAliases.add(keyAlias);
@@ -740,14 +736,9 @@ public class CertificateService {
             String issuerNameHash = this.encryptIssuerDN(issuerName);
             String issuerKeyHash = this.encryptIssuerPublicKey(this.getIssuerCertificate(keyAlias, keyStore).getPublicKey());
 
-            boolean isValid = true;
-            // TODO: validity check
-
-            boolean isRevoked = this.isRevoked(keyAlias);
-
             OverviewCertificateDTO dto = new OverviewCertificateDTO(issuerCommonName, issuerEmail, issuerId,
                     subjectCommonName, subjectEmail, subjectId, serialNumber, validFrom, validTo, false,
-                    "sha1", issuerNameHash, issuerKeyHash, isValid, isRevoked);
+                    "sha1", issuerNameHash, issuerKeyHash);
 
             retVal.add(dto);
         }
@@ -890,4 +881,7 @@ public class CertificateService {
         return certificate;
     }
 
+    public CertificateStatusDTO checkStatus(String alias) {
+        return new CertificateStatusDTO(false, this.isRevoked(alias));
+    }
 }

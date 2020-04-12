@@ -2,16 +2,16 @@
 
 <mat-dialog-content>
     <div fxLayout="column">
-        <p *ngIf="data.isValid">
+        <p *ngIf="status?.isValid" class="green-p">
             This certificate is valid.
         </p>
-        <p *ngIf="!data.isValid">
+        <p *ngIf="!status?.isValid" class="red-p">
             This certificate is not valid.
         </p>
-        <p *ngIf="data.isRevoked">
+        <p *ngIf="status?.isRevoked" class="red-p">
             This certificate is revoked.
         </p>
-        <p *ngIf="!data.isRevoked">
+        <p *ngIf="!status?.isRevoked" class="green-p">
             This certificate is not revoked.
         </p>
     </div>

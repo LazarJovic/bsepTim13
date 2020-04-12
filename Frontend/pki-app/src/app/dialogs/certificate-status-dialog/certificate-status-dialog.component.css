@@ -19,3 +19,11 @@ h2 {
 #close-button {
     margin-left: 70px;
 }
+
+.green-p {
+    color: green;
+}
+
+.red-p {
+    color: red;
+}

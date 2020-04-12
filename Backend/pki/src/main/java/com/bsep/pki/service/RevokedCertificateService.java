@@ -38,7 +38,7 @@ public class RevokedCertificateService {
         String alias = this.certificateService.generateAlias(Long.parseLong(dto.serialNum), dto.subjectEmail, dto.issuerEmail);
 
         if(certificate != null) {
-            RevokedCertificate revokedCertificate = new RevokedCertificate(alias);
+            RevokedCertificate revokedCertificate = new RevokedCertificate(alias.toLowerCase());
             RevokedCertificate newRevCert = this.create(revokedCertificate);
 
             this.revokeAllChildren(dto.subjectEmail);
@@ -109,6 +109,11 @@ public class RevokedCertificateService {
 
                 String issuerEmail = issuerName.getRDNs()[6].getFirst().getValue().toString();
                 String subjectEmail = subjectName.getRDNs()[6].getFirst().getValue().toString();
+
+                RevokedCertificate rc = this.revokedCertificateRepository.findByAlias(keyAlias);
+                if(rc != null) {
+                    continue;
+                }
 
                 if (issuerEmail.equals(email)) {
                     RevokedCertificate revokedCertificate = new RevokedCertificate(keyAlias);

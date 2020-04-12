@@ -525,7 +525,7 @@ public class CertificateService {
     public void createRootAndFiles() throws IOException {
 
         User root;
-        String rootEmail = "rootCA@maildrop.cc";
+        String rootEmail = "rootca@maildrop.cc";
 
         if(this.userService.findByEmail(rootEmail) != null) {
             return;

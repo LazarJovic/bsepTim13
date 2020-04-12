@@ -882,6 +882,18 @@ public class CertificateService {
     }
 
     public CertificateStatusDTO checkStatus(String alias) {
+        validateCertificate(alias);
         return new CertificateStatusDTO(false, this.isRevoked(alias));
+    }
+
+    private boolean validateCertificate(String alias) {
+        KeyStore keyStore = findKeyStoreByAlias(alias);
+        try {
+            Certificate[] certificates = keyStore.getCertificateChain(alias);
+            return true;
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 }

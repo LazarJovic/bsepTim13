@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { OverviewCertificate } from 'src/app/model/overview-certificate';
 import { CertificateService } from 'src/app/services/certificate-service/certificate.service';
 import { ToastrService } from 'ngx-toastr';
+import { MatDialog } from '@angular/material';
+import { RevokeWarningDialogComponent } from 'src/app/dialogs/revoke-warning-dialog/revoke-warning-dialog.component';
 import { CertificateStatusDialogComponent } from 'src/app/dialogs/certificate-status-dialog/certificate-status-dialog.component';
 import { MatDialog } from '@angular/material';
 
@@ -18,6 +20,7 @@ export class CertificateCardComponent implements OnInit {
   constructor(
     private certificateService: CertificateService,
     private toastr: ToastrService,
+    private warningDialog: MatDialog,
     private statusDialog: MatDialog
   ) { }
 
@@ -37,6 +40,19 @@ export class CertificateCardComponent implements OnInit {
         }
       }
     );
+  }
+
+  openRevokeWarning() {
+    const dialogRef = this.warningDialog.open(RevokeWarningDialogComponent, {
+      maxWidth: '400px',
+      data: { }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.revokeCertificate();
+      }
+    });
   }
 
   revokeCertificate() {

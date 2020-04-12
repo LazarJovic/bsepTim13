@@ -23,6 +23,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { TemplateCardComponent } from './cards/template-card/template-card.component';
 import { LoadTemplateDialogComponent } from './dialogs/load-template-dialog/load-template-dialog.component';
 import { IssuerKeyUsageWarningDialogComponent } from './dialogs/issuer-key-usage-warning-dialog/issuer-key-usage-warning-dialog.component';
+import { RevokeWarningDialogComponent } from './dialogs/revoke-warning-dialog/revoke-warning-dialog.component';
 import { CertificateStatusDialogComponent } from './dialogs/certificate-status-dialog/certificate-status-dialog.component';
 
 @NgModule({
@@ -42,6 +43,7 @@ import { CertificateStatusDialogComponent } from './dialogs/certificate-status-d
     TemplateCardComponent,
     LoadTemplateDialogComponent,
     IssuerKeyUsageWarningDialogComponent,
+    RevokeWarningDialogComponent,
     CertificateStatusDialogComponent
   ],
   imports: [
@@ -72,6 +74,7 @@ import { CertificateStatusDialogComponent } from './dialogs/certificate-status-d
     TemplateNameDialogComponent,
     LoadTemplateDialogComponent,
     IssuerKeyUsageWarningDialogComponent,
+    RevokeWarningDialogComponent,
     CertificateStatusDialogComponent
   ]
 })

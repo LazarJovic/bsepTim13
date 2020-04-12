@@ -147,3 +147,7 @@ fabric.properties
 hs_err_pid*
 
 # End of https://www.gitignore.io/api/java,angular,intellij
+Backend/pki/end-entity.jks
+Backend/pki/alias-pass.properties
+Backend/pki/ca.jks
+Backend/pki/self-signed.jks

@@ -114,8 +114,16 @@ public class CertificateService {
                                  String subjectEmail, String issuerEmail, String issuerAlias) {
         String fileName = null;
         String filePass = null;
+        KeyStore issuerKeyStore = this.findKeyStoreByAlias(issuerAlias);
+        Certificate[] issuerChain = null;
+        try {
+            issuerChain = issuerKeyStore.getCertificateChain(issuerAlias);
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
         try {
             if(subjectEmail.equals(issuerEmail) && this.isCA(certificate)) {
+
                 this.loadSelfSignedKeyStore();
                 fileName = PropertiesConfigurator.SELF_SIGNED + ".jks";
                 filePass = this.propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.SELF_SIGNED);
@@ -134,14 +142,9 @@ public class CertificateService {
             e.printStackTrace();
         }
 
-        KeyStore issuerKeyStore = this.findKeyStoreByAlias(issuerAlias);
-        Certificate[] issuerChain = null;
         try {
-            issuerChain = issuerKeyStore.getCertificateChain(issuerAlias);
             this.keyStoreWriter.write(certAlias, privateKey, privateKeyPass, certificate, issuerChain);
             this.keyStoreWriter.saveKeyStore(fileName, filePass.toCharArray());
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

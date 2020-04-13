@@ -17,7 +17,7 @@ public class TemplateController {
     private TemplateService templateService;
 
     @PostMapping
-    public ResponseEntity<?> createSubject(@RequestBody TemplateDTO dto) {
+    public ResponseEntity<?> createTemplate(@RequestBody TemplateDTO dto) {
 
         TemplateDTO retVal = null;
 

@@ -57,27 +57,11 @@
               <mat-option value="SHA512withRSA">
                 SHA512withRSA
               </mat-option>
-              <mat-option value="SHA256withECDSA">
-                SHA256withECDSA
-              </mat-option>
-              <mat-option value="SHA512withECDSA">
-                SHA512withECDSA
-              </mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field class="double-field right-field">
             <mat-label>Public Key Algorithm</mat-label>
-            <mat-select formControlName="pubKeyAlgorithm">
-              <mat-option value="DSA">
-                DSA
-              </mat-option>
-              <mat-option value="RSA">
-                RSA
-              </mat-option>
-              <mat-option value="DiffieHellman">
-                DiffieHellman
-              </mat-option>
-            </mat-select>
+            <input matInput type="text" formControlName="pubKeyAlgorithm">
           </mat-form-field>
         </div>
         <!--Ekstenzije start-->

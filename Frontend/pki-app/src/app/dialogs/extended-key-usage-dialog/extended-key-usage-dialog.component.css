@@ -1,1 +1,5 @@
 mat-checkbox { display:block }
+
+#save-button {
+    margin-left: 1vw;
+}

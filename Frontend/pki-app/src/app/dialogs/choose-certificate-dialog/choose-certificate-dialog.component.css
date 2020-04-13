@@ -24,3 +24,7 @@ signing-certificate-card {
     background-color: darkorange;
     color: white;
 }
+
+#component-div {
+    margin-left: 3.5vw;
+}

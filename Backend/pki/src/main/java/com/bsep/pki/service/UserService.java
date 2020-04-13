@@ -19,9 +19,13 @@ public class UserService {
 
     public UserService() {this.subjectMapper = new SubjectMapper();}
 
-    public UserDTO create(UserDTO dto) {
+    public UserDTO create(UserDTO dto) throws Exception {
         if(!validSubjectData(dto))
             return null;
+
+        if(this.userRepository.findByEmail(dto.email) != null) {
+            throw new Exception("Email is taken!");
+        }
 
         User subject = this.subjectMapper.toEntity(dto);
 

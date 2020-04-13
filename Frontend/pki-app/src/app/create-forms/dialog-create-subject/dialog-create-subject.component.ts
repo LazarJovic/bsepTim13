@@ -30,7 +30,6 @@ export class DialogCreateSubjectComponent implements OnInit {
 
   }
   
-  
   onNoClick(): void {
     this.dialogRef.close();
   }

@@ -48,13 +48,18 @@ public class CertificateGenerator {
                     subjectData.getX500name(),
                     subjectData.getKeyPair().getPublic());
 
-            int values = 0;
-            for (int i = 0; i < other.getKeyUsageExtensions().size(); i++) {
-                values = values | other.getKeyUsageExtensions().get(i);
-            }
+            if(other.isKeyUsageChecked()) {
 
-            certGen.addExtension(Extension.keyUsage, true, new KeyUsage(values));
-            certGen.addExtension(Extension.extendedKeyUsage, true, new ExtendedKeyUsage(other.getExtendedKeyUsageValues()));
+                int values = 0;
+                for (int i = 0; i < other.getKeyUsageExtensions().size(); i++) {
+                    values = values | other.getKeyUsageExtensions().get(i);
+                }
+
+                certGen.addExtension(Extension.keyUsage, true, new KeyUsage(values));
+            }
+            if(other.isExtendedKeyUsageChecked()) {
+                certGen.addExtension(Extension.extendedKeyUsage, true, new ExtendedKeyUsage(other.getExtendedKeyUsageValues()));
+            }
 
             X509CertificateHolder certHolder = certGen.build(contentSigner);
 

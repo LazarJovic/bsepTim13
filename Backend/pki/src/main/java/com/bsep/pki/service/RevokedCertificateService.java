@@ -32,12 +32,17 @@ public class RevokedCertificateService {
         return this.revokedCertificateRepository.save(revokedCertificate);
     }
 
-    public RevokedCertificate revokeCertificate(OverviewCertificateDTO dto) {
+    public RevokedCertificate revokeCertificate(OverviewCertificateDTO dto) throws Exception {
 
         Certificate certificate = this.certificateService.getCertificateFromOverview(dto);
         String alias = this.certificateService.generateAlias(Long.parseLong(dto.serialNum), dto.subjectEmail, dto.issuerEmail);
 
         if(certificate != null) {
+
+            if(this.revokedCertificateRepository.findByAlias(alias) != null) {
+                throw new Exception("This certificate is already revoked!");
+            }
+
             RevokedCertificate revokedCertificate = new RevokedCertificate(alias.toLowerCase());
             RevokedCertificate newRevCert = this.create(revokedCertificate);
 

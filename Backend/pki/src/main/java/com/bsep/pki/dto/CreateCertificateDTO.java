@@ -20,13 +20,16 @@ public class CreateCertificateDTO {
     public String keyAlgorithm;
     public ArrayList<String> keyUsage;
     public ArrayList<String> extendedKeyUsage;
+    public boolean keyUsageChecked;
+    public boolean extendedKeyUsageChecked;
 
     public CreateCertificateDTO() {}
 
     public CreateCertificateDTO(Long id, Long issuerId, String issuerIssuerEmail, String issuerEmail, String serialNum, String issuerCommonName,
                                 String issuerValidFrom, String issuerValidTo, String validFrom,
                                 String validTo, Long subjectId, String subjectCommonName, String signatureAlgorithm,
-                                String keyAlgorithm, ArrayList<String> keyUsage, ArrayList<String> extendedKeyUsage) {
+                                String keyAlgorithm, ArrayList<String> keyUsage, ArrayList<String> extendedKeyUsage,
+                                boolean keyUsageChecked, boolean extendedKeyUsageChecked) {
         this.id = id;
         this.issuerId = issuerId;
         this.issuerIssuerEmail = issuerIssuerEmail;
@@ -43,5 +46,7 @@ public class CreateCertificateDTO {
         this.keyAlgorithm = keyAlgorithm;
         this.keyUsage = keyUsage;
         this.extendedKeyUsage = extendedKeyUsage;
+        this.keyUsageChecked = keyUsageChecked;
+        this.extendedKeyUsageChecked =extendedKeyUsageChecked;
     }
 }

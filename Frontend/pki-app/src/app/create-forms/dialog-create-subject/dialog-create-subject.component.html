@@ -45,8 +45,8 @@
                 </div>
                 <div id="button-div">
                     <button mat-button (click)="onNoClick()">Cancel</button>
-                    <button mat-button [mat-dialog-close]="data" cdkFocusInitial id="create-subject-btn"
-                        type="submit" id="create-btn">Create</button>
+                    <button mat-button mat-primary [mat-dialog-close]="data" cdkFocusInitial id="create-subject-btn"
+                        type="submit" id="create-btn" [disabled]="!createSubjectForm.valid">Create</button>
                 </div>
             </form>
         </div>

@@ -14,6 +14,8 @@ public class OtherCertData {
     private BigInteger serialNumber;
     private ArrayList<Integer> keyUsageValues;
     private KeyPurposeId[] extendedKeyUsageValues;
+    private boolean keyUsageChecked;
+    private boolean extendedKeyUsageChecked;
 
     public OtherCertData() {
         this.keyUsageValues = new ArrayList<>();
@@ -32,13 +34,15 @@ public class OtherCertData {
 
     public OtherCertData(String startValidationDate, String endValidationDate, String signatureAlgorithm,
                          ArrayList<Integer> keyUsageValues, BigInteger serialNumber,
-                         KeyPurposeId[] extendedKeyUsageValues) {
+                         KeyPurposeId[] extendedKeyUsageValues, boolean keyUsageChecked, boolean extendedKeyUsageChecked) {
         this.startValidationDate = LocalDate.parse(startValidationDate);
         this.endValidationDate = LocalDate.parse(endValidationDate);
         this.signatureAlgorithm = signatureAlgorithm;
         this.keyUsageValues = keyUsageValues;
         this.serialNumber = serialNumber;
         this.extendedKeyUsageValues = extendedKeyUsageValues;
+        this.keyUsageChecked = keyUsageChecked;
+        this.extendedKeyUsageChecked = extendedKeyUsageChecked;
     }
 
     public LocalDate getStartValidationDate() {
@@ -87,5 +91,29 @@ public class OtherCertData {
 
     public void setSerialNumber(BigInteger serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    public ArrayList<Integer> getKeyUsageValues() {
+        return keyUsageValues;
+    }
+
+    public void setKeyUsageValues(ArrayList<Integer> keyUsageValues) {
+        this.keyUsageValues = keyUsageValues;
+    }
+
+    public boolean isKeyUsageChecked() {
+        return keyUsageChecked;
+    }
+
+    public void setKeyUsageChecked(boolean keyUsageChecked) {
+        this.keyUsageChecked = keyUsageChecked;
+    }
+
+    public boolean isExtendedKeyUsageChecked() {
+        return extendedKeyUsageChecked;
+    }
+
+    public void setExtendedKeyUsageChecked(boolean extendedKeyUsageChecked) {
+        this.extendedKeyUsageChecked = extendedKeyUsageChecked;
     }
 }

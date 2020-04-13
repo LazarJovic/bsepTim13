@@ -63,7 +63,10 @@ export class CertificateCardComponent implements OnInit {
           }
         },
         error: data => {
-          this.toastr.error("Certificate revocation failed!");
+          if (data.error && typeof data.error === "string")
+            this.toastr.error(data.error);
+          else
+            this.toastr.error("Certificate revocation failed!");
         }
       }
     );

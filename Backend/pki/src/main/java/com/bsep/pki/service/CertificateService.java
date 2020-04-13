@@ -82,6 +82,15 @@ public class CertificateService {
             throw new Exception("Issuer certificate is not valid!");
         }
 
+        User subject = this.userService.findEntity(dto.subjectId);
+
+        if(dto.issuerEmail.equals(subject.getEmail())) {
+            KeyStore keyStore = this.loadSelfSignedKeyStore();
+            if(!keyStore.containsAlias(issuerAlias)) {
+                throw new Exception("Self signed certificates can be issued only by root CA!");
+            }
+        }
+
         KeyPair issuerKeyPair = null;
         if(dto.issuerEmail.equals(dto.issuerIssuerEmail)) {
             issuerKeyPair = this.getKeyPairOfIssuerByAlias(issuerAlias, true);
@@ -91,7 +100,6 @@ public class CertificateService {
         }
         IssuerData issuerData = new IssuerData(this.certificateGenerator.generateX500Name(issuer), issuerKeyPair);
 
-        User subject = this.userService.findEntity(dto.subjectId);
         KeyPair subjectKeyPair = this.myKeyGenerator.generateKeyPair(dto.keyAlgorithm);
         SubjectData subjectData = new SubjectData(this.certificateGenerator.generateX500Name(subject), subjectKeyPair);
 
@@ -99,7 +107,7 @@ public class CertificateService {
         ArrayList<Integer> keyUsageValues = this.getIntegersOfKeyUsages(dto.keyUsage);
         BigInteger serialNumber = this.generateSerialNumber(issuer);
         OtherCertData otherCertData = new OtherCertData(dto.validFrom, dto.validTo, dto.signatureAlgorithm, keyUsageValues,
-                serialNumber, extendedKeyUsageValues);
+                serialNumber, extendedKeyUsageValues, dto.keyUsageChecked, dto.extendedKeyUsageChecked);
 
         X509Certificate certificate = this.certificateGenerator.generateCertificate(subjectData, issuerData, otherCertData);
 
@@ -186,7 +194,11 @@ public class CertificateService {
     }
 
     private boolean isCA(X509Certificate certificate) {
-        return certificate.getKeyUsage()[5];
+        if(certificate.getKeyUsage() != null) {
+            return certificate.getKeyUsage()[5];
+        }
+
+        return false;
     }
 
     private KeyPair getKeyPairOfIssuerByAlias(String alias, boolean isSelfSigned) {
@@ -500,7 +512,9 @@ public class CertificateService {
         if(!notValidSingleData(date)) {
             try {
                 LocalDate.parse(date);
-                return true;
+                if(LocalDate.parse(date).isAfter(LocalDate.now().minusDays(1))) {
+                    return true;
+                }
             } catch (Exception e) {
                 return false;
             }

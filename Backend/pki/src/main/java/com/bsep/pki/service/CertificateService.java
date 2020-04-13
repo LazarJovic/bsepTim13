@@ -77,6 +77,20 @@ public class CertificateService {
 
         User issuer = this.userService.findEntity(dto.issuerId);
         String issuerAlias = dto.serialNum + dto.issuerEmail + dto.issuerIssuerEmail;
+
+        if(!this.validateCertificate(issuerAlias)) {
+            throw new Exception("Issuer certificate is not valid!");
+        }
+
+        User subject = this.userService.findEntity(dto.subjectId);
+
+        if(dto.issuerEmail.equals(subject.getEmail())) {
+            KeyStore keyStore = this.loadSelfSignedKeyStore();
+            if(!keyStore.containsAlias(issuerAlias)) {
+                throw new Exception("Self signed certificates can be issued only by root CA!");
+            }
+        }
+
         KeyPair issuerKeyPair = null;
         if(dto.issuerEmail.equals(dto.issuerIssuerEmail)) {
             issuerKeyPair = this.getKeyPairOfIssuerByAlias(issuerAlias, true);
@@ -86,7 +100,6 @@ public class CertificateService {
         }
         IssuerData issuerData = new IssuerData(this.certificateGenerator.generateX500Name(issuer), issuerKeyPair);
 
-        User subject = this.userService.findEntity(dto.subjectId);
         KeyPair subjectKeyPair = this.myKeyGenerator.generateKeyPair(dto.keyAlgorithm);
         SubjectData subjectData = new SubjectData(this.certificateGenerator.generateX500Name(subject), subjectKeyPair);
 
@@ -94,7 +107,7 @@ public class CertificateService {
         ArrayList<Integer> keyUsageValues = this.getIntegersOfKeyUsages(dto.keyUsage);
         BigInteger serialNumber = this.generateSerialNumber(issuer);
         OtherCertData otherCertData = new OtherCertData(dto.validFrom, dto.validTo, dto.signatureAlgorithm, keyUsageValues,
-                serialNumber, extendedKeyUsageValues);
+                serialNumber, extendedKeyUsageValues, dto.keyUsageChecked, dto.extendedKeyUsageChecked);
 
         X509Certificate certificate = this.certificateGenerator.generateCertificate(subjectData, issuerData, otherCertData);
 
@@ -114,8 +127,16 @@ public class CertificateService {
                                  String subjectEmail, String issuerEmail, String issuerAlias) {
         String fileName = null;
         String filePass = null;
+        KeyStore issuerKeyStore = this.findKeyStoreByAlias(issuerAlias);
+        Certificate[] issuerChain = null;
+        try {
+            issuerChain = issuerKeyStore.getCertificateChain(issuerAlias);
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
         try {
             if(subjectEmail.equals(issuerEmail) && this.isCA(certificate)) {
+
                 this.loadSelfSignedKeyStore();
                 fileName = PropertiesConfigurator.SELF_SIGNED + ".jks";
                 filePass = this.propertiesConfigurator.readValueFromKeyStoreProp(PropertiesConfigurator.SELF_SIGNED);
@@ -134,14 +155,9 @@ public class CertificateService {
             e.printStackTrace();
         }
 
-        KeyStore issuerKeyStore = this.findKeyStoreByAlias(issuerAlias);
-        Certificate[] issuerChain = null;
         try {
-            issuerChain = issuerKeyStore.getCertificateChain(issuerAlias);
             this.keyStoreWriter.write(certAlias, privateKey, privateKeyPass, certificate, issuerChain);
             this.keyStoreWriter.saveKeyStore(fileName, filePass.toCharArray());
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -178,7 +194,11 @@ public class CertificateService {
     }
 
     private boolean isCA(X509Certificate certificate) {
-        return certificate.getKeyUsage()[5];
+        if(certificate.getKeyUsage() != null) {
+            return certificate.getKeyUsage()[5];
+        }
+
+        return false;
     }
 
     private KeyPair getKeyPairOfIssuerByAlias(String alias, boolean isSelfSigned) {
@@ -492,7 +512,9 @@ public class CertificateService {
         if(!notValidSingleData(date)) {
             try {
                 LocalDate.parse(date);
-                return true;
+                if(LocalDate.parse(date).isAfter(LocalDate.now().minusDays(1))) {
+                    return true;
+                }
             } catch (Exception e) {
                 return false;
             }
@@ -882,6 +904,117 @@ public class CertificateService {
     }
 
     public CertificateStatusDTO checkStatus(String alias) {
-        return new CertificateStatusDTO(false, this.isRevoked(alias));
+        return new CertificateStatusDTO(this.validateCertificate(alias), this.isRevoked(alias));
+    }
+
+    private boolean validateCertificate(String alias) {
+        KeyStore keyStore = findKeyStoreByAlias(alias);
+        try {
+            Certificate[] certificates = keyStore.getCertificateChain(alias);
+            for(int i = 0; i < certificates.length; i++) {
+                String certAlias = this.getAliasByCertificate(certificates[i]);
+                if(this.isRevoked(certAlias)) {
+                    return false;
+                }
+                else if(this.checkValidityPeriod(certificates[i])) {
+                    return false;
+                }
+                if(i == certificates.length - 1) {
+                    if(!this.checkSignatureValidity(certificates[i], certificates[i])) {
+                        return false;
+                    }
+                }
+                else {
+                    if(!this.checkSignatureValidity(certificates[i], certificates[i + 1])) {
+                        return false;
+                    }
+                }
+            }
+
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private boolean checkSignatureValidity(Certificate certificate, Certificate issuerCert) {
+        try {
+            certificate.verify(issuerCert.getPublicKey());
+        } catch (CertificateException e) {
+            return false;
+        } catch (NoSuchAlgorithmException e) {
+            return false;
+        } catch (InvalidKeyException e) {
+            return false;
+        } catch (NoSuchProviderException e) {
+            return false;
+        } catch (SignatureException e) {
+            return false;
+        }
+
+//        String sigAlgName = ((X509Certificate)certificate).getSigAlgName();
+//        byte[] signature = ((X509Certificate)certificate).getSignature();
+//
+//        Signature privateSignature = null;
+//        try {
+//            privateSignature = Signature.getInstance(sigAlgName);
+//
+//            Key privateKey = null;
+//            String issuerAlias = this.getAliasByCertificate(issuerCert);
+//            KeyStore issuerKeyStore = this.findKeyStoreByAlias(issuerAlias);
+//
+//            privateKey = issuerKeyStore.getKey(issuerAlias, this.propertiesConfigurator.readValueFromAliasPassProp(issuerAlias).toCharArray());
+//
+//            privateSignature.initSign((PrivateKey) privateKey);
+//            privateSignature.update(certificate.getEncoded());
+//            byte[] s = privateSignature.sign();
+//
+//            if(!signature.equals(s)) {
+//                return false;
+//            }
+//
+//        }catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (KeyStoreException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        } catch (UnrecoverableKeyException e) {
+//            e.printStackTrace();
+//        } catch (InvalidKeyException e) {
+//            e.printStackTrace();
+//        } catch (CertificateEncodingException e) {
+//            e.printStackTrace();
+//        } catch (SignatureException e) {
+//            e.printStackTrace();
+//        }
+
+        return true;
+
+    }
+
+    private boolean checkValidityPeriod(Certificate certificate) {
+        return ((X509Certificate)certificate).getNotAfter().before(java.sql.Date.valueOf(LocalDate.now()));
+    }
+
+    private String getAliasByCertificate(Certificate certificate) {
+        X500Name issuerName = null;
+        try {
+            issuerName = new JcaX509CertificateHolder((X509Certificate) certificate).getIssuer();
+        } catch (CertificateEncodingException e) {
+            e.printStackTrace();
+        }
+
+        X500Name subjectName = null;
+        try {
+            subjectName = new JcaX509CertificateHolder((X509Certificate) certificate).getSubject();
+        } catch (CertificateEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String issuerEmail = issuerName.getRDNs()[6].getFirst().getValue().toString();
+        String subjectEmail = subjectName.getRDNs()[6].getFirst().getValue().toString();
+
+        return ((X509Certificate) certificate).getSerialNumber().toString() + subjectEmail + issuerEmail;
     }
 }

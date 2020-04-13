@@ -17,11 +17,13 @@ export class CreateCertificate {
     public keyAlgorithm: string;
     public keyUsage: Array<string>;
     public extendedKeyUsage: Array<string>;
+    public keyUsageChecked: boolean;
+    public extendedKeyUsageChecked: boolean;
 
     constructor(id: number, issuerId: number, issuerIssuerEmail: string, issuerEmail: string, serialNum: string,
         issuerCommonName: string, issuerValidFrom: string, issuerValidTo: string, validFrom: string, validTo: string,
         subjectId: number, subjectCommonName: string, subjectEmail: string, signatureAlgorithm: string, keyAlgorithm: string, keyUsage: Array<string>,
-        extendedKeyUsage: Array<string>) {
+        extendedKeyUsage: Array<string>, keyUsageChecked: boolean, extendedKeyUsageChecked: boolean) {
         this.issuerId = issuerId;
         this.issuerIssuerEmail = issuerIssuerEmail;
         this.issuerEmail = issuerEmail;
@@ -38,6 +40,8 @@ export class CreateCertificate {
         this.keyAlgorithm = keyAlgorithm;
         this.keyUsage = keyUsage;
         this.extendedKeyUsage = extendedKeyUsage;
+        this.keyUsageChecked = keyUsageChecked;
+        this.extendedKeyUsageChecked = extendedKeyUsageChecked;
     }
     
 }

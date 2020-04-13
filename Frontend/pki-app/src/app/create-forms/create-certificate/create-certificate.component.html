@@ -29,16 +29,16 @@
         </div>
         <div>
           <mat-form-field class="double-field">
-            <input matInput type="date" placeholder="Valid from" name="validFrom" formControlName="validFrom">
+            <input matInput type="date" placeholder="Valid from" [min]="minDate" name="validFrom" formControlName="validFrom">
           </mat-form-field>
           <mat-form-field class="double-field right-field">
-            <input matInput type="date" placeholder="To" name="validTo" formControlName="validTo">
+            <input matInput type="date" placeholder="To" [min]="minDate" name="validTo" formControlName="validTo">
           </mat-form-field>
         </div>
         <div>
           <mat-form-field id="subject-field">
             <mat-label>Subject</mat-label>
-            <mat-select formControlName="subject">
+            <mat-select formControlName="subject" [compareWith]="compareFn">
               <mat-option *ngFor="let subject of subjects" [value]="subject"> {{ subject.commonName }} </mat-option>
             </mat-select>
           </mat-form-field>
@@ -74,8 +74,8 @@
               <mat-option value="RSA">
                 RSA
               </mat-option>
-              <mat-option value="EC">
-                EC
+              <mat-option value="DiffieHellman">
+                DiffieHellman
               </mat-option>
             </mat-select>
           </mat-form-field>

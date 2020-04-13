@@ -3,7 +3,7 @@ h1 {
 }
 
 #content-div {
-    margin-left: 4vw;
+    margin-left: 5vw;
 }
 
 .left-field {
@@ -14,6 +14,7 @@ button {
     background-color: darkorange;
     color: white;
     margin-bottom: 1vw;
+    border: 1px solid darkorange;
 }
 
 button:hover {
@@ -24,9 +25,13 @@ button:hover {
 
 #button-div {
     display: block;
-    margin-left: 7.5vw;
+    margin-left: 11.75vw;
 }
 
 #create-btn {
     margin-left: 2vw;
+}
+
+button:disabled {
+    background-color: lightgray;
 }

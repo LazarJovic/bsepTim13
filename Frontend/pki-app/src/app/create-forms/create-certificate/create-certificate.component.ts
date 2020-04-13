@@ -40,6 +40,8 @@ export class CreateCertificateComponent implements OnInit {
 
   certificate: CreateCertificate;
 
+  minDate: string;
+
   constructor(
     private router: Router,
     public dialog: MatDialog,
@@ -54,6 +56,9 @@ export class CreateCertificateComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
+    this.minDate = new Date(Date.now()).toISOString().split('T')[0];
+
     this.keyUsage = new KeyUsage(true, true, true, true, true, true, true, true, true);
     this.extKeyUsage = new ExtKeyUsage(true, true, true, true, true, true, true, true, true);
     this.keyUsageDesc = "DigitalSignature, NonRepudiation, KeyEncipherment, DataEncipherment, KeyAgreement, KeyCertSign, CRLSign, EncipherOnly, DecipherOnly";
@@ -67,7 +72,7 @@ export class CreateCertificateComponent implements OnInit {
       'pubKeyAlgorithm': new FormControl({ value: null }, [Validators.required])
     });
 
-    this.getSubjects();
+    this.getSubjects(null);
 
   }
 
@@ -78,7 +83,7 @@ export class CreateCertificateComponent implements OnInit {
     this.certificate = new CreateCertificate(null, this.signingCertificate.issuerId, this.signingCertificate.issuerIssuerEmail, this.signingCertificate.issuerEmail, this.signingCertificate.serialNum,
       this.signingCertificate.issuerCommonName, this.signingCertificate.validFrom, this.signingCertificate.validTo, this.createCertificateForm.value.validFrom, this.createCertificateForm.value.validTo,
       this.selectedSubject.id, this.selectedSubject.commonName, this.selectedSubject.email, this.createCertificateForm.value.signatureAlgorithm, this.createCertificateForm.value.pubKeyAlgorithm,
-      keyUsages, extendedKeyUsage);
+      keyUsages, extendedKeyUsage, this.keyUsageChecked, this.extendedKeyUsageChecked);
 
     this.certificateService.createCertificate(this.certificate).subscribe(
       {
@@ -193,11 +198,16 @@ export class CreateCertificateComponent implements OnInit {
     });
   }
 
-  getSubjects() {
+  getSubjects(subject: User) {
     this.userService.getUsers().subscribe({
 
       next: (result) => {
         this.subjects = result;
+        if (subject) {
+          this.createCertificateForm.patchValue({
+            "subject": subject
+          });
+        }
       },
       error: data => {
         if (data.error && typeof data.error === "string")
@@ -209,6 +219,10 @@ export class CreateCertificateComponent implements OnInit {
     });
   }
 
+  compareFn(c1: any, c2:any): boolean {     
+    return c1 && c2 ? c1.id === c2.id : c1 === c2; 
+  }
+
   openSubjectDialog() {
     const dialogRef = this.dialog.open(DialogCreateSubjectComponent, {
       width: '40vw',
@@ -217,16 +231,16 @@ export class CreateCertificateComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      
       if (result) {
-        var subject = new User(0, result.givenName, result.lastName, result.commonName, result.country, result.organization,
+        let subject = new User(0, result.givenName, result.lastName, result.commonName, result.country, result.organization,
           result.organizationalUnit, result.locality, result.email, 0);
-
-        this.toast.success("Subject created successfully!");
 
         this.userService.createSubject(subject).subscribe(
           {
-            next: () => {
-              this.getSubjects();
+            next: (data) => {
+              this.toast.success("Subject created successfully!");
+              this.getSubjects(data);
             },
             error: data => {
               if (data.error && typeof data.error === "string")

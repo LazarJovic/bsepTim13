@@ -5,7 +5,6 @@ import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material';
 import { RevokeWarningDialogComponent } from 'src/app/dialogs/revoke-warning-dialog/revoke-warning-dialog.component';
 import { CertificateStatusDialogComponent } from 'src/app/dialogs/certificate-status-dialog/certificate-status-dialog.component';
-import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'certificate-card',
@@ -64,7 +63,10 @@ export class CertificateCardComponent implements OnInit {
           }
         },
         error: data => {
-          this.toastr.error("Certificate revocation failed!");
+          if (data.error && typeof data.error === "string")
+            this.toastr.error(data.error);
+          else
+            this.toastr.error("Certificate revocation failed!");
         }
       }
     );

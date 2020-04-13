@@ -23,13 +23,16 @@ public class OtherCertData {
 
     public OtherCertData(LocalDate startValidationDate, LocalDate endValidationDate, String signatureAlgorithm,
                          ArrayList<String> extendedKeyUsageExtensions,
-                         BigInteger serialNumber, ArrayList<Integer> keyUsageValues, KeyPurposeId[] extendedKeyUsageValues) {
+                         BigInteger serialNumber, ArrayList<Integer> keyUsageValues, KeyPurposeId[] extendedKeyUsageValues,
+                         boolean keyUsageChecked, boolean extendedKeyUsageChecked) {
         this.startValidationDate = startValidationDate;
         this.endValidationDate = endValidationDate;
         this.signatureAlgorithm = signatureAlgorithm;
         this.serialNumber = serialNumber;
         this.keyUsageValues = keyUsageValues;
         this.extendedKeyUsageValues = extendedKeyUsageValues;
+        this.keyUsageChecked = keyUsageChecked;
+        this.extendedKeyUsageChecked = extendedKeyUsageChecked;
     }
 
     public OtherCertData(String startValidationDate, String endValidationDate, String signatureAlgorithm,

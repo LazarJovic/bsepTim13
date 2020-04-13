@@ -69,7 +69,7 @@ export class CreateCertificateComponent implements OnInit {
       'validTo': new FormControl({ value: null }, [Validators.required]),
       'subject': new FormControl({ value: null }, [Validators.required]),
       'signatureAlgorithm': new FormControl({ value: null }, [Validators.required]),
-      'pubKeyAlgorithm': new FormControl({ value: null }, [Validators.required])
+      'pubKeyAlgorithm': new FormControl("RSA", [Validators.required])
     });
 
     this.getSubjects(null);
@@ -90,6 +90,9 @@ export class CreateCertificateComponent implements OnInit {
         next: () => {
           this.toast.success("Certificate successfully created!");
           this.createCertificateForm.reset();
+          this.createCertificateForm.patchValue({
+            'pubKeyAlgorithm': 'RSA'
+          });
         },
         error: data => {
           if (data.error && typeof data.error === "string")

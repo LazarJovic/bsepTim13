@@ -38,7 +38,7 @@
         <div>
           <mat-form-field id="subject-field">
             <mat-label>Subject</mat-label>
-            <mat-select formControlName="subject">
+            <mat-select formControlName="subject" [compareWith]="compareFn">
               <mat-option *ngFor="let subject of subjects" [value]="subject"> {{ subject.commonName }} </mat-option>
             </mat-select>
           </mat-form-field>

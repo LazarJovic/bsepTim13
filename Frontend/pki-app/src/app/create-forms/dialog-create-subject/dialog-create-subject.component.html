@@ -1,8 +1,8 @@
 <div id="container-div">
     <h1 mat-dialog-title>Create subject</h1>
-    <div mat-dialog-content>
+    <form [formGroup]="createSubjectForm">
+        <div mat-dialog-content>
         <div id="content-div">
-            <form [formGroup]="createSubjectForm">
                 <div class="field-div">
                     <mat-form-field id="given-name-field">
                         <mat-label>Given name</mat-label>
@@ -43,14 +43,16 @@
                         <input matInput [(ngModel)]="data.email" type="text" formControlName="email">
                     </mat-form-field>
                 </div>
-                <div id="button-div">
-                    <button mat-button (click)="onNoClick()">Cancel</button>
-                    <button mat-button mat-primary [mat-dialog-close]="data" cdkFocusInitial id="create-subject-btn"
-                        type="submit" id="create-btn" [disabled]="!createSubjectForm.valid">Create</button>
-                </div>
-            </form>
+                
         </div>
     </div>
     <div mat-dialog-actions>
+        <div id="button-div">
+            <button mat-button (click)="onNoClick()" type="button">Cancel</button>
+            <button mat-button mat-primary [mat-dialog-close]="data" cdkFocusInitial id="create-subject-btn"
+                type="submit" id="create-btn" [disabled]="!createSubjectForm.valid">Create</button>
+        </div>
     </div>
+</form>
+
 </div>

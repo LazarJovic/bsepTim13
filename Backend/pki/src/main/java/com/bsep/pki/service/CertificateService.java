@@ -259,6 +259,10 @@ public class CertificateService {
             while (aliases.hasMoreElements()) {
                 keyAlias = aliases.nextElement();
 
+                if(!this.validateCertificate(keyAlias)) {
+                    continue;
+                }
+
                 if(usedAliases.contains(keyAlias)) {
                     continue;
                 }

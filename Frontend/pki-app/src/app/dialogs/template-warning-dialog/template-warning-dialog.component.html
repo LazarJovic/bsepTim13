@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Continue?</h2>
+
+<mat-dialog-content>
+    <div fxLayout="column">
+        <p>Loading this template will not load all of its Key Usages and/or Extended Key Usages, 
+            because its Key Usages and Extended Key Usages need to be equal or less to those that the currently selected Issuer has. 
+            Are you sure you want to continue?
+        </p>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button id="close-button" class="mat-raised-button" (click)="close()">Cancel</button>
+    <button class="mat-raised-button mat-primary" type="submit"
+        (click)="onSubmit()">Continue</button>
+</mat-dialog-actions>

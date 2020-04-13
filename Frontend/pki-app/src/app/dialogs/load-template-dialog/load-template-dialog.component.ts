@@ -14,13 +14,19 @@ import { Template } from 'src/app/model/template';
 export class LoadTemplateDialogComponent implements OnInit {
 
   templates: Template[];
+  issuerKeyUsage: string[];
+  issuerExtKeyUsage: string[];
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<KeyUsageDialogComponent>,
     private templateService: TemplateService,
-    private toast: ToastrService
-  ) { }
+    private toast: ToastrService,
+    @Inject(MAT_DIALOG_DATA) data
+    ) { 
+      this.issuerKeyUsage = data.issuerKeyUsage;
+      this.issuerExtKeyUsage = data.issuerExtKeyUsage;
+    }
 
   ngOnInit() {
     this.getTemplates();

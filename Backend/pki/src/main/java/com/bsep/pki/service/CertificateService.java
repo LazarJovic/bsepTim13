@@ -13,10 +13,18 @@ import com.bsep.pki.util.certificate.CertificateGenerator;
 import com.bsep.pki.util.keystore.KeyStoreReader;
 import com.bsep.pki.util.keystore.KeyStoreWriter;
 import com.bsep.pki.util.keystore.PasswordGenerator;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
+import org.bouncycastle.cms.*;
+import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -26,6 +34,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.*;
@@ -36,6 +45,8 @@ import java.util.*;
 
 @Service
 public class CertificateService {
+
+    public static final String FOLDER_PATH = System.getProperty("user.home") + "\\Downloads\\";
 
     static
     {
@@ -582,7 +593,8 @@ public class CertificateService {
                     KeyPurposeId.id_kp_ipsecEndSystem, KeyPurposeId.id_kp_ipsecTunnel, KeyPurposeId.id_kp_ipsecUser};
 
            OtherCertData otherRootData = new OtherCertData(LocalDate.parse("2015-10-23"), LocalDate.parse("2035-10-23"),
-                   "SHA256WithRSAEncryption", new ArrayList<String>(), this.generateSerialNumber(root), keyUsageValues, extendedKeyUsages);
+                   "SHA256WithRSAEncryption", new ArrayList<String>(), this.generateSerialNumber(root), keyUsageValues, extendedKeyUsages,
+                   true, true);
 
 
             X509Certificate certificate = this.certificateGenerator.generateCertificate(subjectRootData, issuerRootData, otherRootData);
@@ -830,31 +842,39 @@ public class CertificateService {
         }
     }
 
-    public boolean downloadCertificate(OverviewCertificateDTO dto) {
+    public boolean downloadCertificate(OverviewCertificateDTO dto) throws KeyStoreException, IOException,
+            UnrecoverableKeyException, NoSuchAlgorithmException, CMSException, OperatorCreationException, CertificateEncodingException {
 
-        String certFileName = System.getProperty("user.home") + "\\Downloads\\" + dto.issuerCommonName + dto.serialNum + ".cer";
+        String certFileName = FOLDER_PATH + dto.issuerCommonName + dto.serialNum + ".p7b";
         Certificate certificate = this.getCertificateFromOverview(dto);
+        String certAlias = this.getAliasByCertificate(certificate);
+        KeyStore ks = this.findKeyStoreByAlias(certAlias);
+        Certificate[] certificates = ks.getCertificateChain(certAlias);
+        Certificate issuerCert = null;
+        if(certificates.length == 1) {
+            issuerCert = certificates[0];
+        } else {
+            issuerCert = certificates[1];
+        }
+        String issuerAlias = this.getAliasByCertificate(issuerCert);
+        KeyStore issuerKS = this.findKeyStoreByAlias(issuerAlias);
+        Key key = issuerKS.getKey(issuerAlias, this.propertiesConfigurator.readValueFromAliasPassProp(issuerAlias).toCharArray());
+        List<Certificate> certificateList = new ArrayList<>(Arrays.asList(certificates));
 
         if(certificate != null) {
             byte[] certByte = null;
+            certByte = this.encryptCertToPKCS7(certificate, key, certificateList);
+
             FileOutputStream outputStream = null;
-
             try {
-                File f = new File(certFileName);
-                if (f.exists()) {
-                    return true;
-                }
-                outputStream = new FileOutputStream(f);
+                outputStream = new FileOutputStream(certFileName);
 
                 try {
-                    certByte = certificate.getEncoded();
-                } catch (CertificateEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    outputStream.write(certByte);
+                    outputStream.write("-----BEGIN CERTIFICATE-----\n".getBytes("US-ASCII"));
+                    outputStream.write(Base64.encodeBase64(certByte, true));
+                    outputStream.write("-----END CERTIFICATE-----\n".getBytes("US-ASCII"));
                     outputStream.close();
+
                     return true;
 
                 } catch (IOException e) {
@@ -867,6 +887,22 @@ public class CertificateService {
         }
 
         return false;
+    }
+
+    private byte[] encryptCertToPKCS7(Certificate certificate, Key key, List<Certificate> certificates)
+            throws CertificateEncodingException, CMSException, IOException, OperatorCreationException {
+
+        CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
+        ContentSigner sha256Signer = new JcaContentSignerBuilder("SHA256withRSA").setProvider("BC").build((PrivateKey) key);
+
+        generator.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder()
+            .setProvider("BC").build())
+            .build(sha256Signer, (X509Certificate) certificate));
+        generator.addCertificates(new JcaCertStore(certificates));
+        CMSTypedData content = new CMSProcessableByteArray(certificate.getEncoded());
+        CMSSignedData signedData = generator.generate(content, true);
+
+        return signedData.getEncoded();
     }
 
     public Certificate getCertificateFromOverview(OverviewCertificateDTO dto) {

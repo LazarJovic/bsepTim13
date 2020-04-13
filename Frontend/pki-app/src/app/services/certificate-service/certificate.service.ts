@@ -38,7 +38,7 @@ export class CertificateService {
   }
 
   revokeCertificate(data: OverviewCertificate) {
-
+    
     // var  headers = new HttpHeaders();
     // headers.append("Hash-Algorithm", data.hashAlgorithm);
     // headers.append("Issuer-Name-Hash", data.issuerNameHash);

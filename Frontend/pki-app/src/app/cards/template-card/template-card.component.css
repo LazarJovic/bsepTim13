@@ -39,3 +39,12 @@
   color: darkorange;
   border: 1px solid darkorange;
 }
+
+#choose-button-conflict {
+  background-color: firebrick;
+  color: white;
+  width: 150px;
+  height: 40px;
+  font-size: 18px;
+  margin-left: 80px;
+}

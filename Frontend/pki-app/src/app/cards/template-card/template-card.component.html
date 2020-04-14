@@ -29,6 +29,9 @@
       </div>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-flat-button id="choose-button" (click)="chooseTemplate()">Load</button>
+        <button mat-flat-button id="choose-button" (click)="chooseTemplate()" *ngIf="!conflicting">Load</button>
+        <button mat-flat-button id="choose-button-conflict" (click)="openWarning()" *ngIf="conflicting"
+        matTooltip="This template has Key Usages and/or Extended Key Usages that the currently selected Issuer does not have"
+        matTooltipPosition="below">Load</button>
     </mat-card-actions>
   </mat-card>

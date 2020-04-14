@@ -1,0 +1,21 @@
+p { 
+    display:block;
+    text-align: center;
+}
+
+.mat-primary {
+    margin-left: 10px;
+}
+
+button {
+    width: 100px;
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+}
+
+#close-button {
+    margin-left: 70px;
+}

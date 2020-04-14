@@ -178,7 +178,7 @@ export class CreateCertificateComponent implements OnInit {
     if (this.keyUsageChecked) {
       tempExtKeyUsage = this.toStringArrayExtKeyUsage(this.extKeyUsage);
     }
-      
+
     const dialogRef = this.signingCertDialog.open(ChooseCertificateDialogComponent, {
       width: '80vw',
       height: '90vh',
@@ -197,6 +197,7 @@ export class CreateCertificateComponent implements OnInit {
         });
 
         this.onChangeIssuerUpdateKeyUsage();
+        this.checkIfEmpty();
       }
     });
   }
@@ -222,8 +223,8 @@ export class CreateCertificateComponent implements OnInit {
     });
   }
 
-  compareFn(c1: any, c2:any): boolean {     
-    return c1 && c2 ? c1.id === c2.id : c1 === c2; 
+  compareFn(c1: any, c2: any): boolean {
+    return c1 && c2 ? c1.id === c2.id : c1 === c2;
   }
 
   openSubjectDialog() {
@@ -234,7 +235,7 @@ export class CreateCertificateComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      
+
       if (result) {
         let subject = new User(0, result.givenName, result.lastName, result.commonName, result.country, result.organization,
           result.organizationalUnit, result.locality, result.email, 0);
@@ -380,6 +381,8 @@ export class CreateCertificateComponent implements OnInit {
   }
 
   onChangeIssuerUpdateKeyUsage() {
+    if (!this.signingCertificate)
+      return
     let temp = Object.assign({}, this.keyUsage);
     this.keyUsage.digitalSignature = false;
     this.keyUsage.nonRepudiation = false;
@@ -537,6 +540,19 @@ export class CreateCertificateComponent implements OnInit {
     dialogConfig.autoFocus = false;
     dialogConfig.width = "80vw";
     dialogConfig.height = "90vh";
+    let issuerKeyUsage = undefined;
+    let issuerExtKeyUsage = undefined;
+    if (this.signingCertificate && this.signingCertificate.keyUsage) {
+      issuerKeyUsage = this.signingCertificate.keyUsage;
+    }
+    if (this.signingCertificate && this.signingCertificate.extendedKeyUsage) {
+      issuerExtKeyUsage = this.signingCertificate.extendedKeyUsage;
+    }
+
+    dialogConfig.data = {
+      issuerKeyUsage: issuerKeyUsage,
+      issuerExtKeyUsage: issuerExtKeyUsage
+    };
 
     let dialogRef = this.keyUsageDialog.open(LoadTemplateDialogComponent, dialogConfig).afterClosed()
       .subscribe(response => {
@@ -548,6 +564,9 @@ export class CreateCertificateComponent implements OnInit {
 
           this.onLoadTemplateUpdateKeyUsage(response.template);
           this.onLoadTemplateUpdateExtendedKeyUsage(response.template);
+          this.onChangeIssuerUpdateKeyUsage();
+          this.checkIfEmpty();
+          this.toast.success(`Loaded: ${ response.template.name }`);
         }
       });
   }
@@ -669,6 +688,54 @@ export class CreateCertificateComponent implements OnInit {
     this.updateExtKeyUsageDesc();
   }
 
+  checkIfEmpty() {
+    if (this.keyUsageAllFalse()) {
+      this.fixNoKeyUsageSelected();
+    }
+    if (this.extendedKeyUsageAllFalse()) {
+      this.fixNoExtendedKeyUsageSelected();
+    }
+  }
+
+  
+  fixNoKeyUsageSelected() {
+    this.keyUsageChecked = false;
+    this.keyUsage.digitalSignature = true;
+    this.keyUsage.nonRepudiation = true;
+    this.keyUsage.keyEncipherment = true;
+    this.keyUsage.dataEncipherment = true;
+    this.keyUsage.keyAgreement = true;
+    this.keyUsage.keyCertSign = true;
+    this.keyUsage.CRLSign = true;
+    this.keyUsage.encipherOnly = true;
+    this.keyUsage.decipherOnly = true;
+    this.onChangeIssuerUpdateKeyUsage();
+  }
+
+  fixNoExtendedKeyUsageSelected() {
+    this.extendedKeyUsageChecked = false;
+    this.extKeyUsage.serverAuth = true;
+    this.extKeyUsage.clientAuth = true;
+    this.extKeyUsage.codeSigning = true;
+    this.extKeyUsage.emailProtection = true;
+    this.extKeyUsage.timeStamping = true;
+    this.extKeyUsage.ocspSigning = true;
+    this.extKeyUsage.ipsecEndSystem = true;
+    this.extKeyUsage.ipsecTunnel = true;
+    this.extKeyUsage.ipsecUser = true;
+    this.onChangeIssuerUpdateKeyUsage();
+  }
+
+  public keyUsageAllFalse(): boolean {
+    return !this.keyUsage.digitalSignature && !this.keyUsage.nonRepudiation && !this.keyUsage.keyEncipherment && !this.keyUsage.dataEncipherment
+      && !this.keyUsage.keyAgreement && !this.keyUsage.keyCertSign && !this.keyUsage.CRLSign && !this.keyUsage.encipherOnly && !this.keyUsage.decipherOnly;
+  }
+
+  public extendedKeyUsageAllFalse(): boolean {
+    return !this.extKeyUsage.serverAuth && !this.extKeyUsage.clientAuth && !this.extKeyUsage.codeSigning
+      && !this.extKeyUsage.emailProtection && !this.extKeyUsage.timeStamping && !this.extKeyUsage.ocspSigning
+      && !this.extKeyUsage.ipsecEndSystem && !this.extKeyUsage.ipsecTunnel && !this.extKeyUsage.ipsecUser;
+  }
 }
 
 

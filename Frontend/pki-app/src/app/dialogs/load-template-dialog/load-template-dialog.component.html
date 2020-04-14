@@ -5,6 +5,6 @@
       </button>
     <h1>Available templates</h1>
     <div id="component-div">
-        <template-card *ngFor="let item of templates" [item]='item' (templateChosen)='onSubmit($event)' (templateDeleted)='getTemplates()'></template-card>
+        <template-card *ngFor="let item of templates" [item]='item' [issuerKeyUsage]='issuerKeyUsage' [issuerExtKeyUsage]='issuerExtKeyUsage' (templateChosen)='onSubmit($event)' (templateDeleted)='getTemplates()'></template-card>
     </div>
 </div>

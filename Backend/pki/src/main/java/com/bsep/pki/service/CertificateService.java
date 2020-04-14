@@ -1034,7 +1034,8 @@ public class CertificateService {
     }
 
     private boolean checkValidityPeriod(Certificate certificate) {
-        return ((X509Certificate)certificate).getNotAfter().before(java.sql.Date.valueOf(LocalDate.now()));
+        return ((X509Certificate) certificate).getNotAfter().before(java.sql.Date.valueOf(LocalDate.now())) ||
+                ((X509Certificate) certificate).getNotBefore().after(java.sql.Date.valueOf(LocalDate.now()));
     }
 
     private String getAliasByCertificate(Certificate certificate) {
